@@ -1,0 +1,85 @@
+:root {
+	--font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	
+	/* Smooth transitions between themes */
+	--transition-speed: 0.35s;
+	--transition-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root,
+[data-theme="dark"] {
+	--bg-primary: #070709;
+	--bg-secondary: #0f1015;
+	--fg-primary: #f5f5f7;
+	--fg-secondary: #8e8e9a;
+	--fg-muted: #52525e;
+	--border: rgba(255, 255, 255, 0.08);
+	--border-hover: rgba(255, 255, 255, 0.2);
+	--cutout-fill: #070709;
+	--card-bg: rgba(255, 255, 255, 0.03);
+	--card-hover: rgba(255, 255, 255, 0.08);
+	--cursor-radial: radial-gradient(circle 500px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.055), transparent 70%);
+	--logo-glow: drop-shadow(0 0 25px rgba(255, 255, 255, 0.08));
+	--icon-glow: 0 0 20px rgba(255, 255, 255, 0.25);
+	color-scheme: dark;
+}
+
+[data-theme="light"] {
+	--bg-primary: #f8f8fa;
+	--bg-secondary: #ececf0;
+	--fg-primary: #0a0a0d;
+	--fg-secondary: #656573;
+	--fg-muted: #9c9ca8;
+	--border: rgba(0, 0, 0, 0.08);
+	--border-hover: rgba(0, 0, 0, 0.25);
+	--cutout-fill: #f8f8fa;
+	--card-bg: rgba(0, 0, 0, 0.02);
+	--card-hover: rgba(0, 0, 0, 0.06);
+	--cursor-radial: radial-gradient(circle 500px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 0, 0, 0.035), transparent 70%);
+	--logo-glow: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.06));
+	--icon-glow: 0 0 20px rgba(0, 0, 0, 0.15);
+	color-scheme: light;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: var(--bg-primary);
+	color: var(--fg-primary);
+	font-family: var(--font-main);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transition: background-color var(--transition-speed) var(--transition-easing),
+	            color var(--transition-speed) var(--transition-easing);
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+/* Custom subtle noise texture overlay for organic analog feel */
+.ambient-backdrop {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background: var(--cursor-radial);
+	z-index: 1;
+	transition: background 0.1s ease-out;
+}
+
+/* Subtle vignette */
+.vignette {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(circle at center, transparent 40%, var(--bg-primary) 95%);
+	opacity: 0.6;
+	z-index: 2;
+	transition: background var(--transition-speed) var(--transition-easing);
+}
