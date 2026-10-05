@@ -17,11 +17,29 @@
 	let navEl = $state(null);
 	let navOpacity = $state(0.1);
 
+	let isMobile = $state(false);
+
 	onMount(() => {
+		const mql = window.matchMedia('(max-width: 768px), (pointer: coarse)');
+		isMobile = mql.matches;
+
+		const onMqlChange = (e) => {
+			isMobile = e.matches;
+			if (isMobile) navOpacity = 1;
+		};
+		mql.addEventListener('change', onMqlChange);
+
+		if (isMobile) {
+			navOpacity = 1;
+			return () => {
+				mql.removeEventListener('change', onMqlChange);
+			};
+		}
+
 		const MAX_DIST = 320;
 
 		function onPointerMove(e) {
-			if (!navEl) return;
+			if (isMobile || !navEl) return;
 			const r = navEl.getBoundingClientRect();
 			const cx = r.left + r.width / 2;
 			const cy = r.top + r.height / 2;
@@ -36,13 +54,14 @@
 		}
 
 		function onPointerLeave() {
-			navOpacity = 0.1;
+			if (!isMobile) navOpacity = 0.1;
 		}
 
 		window.addEventListener('pointermove', onPointerMove, { passive: true });
 		window.addEventListener('pointerleave', onPointerLeave);
 
 		return () => {
+			mql.removeEventListener('change', onMqlChange);
 			window.removeEventListener('pointermove', onPointerMove);
 			window.removeEventListener('pointerleave', onPointerLeave);
 		};
@@ -207,16 +226,22 @@
 		transform: translateX(-50%) translateY(0) scale(1);
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 768px), (pointer: coarse) {
 		.top-center-nav {
+			opacity: 1 !important;
 			top: 1.25rem;
 			gap: 1.25rem;
 			padding: 0.25rem 0.5rem;
 		}
 
+		.nav-btn {
+			opacity: 1 !important;
+		}
+
 		.nav-svg {
 			width: 26px;
 			height: 26px;
+			opacity: 1 !important;
 		}
 
 		.nav-tooltip {

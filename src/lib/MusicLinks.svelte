@@ -146,15 +146,26 @@
 		border-color: var(--brand-color);
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 768px), (pointer: coarse) {
 		.music-links {
 			bottom: 1.75rem;
 			gap: 1.75rem;
+			opacity: 1 !important;
+		}
+
+		.link-item {
+			opacity: 1 !important;
+		}
+
+		.icon-wrap {
+			opacity: 1 !important;
+			color: var(--fg-primary);
 		}
 
 		.music-icon {
 			width: 38px;
 			height: 38px;
+			opacity: 1 !important;
 		}
 
 		.apple-classic {
