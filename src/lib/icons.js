@@ -35,6 +35,13 @@ export const ICONS = {
 				<line x1="17.66" y1="6.34" x2="19.07" y2="4.93" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
 			`
 		},
+		style_toggle: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12 3c0 4.5-3.5 8-8 8 4.5 0 8 3.5 8 8 0-4.5 3.5-8 8-8-4.5 0-8-3.5-8-8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			`
+		},
 		instagram: {
 			viewBox: '0 0 24 24',
 			type: 'stroke',
@@ -70,6 +77,28 @@ export const ICONS = {
 			type: 'fill',
 			svg: `
 				<path d="M381.9 388.2c-6.4 27.4-27.2 42.8-55.1 48-24.5 4.5-44.9 5.6-64.5-10.2-23.9-20.1-24.2-53.4-2.7-74.4 17-16.2 40.9-19.5 76.8-25.8 6-1.1 11.2-2.5 15.6-7.4 6.4-7.2 4.4-4.1 4.4-163.2 0-11.2-5.5-14.3-17-12.3-8.2 1.4-185.7 34.6-185.7 34.6-10.2 2.2-13.4 5.2-13.4 16.7 0 234.7 1.1 223.9-2.5 239.5-4.2 18.2-15.4 31.9-30.2 39.5-16.8 9.3-47.2 13.4-63.4 10.4-43.2-8.1-58.4-58-29.1-86.6 17-16.2 40.9-19.5 76.8-25.8 6-1.1 11.2-2.5 15.6-7.4 10.1-11.5 1.8-256.6 5.2-270.2 .8-5.2 3-9.6 7.1-12.9 4.2-3.5 11.8-5.5 13.4-5.5 204-38.2 228.9-43.1 232.4-43.1 11.5-.8 18.1 6 18.1 17.6 .2 344.5 1.1 326-1.8 338.5z" fill="currentColor"/>
+			`
+		},
+		gallery_close: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+				<line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+			`
+		},
+		gallery_prev: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+			`
+		},
+		gallery_next: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
 			`
 		}
 	},
@@ -133,6 +162,18 @@ export const ICONS = {
 				<path d="M83 83 L69 75 L71 71 L67 69 Z" fill="currentColor"/>
 				<!-- Diagonal SW -->
 				<path d="M17 83 L31 69 L29 71 L25 75 Z" fill="currentColor"/>
+			`
+		},
+
+		// 3b. Style Toggle: 8-pointed Gothic Thorn Sigil Star
+		style_toggle: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- 8-pointed Gothic Thorn Sigil Star -->
+				<path d="M50 4 L55 35 L78 16 L65 38 L96 50 L65 62 L78 84 L55 65 L50 96 L45 65 L22 84 L35 62 L4 50 L35 38 L22 16 L45 35 Z" fill="currentColor"/>
+				<circle cx="50" cy="50" r="9" fill="var(--bg-primary, #070709)"/>
+				<circle cx="50" cy="50" r="4" fill="currentColor"/>
 			`
 		},
 
@@ -246,6 +287,54 @@ export const ICONS = {
 				<!-- Right Notehead: Angled Sharp Oval with Sweeping Thorn Tail -->
 				<path d="M80 58 C80 66 70 72 61 70 C52 68 50 59 57 54 C64 49 74 51 80 58 Z" fill="currentColor"/>
 				<polygon points="57,54 48,52 56,60" fill="currentColor"/>
+			`
+		},
+
+		// 9. Gallery Close: Crossed Gothic Dagger Blades with Barbed Thorn Finials & Center Diamond
+		gallery_close: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Crossed Gothic Dagger Blades (NW-SE & NE-SW) -->
+				<path d="M14 14 L20 28 L27 24 L45 42 L50 38 L55 42 L73 24 L80 28 L86 14 L72 20 L76 27 L58 45 L62 50 L58 55 L76 73 L72 80 L86 86 L80 72 L73 76 L55 58 L50 62 L45 58 L27 76 L20 72 L14 86 L28 80 L24 73 L42 55 L38 50 L42 45 L24 27 L28 20 Z" fill="currentColor"/>
+				<!-- Central 4-point Gothic Core Diamond -->
+				<polygon points="50,44 56,50 50,56 44,50" fill="none" stroke="currentColor" stroke-width="2"/>
+				<circle cx="50" cy="50" r="2.5" fill="currentColor"/>
+				<!-- 4 Corner Spike Fins -->
+				<polygon points="14,14 6,8 18,10" fill="currentColor"/>
+				<polygon points="86,14 94,8 82,10" fill="currentColor"/>
+				<polygon points="86,86 94,92 82,90" fill="currentColor"/>
+				<polygon points="14,86 6,92 18,90" fill="currentColor"/>
+			`
+		},
+
+		// 10. Gallery Prev: Gothic Spearhead Arrow pointing Left with Barbed Fins
+		gallery_prev: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Gothic Spearhead Arrow pointing Left with Barbed Fins -->
+				<path d="M16 50 L42 32 L37 28 L48 26 L68 14 L78 10 L71 23 L62 31 L42 50 L62 69 L71 77 L78 90 L68 86 L48 74 L37 72 L42 68 Z" fill="currentColor"/>
+				<!-- Inner Gothic Thorn Barb -->
+				<polygon points="50,50 64,40 58,50 64,60" fill="currentColor"/>
+				<!-- Leading Tip Barbs -->
+				<polygon points="26,43 12,46 22,48" fill="currentColor"/>
+				<polygon points="26,57 22,52 12,54" fill="currentColor"/>
+			`
+		},
+
+		// 11. Gallery Next: Gothic Spearhead Arrow pointing Right with Barbed Fins
+		gallery_next: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Gothic Spearhead Arrow pointing Right with Barbed Fins -->
+				<path d="M84 50 L58 32 L63 28 L52 26 L32 14 L22 10 L29 23 L38 31 L58 50 L38 69 L29 77 L22 90 L32 86 L52 74 L63 72 L58 68 Z" fill="currentColor"/>
+				<!-- Inner Gothic Thorn Barb -->
+				<polygon points="50,50 36,40 42,50 36,60" fill="currentColor"/>
+				<!-- Leading Tip Barbs -->
+				<polygon points="74,43 78,48 88,46" fill="currentColor"/>
+				<polygon points="74,57 88,54 78,52" fill="currentColor"/>
 			`
 		}
 	}

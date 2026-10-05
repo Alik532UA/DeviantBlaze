@@ -1,8 +1,16 @@
 <script>
 	import { fade, scale } from 'svelte/transition';
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { ICONS } from './icons.js';
 
 	let { isOpen = $bindable(false) } = $props();
+
+	let style = $derived(iconStyleStore.current);
+
+	function getIcon(name) {
+		const set = ICONS[style] || ICONS.gothic;
+		return set[name] || ICONS.gothic[name];
+	}
 
 	function onKeyDown(e) {
 		if (isOpen && e.key === 'Escape') isOpen = false;
@@ -29,10 +37,16 @@
 		></button>
 
 		<div class="contacts-card" transition:scale={{ start: 0.95, duration: 220 }}>
-			<button class="close-btn" onclick={() => (isOpen = false)} aria-label="Закрити контакти">
-				<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-					<line x1="18" y1="6" x2="6" y2="18"></line>
-					<line x1="6" y1="6" x2="18" y2="18"></line>
+			<button class="close-btn" class:is-gothic={style === 'gothic'} onclick={() => (isOpen = false)} aria-label="Закрити контакти">
+				<svg
+					viewBox={getIcon('gallery_close').viewBox}
+					width="20"
+					height="20"
+					class="close-svg"
+					class:close-svg--fill={getIcon('gallery_close').type === 'fill'}
+					aria-hidden="true"
+				>
+					{@html getIcon('gallery_close').svg}
 				</svg>
 			</button>
 
@@ -60,27 +74,6 @@
 						<a href="https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs" target="_blank" rel="noopener noreferrer">Spotify</a>
 						<span>·</span>
 						<a href="https://music.apple.com/ua/artist/deviant-blaze/1728765974" target="_blank" rel="noopener noreferrer">Apple Music</a>
-					</div>
-				</div>
-
-				<!-- Style Switcher Section -->
-				<div class="contact-item style-switch-item">
-					<span class="label">Стиль іконок сайту</span>
-					<div class="style-toggle-group">
-						<button
-							class="style-btn"
-							class:active={iconStyleStore.current === 'gothic'}
-							onclick={() => iconStyleStore.set('gothic')}
-						>
-							Готичний рок
-						</button>
-						<button
-							class="style-btn"
-							class:active={iconStyleStore.current === 'classic'}
-							onclick={() => iconStyleStore.set('classic')}
-						>
-							Класичний
-						</button>
 					</div>
 				</div>
 			</div>
@@ -134,12 +127,31 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		padding: 4px;
 		transition: color 0.2s, transform 0.2s;
 	}
 
 	.close-btn:hover {
 		color: var(--fg-primary);
 		transform: scale(1.1);
+	}
+
+	.close-svg {
+		display: block;
+		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.close-svg:not(.close-svg--fill) {
+		fill: none;
+		stroke: currentColor;
+	}
+
+	.close-svg--fill {
+		fill: currentColor;
+	}
+
+	.close-btn.is-gothic:hover .close-svg {
+		transform: rotate(90deg) scale(1.15);
 	}
 
 	.contacts-header {
@@ -212,41 +224,5 @@
 
 	.stream-links span {
 		color: var(--fg-muted);
-	}
-
-	/* Style Switcher */
-	.style-switch-item {
-		margin-top: 0.5rem;
-		padding-top: 1rem;
-		border-top: 1px solid var(--border);
-	}
-
-	.style-toggle-group {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.4rem;
-	}
-
-	.style-btn {
-		background: var(--card-bg);
-		border: 1px solid var(--border);
-		color: var(--fg-secondary);
-		padding: 6px 14px;
-		border-radius: 6px;
-		font-size: 0.82rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s;
-	}
-
-	.style-btn:hover {
-		color: var(--fg-primary);
-		border-color: var(--border-hover);
-	}
-
-	.style-btn.active {
-		background: var(--fg-primary);
-		color: var(--bg-primary);
-		border-color: var(--fg-primary);
 	}
 </style>

@@ -129,6 +129,25 @@
 		</div>
 		<span class="nav-tooltip">{isDark ? 'Світла тема' : 'Темна тема'}</span>
 	</button>
+
+	<!-- 5. Icon Style Toggle Button (Gothic Rock / Classic) -->
+	<button
+		class="nav-btn style-toggle-btn"
+		onclick={() => iconStyleStore.toggle()}
+		aria-label={style === 'gothic' ? 'Перемкнути на класичний стиль' : 'Перемкнути на готичний стиль'}
+	>
+		<div class="style-icon-wrap" class:is-classic={style === 'classic'}>
+			<svg
+				viewBox={getIcon('style_toggle').viewBox}
+				class="nav-svg"
+				class:nav-svg--fill={getIcon('style_toggle').type === 'fill'}
+				aria-hidden="true"
+			>
+				{@html getIcon('style_toggle').svg}
+			</svg>
+		</div>
+		<span class="nav-tooltip">{style === 'gothic' ? 'Стиль: Готичний' : 'Стиль: Класичний'}</span>
+	</button>
 </nav>
 
 <style>
@@ -176,12 +195,40 @@
 		transform: rotate(360deg);
 	}
 
+	.style-icon-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.style-icon-wrap.is-classic {
+		transform: rotate(180deg);
+	}
+
+	.nav-btn:hover .style-icon-wrap {
+		transform: rotate(45deg) scale(1.15);
+	}
+
+	.nav-btn:hover .style-icon-wrap.is-classic {
+		transform: rotate(225deg) scale(1.15);
+	}
+
 	.nav-svg {
 		width: 28px;
 		height: 28px;
 		display: block;
 		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+	}
+
+	.nav-svg:not(.nav-svg--fill) {
+		fill: none;
+		stroke: currentColor;
+	}
+
+	.nav-svg--fill {
+		fill: currentColor;
 	}
 
 	.nav-btn:hover {

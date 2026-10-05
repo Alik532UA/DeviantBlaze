@@ -1,5 +1,15 @@
 <script>
+	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { ICONS } from './icons.js';
+
 	let { isOpen = $bindable(false) } = $props();
+
+	let style = $derived(iconStyleStore.current);
+
+	function getIcon(name) {
+		const set = ICONS[style] || ICONS.gothic;
+		return set[name] || ICONS.gothic[name];
+	}
 
 	const images = [
 		{
@@ -145,12 +155,17 @@
 		<button
 			type="button"
 			class="lightbox-close"
+			class:is-gothic={style === 'gothic'}
 			onclick={() => (isOpen = false)}
 			aria-label="Закрити галерею"
 		>
-			<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<line x1="18" y1="6" x2="6" y2="18"></line>
-				<line x1="6" y1="6" x2="18" y2="18"></line>
+			<svg
+				viewBox={getIcon('gallery_close').viewBox}
+				class="lightbox-btn-svg"
+				class:lightbox-btn-svg--fill={getIcon('gallery_close').type === 'fill'}
+				aria-hidden="true"
+			>
+				{@html getIcon('gallery_close').svg}
 			</svg>
 		</button>
 
@@ -178,11 +193,17 @@
 			<button
 				type="button"
 				class="lightbox-nav lightbox-nav--prev"
+				class:is-gothic={style === 'gothic'}
 				onclick={prev}
 				aria-label="Попереднє фото"
 			>
-				<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<polyline points="15 18 9 12 15 6"></polyline>
+				<svg
+					viewBox={getIcon('gallery_prev').viewBox}
+					class="lightbox-btn-svg"
+					class:lightbox-btn-svg--fill={getIcon('gallery_prev').type === 'fill'}
+					aria-hidden="true"
+				>
+					{@html getIcon('gallery_prev').svg}
 				</svg>
 			</button>
 		{/if}
@@ -213,11 +234,17 @@
 			<button
 				type="button"
 				class="lightbox-nav lightbox-nav--next"
+				class:is-gothic={style === 'gothic'}
 				onclick={next}
 				aria-label="Наступне фото"
 			>
-				<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<polyline points="9 18 15 12 9 6"></polyline>
+				<svg
+					viewBox={getIcon('gallery_next').viewBox}
+					class="lightbox-btn-svg"
+					class:lightbox-btn-svg--fill={getIcon('gallery_next').type === 'fill'}
+					aria-hidden="true"
+				>
+					{@html getIcon('gallery_next').svg}
 				</svg>
 			</button>
 		{/if}
@@ -268,7 +295,7 @@
 		justify-content: center;
 		cursor: pointer;
 		outline: none;
-		transition: all 0.2s ease;
+		transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.lightbox-close:hover {
@@ -293,7 +320,7 @@
 		justify-content: center;
 		cursor: pointer;
 		outline: none;
-		transition: all 0.2s ease;
+		transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.lightbox-nav:hover {
@@ -307,6 +334,62 @@
 
 	.lightbox-nav--next {
 		right: 1.5rem;
+	}
+
+	/* Button SVG icons */
+	.lightbox-btn-svg {
+		width: 24px;
+		height: 24px;
+		display: block;
+		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+	}
+
+	.lightbox-nav .lightbox-btn-svg {
+		width: 32px;
+		height: 32px;
+	}
+
+	.lightbox-btn-svg:not(.lightbox-btn-svg--fill) {
+		fill: none;
+		stroke: currentColor;
+	}
+
+	.lightbox-btn-svg--fill {
+		fill: currentColor;
+	}
+
+	/* Gothic style button accents */
+	.lightbox-close.is-gothic {
+		border-color: rgba(255, 255, 255, 0.32);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.06);
+	}
+
+	.lightbox-close.is-gothic:hover {
+		border-color: rgba(255, 255, 255, 0.65);
+		box-shadow: 0 0 20px rgba(255, 255, 255, 0.25), inset 0 0 14px rgba(255, 255, 255, 0.12);
+	}
+
+	.lightbox-close.is-gothic:hover .lightbox-btn-svg {
+		transform: rotate(90deg) scale(1.1);
+	}
+
+	.lightbox-nav.is-gothic {
+		border-color: rgba(255, 255, 255, 0.32);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.06);
+	}
+
+	.lightbox-nav.is-gothic:hover {
+		border-color: rgba(255, 255, 255, 0.65);
+		box-shadow: 0 0 24px rgba(255, 255, 255, 0.3), inset 0 0 16px rgba(255, 255, 255, 0.15);
+	}
+
+	.lightbox-nav.is-gothic.lightbox-nav--prev:hover .lightbox-btn-svg {
+		transform: translateX(-3px) scale(1.1);
+	}
+
+	.lightbox-nav.is-gothic.lightbox-nav--next:hover .lightbox-btn-svg {
+		transform: translateX(3px) scale(1.1);
 	}
 
 	/* Left Vertical Thumb Rail */
