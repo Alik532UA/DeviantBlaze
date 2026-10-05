@@ -3,9 +3,9 @@
 
 	const images = [
 		{
-			src: '/gallery/img1.webp',
-			title: 'Deviant Blaze Live on Stage',
-			alt: 'Deviant Blaze Live on Stage'
+			src: '/gallery/img3.webp',
+			title: 'Deviant Blaze Band',
+			alt: 'Deviant Blaze Band Photoshoot'
 		},
 		{
 			src: '/gallery/img2.webp',
@@ -13,25 +13,58 @@
 			alt: 'Vocals & Live Energy'
 		},
 		{
-			src: '/gallery/img3.webp',
-			title: 'Deviant Blaze Band',
-			alt: 'Deviant Blaze Band Photoshoot'
+			src: '/gallery/img1.webp',
+			title: 'Deviant Blaze Live on Stage',
+			alt: 'Deviant Blaze Live on Stage'
 		}
 	];
 
 	let index = $state(0);
 	let thumbEls = $state([]);
 
-	// Lock body scroll when open
+	// Lock body scroll & attach wheel scroll navigation when open
 	$effect(() => {
 		if (typeof document === 'undefined') return;
-		if (isOpen) {
-			const originalOverflow = document.body.style.overflow;
-			document.body.style.overflow = 'hidden';
-			return () => {
-				document.body.style.overflow = originalOverflow;
-			};
+		if (!isOpen) return;
+
+		const originalOverflow = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+
+		let isWheelLocked = false;
+		let wheelTimeout;
+
+		function onWheel(e) {
+			// Allow normal vertical scroll inside thumbnail rail
+			if (e.target && e.target.closest && e.target.closest('.lightbox-rail')) {
+				return;
+			}
+
+			e.preventDefault();
+
+			if (isWheelLocked) return;
+
+			const threshold = 18;
+			if (Math.abs(e.deltaY) > threshold || Math.abs(e.deltaX) > threshold) {
+				if (e.deltaY > 0 || e.deltaX > 0) {
+					next();
+				} else {
+					prev();
+				}
+				isWheelLocked = true;
+				clearTimeout(wheelTimeout);
+				wheelTimeout = setTimeout(() => {
+					isWheelLocked = false;
+				}, 300);
+			}
 		}
+
+		window.addEventListener('wheel', onWheel, { passive: false });
+
+		return () => {
+			document.body.style.overflow = originalOverflow;
+			clearTimeout(wheelTimeout);
+			window.removeEventListener('wheel', onWheel);
+		};
 	});
 
 	// Auto scroll active thumbnail into view
