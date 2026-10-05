@@ -1,7 +1,7 @@
 <script>
 	import DeviantBlazeLogo from '#lib/DeviantBlazeLogo.svelte';
 	import MusicLinks from '#lib/MusicLinks.svelte';
-	import CornerControls from '#lib/CornerControls.svelte';
+	import TopNav from '#lib/TopNav.svelte';
 	import GalleryModal from '#lib/GalleryModal.svelte';
 	import ContactsModal from '#lib/ContactsModal.svelte';
 
@@ -14,13 +14,10 @@
 	<div class="ambient-backdrop"></div>
 	<div class="vignette"></div>
 
-	<!-- 4 Corner Controls (10% to 100% proximity opacity):
-	     Top-left: Gallery
-	     Top-right: Theme Toggle
-	     Bottom-left: Instagram
-	     Bottom-right: Message / Contact
+	<!-- Top Center Navigation: Gallery, Instagram, Message, Theme
+	     (Proximity opacity: 10% to 100% based on cursor distance)
 	-->
-	<CornerControls
+	<TopNav
 		onOpenGallery={() => {
 			isContactsOpen = false;
 			isGalleryOpen = true;
@@ -66,7 +63,8 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1.5rem;
-		/* Optical centering taking into account bottom music links */
+		/* Optical centering taking into account top & bottom bars */
+		padding-top: 2rem;
 		padding-bottom: 3.5rem;
 	}
 

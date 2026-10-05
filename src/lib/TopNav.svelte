@@ -1,0 +1,213 @@
+<script>
+	import { onMount } from 'svelte';
+	import { themeStore } from './theme.svelte.js';
+	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { ICONS } from './icons.js';
+
+	let { onOpenGallery, onOpenMessage } = $props();
+
+	let isDark = $derived(themeStore.current === 'dark');
+	let style = $derived(iconStyleStore.current);
+
+	function getIcon(name) {
+		const set = ICONS[style] || ICONS.gothic;
+		return set[name] || ICONS.gothic[name];
+	}
+
+	let navEl = $state(null);
+	let navOpacity = $state(0.1);
+
+	onMount(() => {
+		const MAX_DIST = 320;
+
+		function onPointerMove(e) {
+			if (!navEl) return;
+			const r = navEl.getBoundingClientRect();
+			const cx = r.left + r.width / 2;
+			const cy = r.top + r.height / 2;
+			const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+			if (dist >= MAX_DIST) {
+				navOpacity = 0.1;
+			} else {
+				const t = 1 - dist / MAX_DIST;
+				const ease = t * t * (3 - 2 * t);
+				navOpacity = 0.1 + 0.9 * ease;
+			}
+		}
+
+		function onPointerLeave() {
+			navOpacity = 0.1;
+		}
+
+		window.addEventListener('pointermove', onPointerMove, { passive: true });
+		window.addEventListener('pointerleave', onPointerLeave);
+
+		return () => {
+			window.removeEventListener('pointermove', onPointerMove);
+			window.removeEventListener('pointerleave', onPointerLeave);
+		};
+	});
+</script>
+
+<nav
+	bind:this={navEl}
+	class="top-center-nav"
+	style="opacity: {navOpacity.toFixed(3)};"
+	aria-label="Навігація сайту"
+>
+	<!-- 1. Gallery Button -->
+	<button
+		class="nav-btn"
+		onclick={onOpenGallery}
+		aria-label="Галерея"
+	>
+		<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
+			{@html getIcon('gallery').svg}
+		</svg>
+		<span class="nav-tooltip">Галерея</span>
+	</button>
+
+	<!-- 2. Instagram Link -->
+	<a
+		href="https://www.instagram.com/deviant_blaze/"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="nav-btn"
+		aria-label="Instagram Deviant Blaze"
+	>
+		<svg viewBox={getIcon('instagram').viewBox} class="nav-svg" aria-hidden="true">
+			{@html getIcon('instagram').svg}
+		</svg>
+		<span class="nav-tooltip">Instagram</span>
+	</a>
+
+	<!-- 3. Message / Write Button -->
+	<button
+		class="nav-btn"
+		onclick={onOpenMessage}
+		aria-label="Повідомлення / Написати"
+	>
+		<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
+			{@html getIcon('message').svg}
+		</svg>
+		<span class="nav-tooltip">Написати</span>
+	</button>
+
+	<!-- 4. Theme Toggle Button -->
+	<button
+		class="nav-btn"
+		onclick={() => themeStore.toggle()}
+		aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+	>
+		<svg
+			viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox}
+			class="nav-svg"
+			aria-hidden="true"
+		>
+			{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
+		</svg>
+		<span class="nav-tooltip">{isDark ? 'Світла тема' : 'Темна тема'}</span>
+	</button>
+</nav>
+
+<style>
+	.top-center-nav {
+		position: fixed;
+		top: 1.75rem;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.75rem;
+		padding: 0.5rem 1rem;
+		transition: opacity 0.15s ease-out;
+	}
+
+	.top-center-nav:hover {
+		opacity: 1 !important;
+	}
+
+	.nav-btn {
+		position: relative;
+		background: none;
+		border: none;
+		padding: 6px;
+		color: var(--fg-primary);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		outline: none;
+		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+	}
+
+	.nav-svg {
+		width: 28px;
+		height: 28px;
+		display: block;
+		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+	}
+
+	.nav-btn:hover {
+		transform: translateY(-2px) scale(1.18);
+		color: var(--fg-primary);
+	}
+
+	.nav-btn:active {
+		transform: translateY(0) scale(0.96);
+	}
+
+	.nav-btn:focus-visible {
+		outline: 2px solid var(--fg-primary);
+		outline-offset: 4px;
+		border-radius: 4px;
+	}
+
+	/* Minimalist Tooltip */
+	.nav-tooltip {
+		position: absolute;
+		top: calc(100% + 10px);
+		left: 50%;
+		transform: translateX(-50%) translateY(-4px) scale(0.95);
+		padding: 4px 10px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+		background: var(--bg-secondary);
+		color: var(--fg-primary);
+		border: 1px solid var(--border);
+		border-radius: 5px;
+		pointer-events: none;
+		opacity: 0;
+		transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+		z-index: 10;
+	}
+
+	.nav-btn:hover .nav-tooltip {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0) scale(1);
+	}
+
+	@media (max-width: 640px) {
+		.top-center-nav {
+			top: 1.25rem;
+			gap: 1.25rem;
+			padding: 0.25rem 0.5rem;
+		}
+
+		.nav-svg {
+			width: 26px;
+			height: 26px;
+		}
+
+		.nav-tooltip {
+			display: none;
+		}
+	}
+</style>
