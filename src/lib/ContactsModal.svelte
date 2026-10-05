@@ -1,5 +1,6 @@
 <script>
 	import { fade, scale } from 'svelte/transition';
+	import { iconStyleStore } from './iconStyle.svelte.js';
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -59,6 +60,27 @@
 						<a href="https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs" target="_blank" rel="noopener noreferrer">Spotify</a>
 						<span>·</span>
 						<a href="https://music.apple.com/ua/artist/deviant-blaze/1728765974" target="_blank" rel="noopener noreferrer">Apple Music</a>
+					</div>
+				</div>
+
+				<!-- Style Switcher Section -->
+				<div class="contact-item style-switch-item">
+					<span class="label">Стиль іконок сайту</span>
+					<div class="style-toggle-group">
+						<button
+							class="style-btn"
+							class:active={iconStyleStore.current === 'gothic'}
+							onclick={() => iconStyleStore.set('gothic')}
+						>
+							Готичний рок
+						</button>
+						<button
+							class="style-btn"
+							class:active={iconStyleStore.current === 'classic'}
+							onclick={() => iconStyleStore.set('classic')}
+						>
+							Класичний
+						</button>
 					</div>
 				</div>
 			</div>
@@ -190,5 +212,41 @@
 
 	.stream-links span {
 		color: var(--fg-muted);
+	}
+
+	/* Style Switcher */
+	.style-switch-item {
+		margin-top: 0.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.style-toggle-group {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.4rem;
+	}
+
+	.style-btn {
+		background: var(--card-bg);
+		border: 1px solid var(--border);
+		color: var(--fg-secondary);
+		padding: 6px 14px;
+		border-radius: 6px;
+		font-size: 0.82rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.style-btn:hover {
+		color: var(--fg-primary);
+		border-color: var(--border-hover);
+	}
+
+	.style-btn.active {
+		background: var(--fg-primary);
+		color: var(--bg-primary);
+		border-color: var(--fg-primary);
 	}
 </style>

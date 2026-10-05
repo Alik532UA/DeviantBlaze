@@ -1,10 +1,18 @@
 <script>
 	import { onMount } from 'svelte';
 	import { themeStore } from './theme.svelte.js';
+	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { ICONS } from './icons.js';
 
 	let { onOpenGallery, onOpenMessage } = $props();
 
 	let isDark = $derived(themeStore.current === 'dark');
+	let style = $derived(iconStyleStore.current);
+
+	function getIcon(name) {
+		const set = ICONS[style] || ICONS.gothic;
+		return set[name] || ICONS.gothic[name];
+	}
 
 	let galleryEl = $state(null);
 	let themeEl = $state(null);
@@ -64,17 +72,16 @@
 		onclick={onOpenGallery}
 		aria-label="Галерея"
 	>
-		<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-			<rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
-			<circle cx="8.5" cy="8.5" r="1.5"></circle>
-			<polyline points="21 15 16 10 5 21"></polyline>
+		<svg viewBox={getIcon('gallery').viewBox} width="28" height="28" aria-hidden="true">
+			{@html getIcon('gallery').svg}
 		</svg>
 		<span class="corner-tooltip tooltip-bottom">Галерея</span>
 	</button>
 </div>
 
-<!-- TOP RIGHT: Theme Toggle -->
+<!-- TOP RIGHT: Theme Toggle & Icon Style Switcher -->
 <div class="corner-item top-right">
+	<!-- Theme Button -->
 	<button
 		bind:this={themeEl}
 		class="corner-btn"
@@ -82,25 +89,9 @@
 		onclick={() => themeStore.toggle()}
 		aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
 	>
-		{#if isDark}
-			<!-- Moon Icon -->
-			<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-			</svg>
-		{:else}
-			<!-- Sun Icon -->
-			<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="12" cy="12" r="4"></circle>
-				<line x1="12" y1="2" x2="12" y2="4"></line>
-				<line x1="12" y1="20" x2="12" y2="22"></line>
-				<line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-				<line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
-				<line x1="2" y1="12" x2="4" y2="12"></line>
-				<line x1="20" y1="12" x2="22" y2="12"></line>
-				<line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-				<line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
-			</svg>
-		{/if}
+		<svg viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox} width="28" height="28" aria-hidden="true">
+			{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
+		</svg>
 		<span class="corner-tooltip tooltip-bottom">{isDark ? 'Світла тема' : 'Темна тема'}</span>
 	</button>
 </div>
@@ -116,10 +107,8 @@
 		style="opacity: {instagramOpacity.toFixed(3)};"
 		aria-label="Instagram Deviant Blaze"
 	>
-		<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-			<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-			<circle cx="12" cy="12" r="4.5"></circle>
-			<circle cx="17.5" cy="6.5" r="1.1" fill="currentColor"></circle>
+		<svg viewBox={getIcon('instagram').viewBox} width="28" height="28" aria-hidden="true">
+			{@html getIcon('instagram').svg}
 		</svg>
 		<span class="corner-tooltip tooltip-top">Instagram</span>
 	</a>
@@ -134,9 +123,8 @@
 		onclick={onOpenMessage}
 		aria-label="Повідомлення / Написати"
 	>
-		<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-			<!-- Minimalist Message Chat Bubble / Envelope Icon -->
-			<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+		<svg viewBox={getIcon('message').viewBox} width="28" height="28" aria-hidden="true">
+			{@html getIcon('message').svg}
 		</svg>
 		<span class="corner-tooltip tooltip-top">Написати</span>
 	</button>
@@ -149,6 +137,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 0.5rem;
 	}
 
 	.top-left {

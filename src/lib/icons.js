@@ -1,0 +1,252 @@
+/**
+ * Icons library containing both Classic Minimalist and Gothic Rock versions
+ */
+
+export const ICONS = {
+	classic: {
+		gallery: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<rect x="3" y="3" width="18" height="18" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="8.5" cy="8.5" r="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+				<polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			`
+		},
+		theme_dark: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			`
+		},
+		theme_light: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+				<line x1="12" y1="2" x2="12" y2="4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="12" y1="20" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="4.93" y1="4.93" x2="6.34" y2="6.34" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="17.66" y1="17.66" x2="19.07" y2="19.07" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="2" y1="12" x2="4" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="20" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="4.93" y1="19.07" x2="6.34" y2="17.66" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="17.66" y1="6.34" x2="19.07" y2="4.93" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			`
+		},
+		instagram: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+				<circle cx="17.5" cy="6.5" r="1.1" fill="currentColor"/>
+			`
+		},
+		message: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			`
+		},
+		ytm: {
+			viewBox: '0 0 24 24',
+			type: 'fill',
+			svg: `
+				<path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z" fill="currentColor"/>
+			`
+		},
+		spotify: {
+			viewBox: '0 0 24 24',
+			type: 'fill',
+			svg: `
+				<path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" fill="currentColor"/>
+			`
+		},
+		apple: {
+			viewBox: '0 0 384 512',
+			type: 'fill',
+			svg: `
+				<path d="M381.9 388.2c-6.4 27.4-27.2 42.8-55.1 48-24.5 4.5-44.9 5.6-64.5-10.2-23.9-20.1-24.2-53.4-2.7-74.4 17-16.2 40.9-19.5 76.8-25.8 6-1.1 11.2-2.5 15.6-7.4 6.4-7.2 4.4-4.1 4.4-163.2 0-11.2-5.5-14.3-17-12.3-8.2 1.4-185.7 34.6-185.7 34.6-10.2 2.2-13.4 5.2-13.4 16.7 0 234.7 1.1 223.9-2.5 239.5-4.2 18.2-15.4 31.9-30.2 39.5-16.8 9.3-47.2 13.4-63.4 10.4-43.2-8.1-58.4-58-29.1-86.6 17-16.2 40.9-19.5 76.8-25.8 6-1.1 11.2-2.5 15.6-7.4 10.1-11.5 1.8-256.6 5.2-270.2 .8-5.2 3-9.6 7.1-12.9 4.2-3.5 11.8-5.5 13.4-5.5 204-38.2 228.9-43.1 232.4-43.1 11.5-.8 18.1 6 18.1 17.6 .2 344.5 1.1 326-1.8 338.5z" fill="currentColor"/>
+			`
+		}
+	},
+
+	gothic: {
+		// 1. Gallery: Thorn-framed gothic aperture with barbed corner spires and cyber-thorn flourishes
+		gallery: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Outer Barbed Spikes on 4 corners -->
+				<path d="M50 8 L54 20 L66 14 L58 24 L76 24 L64 32 L86 36 L70 42 L92 50 L70 58 L86 64 L64 68 L76 76 L58 76 L66 86 L54 80 L50 92 L46 80 L34 86 L42 76 L24 76 L36 68 L14 64 L30 58 L8 50 L30 42 L14 36 L36 32 L24 24 L42 24 L34 14 L46 20 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter"/>
+				<!-- Inner Spiked Frame -->
+				<rect x="26" y="26" width="48" height="48" rx="2" fill="none" stroke="currentColor" stroke-width="3"/>
+				<!-- Central Cat-Eye / Diamond Aperture -->
+				<path d="M50 36 C59 43 65 50 65 50 C65 50 59 57 50 64 C41 57 35 50 35 50 C35 50 41 43 50 36 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+				<circle cx="50" cy="50" r="4.5" fill="currentColor"/>
+				<polygon points="50,30 53,35 50,34 47,35" fill="currentColor"/>
+				<polygon points="50,70 53,65 50,66 47,65" fill="currentColor"/>
+			`
+		},
+
+		// 2. Theme Dark: Razor-sharp Gothic Crescent Scythe Moon with barbed thorns
+		theme_dark: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Gothic Scythe Moon with sharp serrations & thorn extensions -->
+				<path d="M54 10 C51 18 49 26 49 35 C49 58 67 76 90 76 C85 81 78 86 70 89 C48 97 23 85 15 63 C7 41 19 16 41 8 C45 6 50 7 54 10 Z" fill="currentColor"/>
+				<!-- Barbed spine thorns -->
+				<polygon points="26,24 16,14 22,27" fill="currentColor"/>
+				<polygon points="12,46 0,42 10,52" fill="currentColor"/>
+				<polygon points="22,74 12,84 27,80" fill="currentColor"/>
+				<!-- 4-point Gothic Star inside crescent -->
+				<path d="M68 28 L71 38 L81 41 L71 44 L68 54 L65 44 L55 41 L65 38 Z" fill="currentColor"/>
+			`
+		},
+
+		// 3. Theme Light: Eclipsed Gothic Sun with 8 barbed dagger/flame rays
+		theme_light: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Central Dark Core -->
+				<circle cx="50" cy="50" r="18" fill="none" stroke="currentColor" stroke-width="3"/>
+				<circle cx="50" cy="50" r="6" fill="currentColor"/>
+				<!-- 8 Gothic Dagger Rays with barbs -->
+				<!-- Top -->
+				<path d="M50 4 L54 24 L50 20 L46 24 Z" fill="currentColor"/>
+				<!-- Bottom -->
+				<path d="M50 96 L46 76 L50 80 L54 76 Z" fill="currentColor"/>
+				<!-- Right -->
+				<path d="M96 50 L76 54 L80 50 L76 46 Z" fill="currentColor"/>
+				<!-- Left -->
+				<path d="M4 50 L24 46 L20 50 L24 54 Z" fill="currentColor"/>
+				<!-- Diagonal NE -->
+				<path d="M83 17 L67 31 L71 29 L69 25 Z" fill="currentColor"/>
+				<!-- Diagonal NW -->
+				<path d="M17 17 L25 25 L29 29 L31 25 Z" fill="currentColor"/>
+				<!-- Diagonal SE -->
+				<path d="M83 83 L69 75 L71 71 L67 69 Z" fill="currentColor"/>
+				<!-- Diagonal SW -->
+				<path d="M17 83 L31 69 L29 71 L25 75 Z" fill="currentColor"/>
+			`
+		},
+
+		// 4. Instagram: Cyber-sigil spiked camera with gothic thorn corners & diamond flash
+		instagram: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Outer Spiked Outline with Extended Razor Corners -->
+				<path d="M28 20 L50 16 L72 20 L80 28 L84 50 L80 72 L72 80 L50 84 L28 80 L20 72 L16 50 L20 28 Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="miter"/>
+				<!-- 4 Corner Spike Fins -->
+				<polygon points="20,28 6,14 28,20" fill="currentColor"/>
+				<polygon points="72,20 94,14 80,28" fill="currentColor"/>
+				<polygon points="80,72 94,86 72,80" fill="currentColor"/>
+				<polygon points="28,80 6,86 20,72" fill="currentColor"/>
+				<!-- Inner Spiked Lens -->
+				<circle cx="50" cy="50" r="16" fill="none" stroke="currentColor" stroke-width="3"/>
+				<circle cx="50" cy="50" r="5" fill="currentColor"/>
+				<!-- Gothic 4-point Diamond Flash -->
+				<path d="M72 32 L75 36 L79 37 L75 38 L72 42 L69 38 L65 37 L69 36 Z" fill="currentColor"/>
+			`
+		},
+
+		// 5. Message: Gothic Sigil Envelope sealed with thorned cross & dagger fold lines
+		message: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Envelope Base Body with Sharp Gothic Wings -->
+				<path d="M14 26 L50 12 L86 26 L92 74 L50 88 L8 74 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter"/>
+				<!-- Upper Flap Fold -->
+				<path d="M14 26 L50 56 L86 26" fill="none" stroke="currentColor" stroke-width="2.8"/>
+				<!-- Lower Inner Seams -->
+				<path d="M8 74 L42 48" fill="none" stroke="currentColor" stroke-width="2.2"/>
+				<path d="M92 74 L58 48" fill="none" stroke="currentColor" stroke-width="2.2"/>
+				<!-- Central Gothic Thorn Cross Seal -->
+				<polygon points="50,46 54,54 62,54 55,59 58,67 50,62 42,67 45,59 38,54 46,54" fill="currentColor"/>
+				<!-- Flap Tip Dagger Spike -->
+				<polygon points="50,56 46,70 50,66 54,70" fill="currentColor"/>
+			`
+		},
+
+		// 6. YouTube Music: Concentric Iron Barbed Rings with Gothic Spearhead Play Button
+		ytm: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Outer Spiked Halo Ring with 8 Gothic Barbs -->
+				<circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+				<!-- 4 Cardinal Spikes -->
+				<polygon points="50,2 45,10 55,10" fill="currentColor"/>
+				<polygon points="50,98 45,90 55,90" fill="currentColor"/>
+				<polygon points="2,50 10,45 10,55" fill="currentColor"/>
+				<polygon points="98,50 90,45 90,55" fill="currentColor"/>
+				<!-- Diagonal Barbs -->
+				<polygon points="16,16 24,19 19,24" fill="currentColor"/>
+				<polygon points="84,16 76,19 81,24" fill="currentColor"/>
+				<polygon points="84,84 76,81 81,76" fill="currentColor"/>
+				<polygon points="16,84 24,81 19,76" fill="currentColor"/>
+				<!-- Inner Spiked Ring -->
+				<circle cx="50" cy="50" r="24" fill="none" stroke="currentColor" stroke-width="2.5"/>
+				<!-- Sharp Gothic Arrowhead / Dagger Play Glyph -->
+				<path d="M44 34 L66 50 L44 66 L47 50 Z" fill="currentColor"/>
+			`
+		},
+
+		// 7. Spotify: 3 Curved Gothic Cyber-Scythe Sound Blades
+		spotify: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Outer Iron Ring with Gothic Notches -->
+				<path d="M50 6 C25.7 6 6 25.7 6 50 C6 74.3 25.7 94 50 94 C74.3 94 94 74.3 94 50 C94 25.7 74.3 6 50 6 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+				<polygon points="50,2 46,6 54,6" fill="currentColor"/>
+				<polygon points="50,98 46,94 54,94" fill="currentColor"/>
+				<polygon points="2,50 6,46 6,54" fill="currentColor"/>
+				<polygon points="98,50 94,46 94,54" fill="currentColor"/>
+				<!-- Wave 1 (Top): Gothic Scythe Blade with Serifs -->
+				<path d="M26 38 C42 32 62 33 76 43 C74 46 68 45 66 43 C54 36 38 36 28 41 L26 38 Z" fill="currentColor"/>
+				<polygon points="26,38 21,35 29,36" fill="currentColor"/>
+				<polygon points="76,43 81,46 74,45" fill="currentColor"/>
+				<!-- Wave 2 (Middle): Razor Sound Arc -->
+				<path d="M30 52 C44 47 59 48 71 56 C69 58 64 57 62 55 C52 49 40 49 32 54 L30 52 Z" fill="currentColor"/>
+				<polygon points="30,52 25,50 32,50" fill="currentColor"/>
+				<polygon points="71,56 76,59 70,58" fill="currentColor"/>
+				<!-- Wave 3 (Bottom): Small Sharp Arc -->
+				<path d="M34 66 C44 62 55 63 65 69 C63 71 59 70 57 68 C49 64 41 64 35 68 L34 66 Z" fill="currentColor"/>
+				<polygon points="34,66 30,64 36,64" fill="currentColor"/>
+				<polygon points="65,69 70,72 64,71" fill="currentColor"/>
+			`
+		},
+
+		// 8. Apple Music: Gothic Double Note with Crown Spikes & Thorn Tails
+		apple: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Upper Barbed Connecting Beam with Crown Spikes -->
+				<path d="M30 26 L80 14 L80 26 L30 38 Z" fill="currentColor"/>
+				<!-- Crown Thorns on top beam -->
+				<polygon points="30,26 24,18 34,24" fill="currentColor"/>
+				<polygon points="80,14 86,6 76,13" fill="currentColor"/>
+				<polygon points="55,20 55,10 59,19" fill="currentColor"/>
+				<!-- Left Stem with Gothic Facets -->
+				<path d="M30 26 L34 26 L34 68 L30 68 Z" fill="currentColor"/>
+				<!-- Right Stem with Gothic Facets -->
+				<path d="M76 14 L80 14 L80 58 L76 58 Z" fill="currentColor"/>
+				<!-- Left Notehead: Angled Sharp Oval with Sweeping Thorn Tail -->
+				<path d="M34 68 C34 76 24 82 15 80 C6 78 4 69 11 64 C18 59 28 61 34 68 Z" fill="currentColor"/>
+				<polygon points="11,64 2,62 10,70" fill="currentColor"/>
+				<!-- Right Notehead: Angled Sharp Oval with Sweeping Thorn Tail -->
+				<path d="M80 58 C80 66 70 72 61 70 C52 68 50 59 57 54 C64 49 74 51 80 58 Z" fill="currentColor"/>
+				<polygon points="57,54 48,52 56,60" fill="currentColor"/>
+			`
+		}
+	}
+};
