@@ -95,17 +95,19 @@
 
 	<!-- 4. Theme Toggle Button -->
 	<button
-		class="nav-btn"
+		class="nav-btn theme-toggle-btn"
 		onclick={() => themeStore.toggle()}
 		aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
 	>
-		<svg
-			viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox}
-			class="nav-svg"
-			aria-hidden="true"
-		>
-			{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
-		</svg>
+		<div class="theme-icon-wrap" class:is-light={!isDark}>
+			<svg
+				viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox}
+				class="nav-svg"
+				aria-hidden="true"
+			>
+				{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
+			</svg>
+		</div>
 		<span class="nav-tooltip">{isDark ? 'Світла тема' : 'Темна тема'}</span>
 	</button>
 </nav>
@@ -141,7 +143,18 @@
 		justify-content: center;
 		text-decoration: none;
 		outline: none;
-		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
+	}
+
+	.theme-icon-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: transform var(--transition-speed) var(--transition-easing);
+	}
+
+	.theme-icon-wrap.is-light {
+		transform: rotate(360deg);
 	}
 
 	.nav-svg {

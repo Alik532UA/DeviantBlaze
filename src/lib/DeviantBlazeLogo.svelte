@@ -249,7 +249,7 @@
 		justify-content: center;
 		will-change: transform;
 		transform-style: preserve-3d;
-		transition: filter 0.3s ease;
+		transition: filter var(--transition-speed) var(--transition-easing);
 	}
 
 	.deviant-logo {
@@ -258,12 +258,13 @@
 		overflow: visible;
 		filter: var(--logo-glow);
 		pointer-events: none;
+		transition: filter var(--transition-speed) var(--transition-easing);
 	}
 
 	.logo-group {
 		will-change: transform;
 		transform-box: fill-box;
-		transition: fill 0.3s ease;
+		transition: fill var(--transition-speed) var(--transition-easing);
 	}
 
 	.glyph-fg path {

@@ -1,8 +1,8 @@
 :root {
 	--font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	
-	/* Smooth transitions between themes */
-	--transition-speed: 0.35s;
+	/* Smooth transitions between themes (twice as slow: 0.7s) */
+	--transition-speed: 0.7s;
 	--transition-easing: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

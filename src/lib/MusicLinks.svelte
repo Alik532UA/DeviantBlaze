@@ -76,7 +76,7 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--fg-secondary);
-		transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
 	}
 
 	/* 2x bigger icon: 44px */
@@ -84,7 +84,7 @@
 		width: 44px;
 		height: 44px;
 		display: block;
-		transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), filter var(--transition-speed) var(--transition-easing);
 		filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 	}
 
