@@ -4,7 +4,7 @@
 	import { iconStyleStore } from './iconStyle.svelte.js';
 	import { ICONS } from './icons.js';
 
-	let { onOpenGallery, onOpenMessage, onGalleryHover, onThemeHover } = $props();
+	let { onOpenGallery, onOpenMessage, onGalleryHover, onThemeHover, isExpanded = false } = $props();
 
 	let isDark = $derived(themeStore.current === 'dark');
 	let style = $derived(iconStyleStore.current);
@@ -16,6 +16,7 @@
 
 	let navEl = $state(null);
 	let navOpacity = $state(0.1);
+	let effectiveOpacity = $derived(isExpanded ? 1 : navOpacity);
 
 	let isMobile = $state(false);
 
@@ -71,7 +72,8 @@
 <nav
 	bind:this={navEl}
 	class="top-center-nav"
-	style="opacity: {navOpacity.toFixed(3)};"
+	class:is-expanded={isExpanded}
+	style="opacity: {effectiveOpacity.toFixed(3)};"
 	aria-label="Навігація сайту"
 >
 	<!-- 1. Gallery Button -->
@@ -87,6 +89,7 @@
 		<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
 			{@html getIcon('gallery').svg}
 		</svg>
+		<span class="nav-sublabel">Галерея</span>
 		<span class="nav-tooltip">Галерея</span>
 	</button>
 
@@ -110,6 +113,7 @@
 			</defs>
 			{@html getIcon('instagram').svg}
 		</svg>
+		<span class="nav-sublabel">Instagram</span>
 		<span class="nav-tooltip">Instagram</span>
 	</a>
 
@@ -122,6 +126,7 @@
 		<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
 			{@html getIcon('message').svg}
 		</svg>
+		<span class="nav-sublabel">Написати</span>
 		<span class="nav-tooltip">Написати</span>
 	</button>
 
@@ -144,26 +149,8 @@
 				{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
 			</svg>
 		</div>
+		<span class="nav-sublabel">{isDark ? 'Світла' : 'Темна'}</span>
 		<span class="nav-tooltip">{isDark ? 'Світла тема' : 'Темна тема'}</span>
-	</button>
-
-	<!-- 5. Icon Style Toggle Button (Gothic Rock / Classic) -->
-	<button
-		class="nav-btn style-toggle-btn"
-		onclick={() => iconStyleStore.toggle()}
-		aria-label={style === 'gothic' ? 'Перемкнути на класичний стиль' : 'Перемкнути на готичний стиль'}
-	>
-		<div class="style-icon-wrap" class:is-classic={style === 'classic'}>
-			<svg
-				viewBox={getIcon('style_toggle').viewBox}
-				class="nav-svg"
-				class:nav-svg--fill={getIcon('style_toggle').type === 'fill'}
-				aria-hidden="true"
-			>
-				{@html getIcon('style_toggle').svg}
-			</svg>
-		</div>
-		<span class="nav-tooltip">{style === 'gothic' ? 'Стиль: Готичний' : 'Стиль: Класичний'}</span>
 	</button>
 </nav>
 
@@ -179,7 +166,13 @@
 		justify-content: center;
 		gap: 1.75rem;
 		padding: 0.5rem 1rem;
-		transition: opacity 0.15s ease-out;
+		transition: opacity 0.25s ease-out, gap 0.55s cubic-bezier(0.16, 1, 0.3, 1), top 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.top-center-nav.is-expanded {
+		top: 2.25rem;
+		gap: 3.75rem;
+		opacity: 1 !important;
 	}
 
 	.top-center-nav:hover {
@@ -194,11 +187,12 @@
 		color: var(--fg-primary);
 		cursor: pointer;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		text-decoration: none;
 		outline: none;
-		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
+		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
 	}
 
 	.theme-icon-wrap {
@@ -212,40 +206,51 @@
 		transform: rotate(360deg);
 	}
 
-	.style-icon-wrap {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-	}
-
-	.style-icon-wrap.is-classic {
-		transform: rotate(180deg);
-	}
-
-	.nav-btn:hover .style-icon-wrap {
-		transform: rotate(45deg) scale(1.15);
-	}
-
-	.nav-btn:hover .style-icon-wrap.is-classic {
-		transform: rotate(225deg) scale(1.15);
-	}
-
 	.nav-svg {
 		width: 28px;
 		height: 28px;
 		display: block;
-		transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		            height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
 	}
 
-	.nav-svg:not(.nav-svg--fill) {
-		fill: none;
-		stroke: currentColor;
+	.is-expanded .nav-svg {
+		width: 56px;
+		height: 56px;
 	}
 
-	.nav-svg--fill {
-		fill: currentColor;
+	.nav-sublabel {
+		display: block;
+		margin-top: 8px;
+		font-size: 0.88rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		color: var(--fg-primary);
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+		transform: translateY(-6px);
+		transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+		pointer-events: none;
+		white-space: nowrap;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.is-expanded .nav-sublabel {
+		opacity: 1;
+		max-height: 26px;
+		transform: translateY(0);
+	}
+
+	.is-expanded .nav-tooltip {
+		display: none;
+	}
+
+	.nav-svg {
+		fill: none;
+		stroke: currentColor;
 	}
 
 	/* Instagram Brand Gradient Hover */

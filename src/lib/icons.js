@@ -100,6 +100,46 @@ export const ICONS = {
 			svg: `
 				<polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
 			`
+		},
+		visualizer: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12 2v20M17 6v12M7 6v12M22 10v4M2 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			`
+		},
+		piano: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+				<path d="M6 4v8h2V4M10 4v8h1V4M14 4v8h2V4M18 4v8h1V4" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+				<line x1="6" y1="12" x2="6" y2="20" stroke="currentColor" stroke-width="1"/>
+				<line x1="10" y1="12" x2="10" y2="20" stroke="currentColor" stroke-width="1"/>
+				<line x1="14" y1="12" x2="14" y2="20" stroke="currentColor" stroke-width="1"/>
+				<line x1="18" y1="12" x2="18" y2="20" stroke="currentColor" stroke-width="1"/>
+			`
+		},
+		fullscreen: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+			`
+		},
+		fullscreen_exit: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M4 14h6v6m10-10h-6V4m0 6 7-7M10 14l-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+			`
+		},
+		order_site: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+			`
 		}
 	},
 
@@ -335,6 +375,99 @@ export const ICONS = {
 				<!-- Leading Tip Barbs -->
 				<polygon points="74,43 78,48 88,46" fill="currentColor"/>
 				<polygon points="74,57 88,54 78,52" fill="currentColor"/>
+			`
+		},
+
+		// 12. Visualizer: Gothic Soundwave Spires with Thorn Barbs
+		visualizer: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- 5 Gothic Audio Spires -->
+				<!-- Center tall spire -->
+				<path d="M50 8 L54 46 L57 44 L54 50 L57 56 L54 54 L50 92 L46 54 L43 56 L46 50 L43 44 L46 46 Z" fill="currentColor"/>
+				<!-- Inner Left spire -->
+				<path d="M34 22 L37 46 L40 45 L37 50 L40 55 L37 54 L34 78 L31 54 L28 55 L31 50 L28 45 L31 46 Z" fill="currentColor"/>
+				<!-- Inner Right spire -->
+				<path d="M66 22 L69 46 L72 45 L69 50 L72 55 L69 54 L66 78 L63 54 L60 55 L63 50 L60 45 L63 46 Z" fill="currentColor"/>
+				<!-- Outer Left spire -->
+				<path d="M18 38 L21 48 L23 47 L21 50 L23 53 L21 52 L18 62 L15 52 L13 53 L15 50 L13 47 L15 48 Z" fill="currentColor"/>
+				<!-- Outer Right spire -->
+				<path d="M82 38 L85 48 L87 47 L85 50 L87 53 L85 52 L82 62 L79 52 L77 53 L79 50 L77 47 L79 48 Z" fill="currentColor"/>
+			`
+		},
+
+		// 13. Piano: Gothic Keyboard with Barbed Spire Keys
+		piano: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Outer Gothic Keyboard Frame -->
+				<path d="M10 20 L50 14 L90 20 L94 80 L50 86 L6 80 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter"/>
+				<!-- 3 Gothic Black Key Daggers -->
+				<path d="M26 22 L34 22 L34 54 L30 62 L26 54 Z" fill="currentColor"/>
+				<path d="M46 20 L54 20 L54 54 L50 62 L46 54 Z" fill="currentColor"/>
+				<path d="M66 22 L74 22 L74 54 L70 62 L66 54 Z" fill="currentColor"/>
+				<!-- Vertical key divider lines -->
+				<line x1="20" y1="22" x2="20" y2="78" stroke="currentColor" stroke-width="2"/>
+				<line x1="40" y1="20" x2="40" y2="80" stroke="currentColor" stroke-width="2"/>
+				<line x1="60" y1="20" x2="60" y2="80" stroke="currentColor" stroke-width="2"/>
+				<line x1="80" y1="22" x2="80" y2="78" stroke="currentColor" stroke-width="2"/>
+				<!-- Bottom barb sills -->
+				<polygon points="50,86 46,94 54,94" fill="currentColor"/>
+			`
+		},
+
+		// 14. Fullscreen: 4 Outward Barbed Corner Scepters
+		fullscreen: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Top-Left Barbed Corner -->
+				<path d="M14 36 L14 14 L36 14 L30 20 L20 20 L20 30 Z" fill="currentColor"/>
+				<polygon points="14,14 6,6 18,10" fill="currentColor"/>
+				<!-- Top-Right Barbed Corner -->
+				<path d="M86 36 L86 14 L64 14 L70 20 L80 20 L80 30 Z" fill="currentColor"/>
+				<polygon points="86,14 94,6 82,10" fill="currentColor"/>
+				<!-- Bottom-Right Barbed Corner -->
+				<path d="M86 64 L86 86 L64 86 L70 80 L80 80 L80 70 Z" fill="currentColor"/>
+				<polygon points="86,86 94,94 82,90" fill="currentColor"/>
+				<!-- Bottom-Left Barbed Corner -->
+				<path d="M14 64 L14 86 L36 86 L30 80 L20 80 L20 70 Z" fill="currentColor"/>
+				<polygon points="14,86 6,94 18,90" fill="currentColor"/>
+			`
+		},
+
+		// 15. Fullscreen Exit: 4 Inward Barbed Corner Scepters
+		fullscreen_exit: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Top-Left Inward -->
+				<path d="M38 16 L38 38 L16 38 L22 32 L32 32 L32 22 Z" fill="currentColor"/>
+				<polygon points="38,38 46,46 34,42" fill="currentColor"/>
+				<!-- Top-Right Inward -->
+				<path d="M62 16 L62 38 L84 38 L78 32 L68 32 L68 22 Z" fill="currentColor"/>
+				<polygon points="62,38 54,46 66,42" fill="currentColor"/>
+				<!-- Bottom-Right Inward -->
+				<path d="M62 84 L62 62 L84 62 L78 68 L68 68 L68 78 Z" fill="currentColor"/>
+				<polygon points="62,62 54,54 66,58" fill="currentColor"/>
+				<!-- Bottom-Left Inward -->
+				<path d="M38 84 L38 62 L16 62 L22 68 L32 68 L32 78 Z" fill="currentColor"/>
+				<polygon points="38,62 46,54 34,58" fill="currentColor"/>
+			`
+		},
+
+		// 16. Order Site: Gothic Cyber-Anvil with Ascending Blade
+		order_site: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Gothic Box Portal -->
+				<path d="M46 22 L22 22 L18 78 L78 82 L82 54 L74 54 L72 74 L26 70 L28 30 L46 30 Z" fill="currentColor"/>
+				<!-- Ascending Blade / Arrow NE -->
+				<path d="M46 54 L76 24 L70 20 L88 12 L80 30 L76 24 L46 54 Z" fill="currentColor"/>
+				<polygon points="88,12 96,4 84,10" fill="currentColor"/>
 			`
 		}
 	}

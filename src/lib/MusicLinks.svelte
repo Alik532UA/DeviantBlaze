@@ -26,10 +26,17 @@
 		}
 	];
 
+	let { isExpanded = false, isShiftedUp = false } = $props();
+
 	let style = $derived(iconStyleStore.current);
 </script>
 
-<nav class="music-links" aria-label="Music Platforms">
+<nav
+	class="music-links"
+	class:is-expanded={isExpanded}
+	class:is-shifted-up={isShiftedUp}
+	aria-label="Music Platforms"
+>
 	{#each platforms as item}
 		{@const iconData = ICONS[style]?.[item.id] || ICONS.gothic[item.id]}
 		<a
@@ -50,6 +57,7 @@
 					{@html iconData.svg}
 				</svg>
 			</div>
+			<span class="link-sublabel">{item.name}</span>
 			<span class="tooltip">{item.name}</span>
 		</a>
 	{/each}
@@ -66,6 +74,18 @@
 		align-items: center;
 		gap: 2.25rem;
 		padding: 0.5rem 1rem;
+		transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+		            gap 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+		            bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.music-links.is-expanded {
+		bottom: 3.25rem;
+		gap: 4.5rem;
+	}
+
+	.music-links.is-shifted-up {
+		transform: translateX(-50%) translateY(-105px);
 	}
 
 	.link-item {
@@ -87,19 +107,58 @@
 		            color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	/* 2x bigger icon: 44px */
+	/* Normal icon: 44px; Expanded: 88px */
 	.music-icon {
 		width: 44px;
 		height: 44px;
 		display: block;
-		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		            height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		            transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
 		            filter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+	}
+
+	.is-expanded .music-icon {
+		width: 88px;
+		height: 88px;
 	}
 
 	.apple-classic {
 		width: 38px;
 		height: 44px;
+	}
+
+	.is-expanded .apple-classic {
+		width: 76px;
+		height: 88px;
+	}
+
+	.link-sublabel {
+		display: block;
+		margin-top: 10px;
+		font-size: 0.92rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		color: var(--fg-primary);
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+		transform: translateY(6px);
+		transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+		pointer-events: none;
+		white-space: nowrap;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.is-expanded .link-sublabel {
+		opacity: 1;
+		max-height: 28px;
+		transform: translateY(0);
+	}
+
+	.is-expanded .tooltip {
+		display: none;
 	}
 
 	/* On hover: color icon in its official brand color and add matching glowing aura */
