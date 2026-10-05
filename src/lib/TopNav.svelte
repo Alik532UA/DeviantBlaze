@@ -4,7 +4,7 @@
 	import { iconStyleStore } from './iconStyle.svelte.js';
 	import { ICONS } from './icons.js';
 
-	let { onOpenGallery, onOpenMessage } = $props();
+	let { onOpenGallery, onOpenMessage, onGalleryHover } = $props();
 
 	let isDark = $derived(themeStore.current === 'dark');
 	let style = $derived(iconStyleStore.current);
@@ -78,6 +78,10 @@
 	<button
 		class="nav-btn"
 		onclick={onOpenGallery}
+		onmouseenter={() => onGalleryHover?.(true)}
+		onmouseleave={() => onGalleryHover?.(false)}
+		onfocus={() => onGalleryHover?.(true)}
+		onblur={() => onGalleryHover?.(false)}
 		aria-label="Галерея"
 	>
 		<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
