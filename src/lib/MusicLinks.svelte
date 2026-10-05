@@ -6,17 +6,23 @@
 		{
 			id: 'ytm',
 			name: 'YouTube Music',
-			url: 'https://music.youtube.com/channel/UCp97EB_HMto3E4bghq3jViA'
+			url: 'https://music.youtube.com/channel/UCp97EB_HMto3E4bghq3jViA',
+			brandColor: '#FF0000',
+			brandGlow: 'rgba(255, 0, 0, 0.65)'
 		},
 		{
 			id: 'spotify',
 			name: 'Spotify',
-			url: 'https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs'
+			url: 'https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs',
+			brandColor: '#1ED760',
+			brandGlow: 'rgba(30, 215, 96, 0.65)'
 		},
 		{
 			id: 'apple',
 			name: 'Apple Music',
-			url: 'https://music.apple.com/ua/artist/deviant-blaze/1728765974'
+			url: 'https://music.apple.com/ua/artist/deviant-blaze/1728765974',
+			brandColor: '#FA243C',
+			brandGlow: 'rgba(250, 36, 60, 0.65)'
 		}
 	];
 
@@ -30,7 +36,8 @@
 			href={item.url}
 			target="_blank"
 			rel="noopener noreferrer"
-			class="link-item"
+			class="link-item platform-{item.id}"
+			style="--brand-color: {item.brandColor}; --brand-glow: {item.brandGlow};"
 			aria-label={item.name}
 		>
 			<div class="icon-wrap">
@@ -76,7 +83,8 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--fg-secondary);
-		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
+		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		            color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* 2x bigger icon: 44px */
@@ -84,7 +92,8 @@
 		width: 44px;
 		height: 44px;
 		display: block;
-		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), filter var(--transition-speed) var(--transition-easing);
+		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		            filter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 	}
 
@@ -93,18 +102,19 @@
 		height: 44px;
 	}
 
+	/* On hover: color icon in its official brand color and add matching glowing aura */
 	.link-item:hover .icon-wrap {
-		color: var(--fg-primary);
-		transform: translateY(-4px) scale(1.12);
+		color: var(--brand-color);
+		transform: translateY(-4px) scale(1.14);
 	}
 
 	.link-item:hover .music-icon {
-		filter: drop-shadow(0 0 16px var(--fg-primary));
+		filter: drop-shadow(0 0 20px var(--brand-glow));
 	}
 
 	.link-item:focus-visible .icon-wrap {
 		transform: scale(1.1);
-		color: var(--fg-primary);
+		color: var(--brand-color);
 	}
 
 	.link-item:active .icon-wrap {
@@ -133,6 +143,7 @@
 	.link-item:hover .tooltip {
 		opacity: 1;
 		transform: translateY(0) scale(1);
+		border-color: var(--brand-color);
 	}
 
 	@media (max-width: 640px) {
