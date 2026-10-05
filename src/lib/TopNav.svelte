@@ -4,7 +4,7 @@
 	import { iconStyleStore } from './iconStyle.svelte.js';
 	import { ICONS } from './icons.js';
 
-	let { onOpenGallery, onOpenMessage, onGalleryHover } = $props();
+	let { onOpenGallery, onOpenMessage, onGalleryHover, onThemeHover } = $props();
 
 	let isDark = $derived(themeStore.current === 'dark');
 	let style = $derived(iconStyleStore.current);
@@ -95,10 +95,19 @@
 		href="https://www.instagram.com/deviant_blaze/"
 		target="_blank"
 		rel="noopener noreferrer"
-		class="nav-btn"
+		class="nav-btn instagram-btn"
 		aria-label="Instagram Deviant Blaze"
 	>
-		<svg viewBox={getIcon('instagram').viewBox} class="nav-svg" aria-hidden="true">
+		<svg viewBox={getIcon('instagram').viewBox} class="nav-svg instagram-svg" aria-hidden="true">
+			<defs>
+				<linearGradient id="ig-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+					<stop offset="0%" stop-color="#f09433" />
+					<stop offset="25%" stop-color="#e6683c" />
+					<stop offset="50%" stop-color="#dc2743" />
+					<stop offset="75%" stop-color="#cc2366" />
+					<stop offset="100%" stop-color="#bc1888" />
+				</linearGradient>
+			</defs>
 			{@html getIcon('instagram').svg}
 		</svg>
 		<span class="nav-tooltip">Instagram</span>
@@ -120,6 +129,10 @@
 	<button
 		class="nav-btn theme-toggle-btn"
 		onclick={() => themeStore.toggle()}
+		onmouseenter={() => onThemeHover?.(true)}
+		onmouseleave={() => onThemeHover?.(false)}
+		onfocus={() => onThemeHover?.(true)}
+		onblur={() => onThemeHover?.(false)}
 		aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
 	>
 		<div class="theme-icon-wrap" class:is-light={!isDark}>
@@ -233,6 +246,24 @@
 
 	.nav-svg--fill {
 		fill: currentColor;
+	}
+
+	/* Instagram Brand Gradient Hover */
+	.instagram-svg :global(*) {
+		transition: stroke 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		            fill 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.instagram-btn:hover .instagram-svg {
+		filter: drop-shadow(0 0 14px rgba(220, 39, 67, 0.75)) drop-shadow(0 0 24px rgba(188, 24, 136, 0.45));
+	}
+
+	.instagram-btn:hover .instagram-svg :global([stroke="currentColor"]) {
+		stroke: url(#ig-gradient);
+	}
+
+	.instagram-btn:hover .instagram-svg :global([fill="currentColor"]) {
+		fill: url(#ig-gradient);
 	}
 
 	.nav-btn:hover {
