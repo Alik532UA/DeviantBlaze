@@ -510,7 +510,9 @@
 	   except the central logo, leaving a clean live concert backdrop!
 	*/
 	.page-container.vj-idle-mode :global(.top-center-nav),
+	.page-container.vj-idle-mode :global(.music-container),
 	.page-container.vj-idle-mode :global(.music-links),
+	.page-container.vj-idle-mode :global(.music-heading),
 	.page-container.vj-idle-mode :global(.hidden-panel-wrapper),
 	.page-container.vj-idle-mode :global(.vj-control-bar),
 	.page-container.vj-idle-mode .scroll-indicator {

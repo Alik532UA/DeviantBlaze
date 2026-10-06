@@ -86,7 +86,8 @@
 		justify-content: center;
 		pointer-events: none;
 		transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-		            bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+		            bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+		            opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.music-container.is-expanded {
