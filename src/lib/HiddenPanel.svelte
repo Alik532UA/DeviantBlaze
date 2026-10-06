@@ -49,27 +49,26 @@
 	aria-hidden={!isVisible}
 >
 	<div class="hidden-panel-content">
-		<!-- 1. Візуалізація -->
-		<button
-			type="button"
+		<!-- 1. Замовити сайт -->
+		<a
+			href="https://alik532ua.github.io/DigitalWorkshop/"
+			target="_blank"
+			rel="noopener noreferrer"
 			class="action-item"
-			class:is-active={isVisualizerActive}
-			onclick={() => onOpenVisualizer?.()}
-			aria-label={langStore.t('visualizer')}
-			aria-pressed={isVisualizerActive}
+			aria-label={langStore.t('order_site')}
 		>
 			<span class="action-icon-box">
 				<svg
 					class="action-icon"
-					viewBox={getIcon('visualizer').viewBox}
+					viewBox={getIcon('order_site').viewBox}
 					fill="currentColor"
 					aria-hidden="true"
 				>
-					{@html getIcon('visualizer').svg}
+					{@html getIcon('order_site').svg}
 				</svg>
 			</span>
-			<span class="action-title">{langStore.t('visualizer')}</span>
-		</button>
+			<span class="action-title">{langStore.t('order_site')}</span>
+		</a>
 
 		<!-- 2. Фортепіано -->
 		<button
@@ -91,12 +90,77 @@
 			<span class="action-title">{langStore.t('piano')}</span>
 		</button>
 
-		<!-- 3. На весь екран -->
+		<!-- 3. Візуалізація -->
+		<button
+			type="button"
+			class="action-item"
+			class:is-active={isVisualizerActive}
+			onclick={() => onOpenVisualizer?.()}
+			aria-label={langStore.t('visualizer')}
+			aria-pressed={isVisualizerActive}
+		>
+			<span class="action-icon-box">
+				<svg
+					class="action-icon"
+					viewBox={getIcon('visualizer').viewBox}
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					{@html getIcon('visualizer').svg}
+				</svg>
+			</span>
+			<span class="action-title">{langStore.t('visualizer')}</span>
+		</button>
+
+		<!-- 4. Стиль -->
+		<button
+			type="button"
+			class="action-item style-toggle-item"
+			onclick={() => iconStyleStore.toggle()}
+			aria-label="{langStore.t('style_btn')} ({style === 'gothic' ? langStore.t('style_gothic') : langStore.t('style_classic')})"
+			title="{langStore.t('style_btn')} (G)"
+		>
+			<span class="action-icon-box">
+				<svg
+					class="action-icon"
+					viewBox={getIcon('style_toggle').viewBox}
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					{@html getIcon('style_toggle').svg}
+				</svg>
+			</span>
+			<span class="action-title">{langStore.t('style_btn')}</span>
+		</button>
+
+		<!-- 5. Мова -->
+		<button
+			type="button"
+			class="action-item lang-toggle-item"
+			onclick={() => langStore.toggle()}
+			aria-label={langStore.current === 'uk' ? 'Switch to English' : 'Перемкнути на українську'}
+			title="{langStore.t('lang_btn')} (L)"
+		>
+			<span class="action-icon-box">
+				<svg
+					class="action-icon"
+					viewBox={getIcon('lang').viewBox}
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					{@html getIcon('lang').svg}
+				</svg>
+			</span>
+			<span class="action-title">{langStore.t('lang_btn')}</span>
+		</button>
+
+		<!-- 6. На весь екран -->
 		<button
 			type="button"
 			class="action-item"
 			onclick={toggleFullscreen}
 			aria-label={isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}
+			title="{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')} (F)"
 		>
 			<span class="action-icon-box">
 				<svg
@@ -109,68 +173,6 @@
 				</svg>
 			</span>
 			<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
-		</button>
-
-		<!-- 4. Замовити сайт -->
-		<a
-			href="https://alik532ua.github.io/DigitalWorkshop/"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="action-item"
-			aria-label={langStore.t('order_site')}
-		>
-			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('order_site').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('order_site').svg}
-				</svg>
-			</span>
-			<span class="action-title">{langStore.t('order_site')}</span>
-		</a>
-
-		<!-- 5. Стиль іконок (Готика / Класика) -->
-		<button
-			type="button"
-			class="action-item style-toggle-item"
-			onclick={() => iconStyleStore.toggle()}
-			aria-label={style === 'gothic' ? 'Перемкнути на класичні іконки' : 'Перемкнути на готичні іконки'}
-		>
-			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('style_toggle').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('style_toggle').svg}
-				</svg>
-			</span>
-			<span class="action-title">{style === 'gothic' ? langStore.t('style_gothic') : langStore.t('style_classic')}</span>
-		</button>
-
-		<!-- 6. Мова (UA / EN) -->
-		<button
-			type="button"
-			class="action-item lang-toggle-item"
-			onclick={() => langStore.toggle()}
-			aria-label={langStore.current === 'uk' ? 'Switch to English' : 'Перемкнути на українську'}
-			title="Змінити мову (L)"
-		>
-			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('lang').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('lang').svg}
-				</svg>
-			</span>
-			<span class="action-title">{langStore.current.toUpperCase()}</span>
 		</button>
 	</div>
 </nav>
@@ -251,10 +253,14 @@
 		box-shadow: 0 0 15px rgba(255, 95, 31, 0.35);
 	}
 
+	:global([data-theme="light"]) .action-item {
+		color: var(--text-secondary);
+	}
+
 	:global([data-theme="light"]) .action-item:hover {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
-		color: var(--text-primary, #111827);
+		color: var(--text-primary);
 	}
 
 	.action-icon-box {
