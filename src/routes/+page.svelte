@@ -260,7 +260,13 @@
 
 			if (anyModalOpen) return;
 
-			if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+			if (e.key === ' ' || e.code === 'Space') {
+				e.preventDefault();
+				if (target && target instanceof HTMLElement && (tag === 'button' || tag === 'a')) {
+					target.blur();
+				}
+				stepScroll(e.shiftKey ? -1 : 1);
+			} else if (e.key === 'ArrowDown' || e.key === 'PageDown') {
 				e.preventDefault();
 				stepScroll(1);
 			} else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
