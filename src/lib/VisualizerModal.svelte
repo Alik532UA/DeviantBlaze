@@ -21,7 +21,7 @@
 	let micStatus = $state('idle'); // 'idle' | 'listening' | 'denied' | 'test'
 	let micError = $state('');
 	let visualizerMode = $state('bars'); // 'bars' | 'wave' | 'circle'
-	let sensitivity = $state(1.4);
+	let sensitivity = $state(1.0);
 	let averageVolume = $state(0);
 
 	// Max peaks tracker for classic falling peak caps

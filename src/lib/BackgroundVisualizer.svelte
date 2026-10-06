@@ -4,7 +4,7 @@
 	let {
 		isActive = false,
 		mode = 'bars', // 'bars' | 'wave' | 'radar'
-		sensitivity = 1.5, // 0.5 - 3.5
+		sensitivity = 1.0, // 0.1 - 1.5
 		spectrumHeight = 1.0, // 0.2 - 1.0 (default 100%)
 		palette = 'blaze', // 'blaze' | 'cyber' | 'gothic' | 'toxic' | 'purple'
 		onStatusChange = () => {}

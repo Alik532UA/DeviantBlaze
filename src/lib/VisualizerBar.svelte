@@ -9,7 +9,7 @@
 		audioSource = 'mic', // 'mic' | 'speakers'
 		micStatus = 'mic',
 		palette = 'blaze',
-		sensitivity = 1.5,
+		sensitivity = 1.0,
 		spectrumHeight = 1.0,
 		isCollapsed = false,
 		onToggleCollapse = () => {},
@@ -190,8 +190,8 @@
 					</div>
 					<input
 						type="range"
-						min="0.5"
-						max="3.5"
+						min="0.1"
+						max="1.5"
 						step="0.1"
 						value={sensitivity}
 						oninput={(e) => onUpdateSensitivity?.(parseFloat(e.currentTarget.value))}

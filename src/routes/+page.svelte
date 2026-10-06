@@ -45,7 +45,7 @@
 	let visualizerMode = $state('bars'); // 'bars' | 'wave' | 'radar'
 	let micStatus = $state('idle'); // 'idle' | 'listening' | 'test'
 	let backgroundVisRef = $state(null);
-	let visualizerSensitivity = $state(1.5);
+	let visualizerSensitivity = $state(1.0);
 	let visualizerSpectrumHeight = $state(1.0); // 100% by default
 	let visualizerPalette = $state('blaze');
 
