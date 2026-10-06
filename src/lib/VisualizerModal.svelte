@@ -169,7 +169,7 @@
 
 			// Calculate average volume from active spectrum bins
 			let sum = 0;
-			const activeBinsCount = Math.floor(bufferLength * 0.82);
+			const activeBinsCount = Math.floor(bufferLength * 0.72);
 			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
@@ -190,7 +190,7 @@
 
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
-		const maxBin = Math.floor(bufferLength * 0.82);
+		const maxBin = Math.floor(bufferLength * 0.72);
 		const minBin = 0;
 		const p = Math.pow(clampedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
@@ -202,10 +202,10 @@
 		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
-		const trebleTilt = 1.0 + clampedT * 0.45;
+		const trebleTilt = 1.0 + clampedT * 0.55;
 
 		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
-		const trebleEdgeRollOff = Math.min(1.0, Math.pow((1.0 - clampedT) / 0.07, 1.25));
+		const trebleEdgeRollOff = Math.min(1.0, (1.0 - clampedT) / 0.025);
 		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
 
 		let val = rawVal * sens * trebleTilt * edgeEnvelope;

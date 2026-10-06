@@ -316,7 +316,7 @@
 			ctx.clearRect(0, 0, width, height);
 
 			let sum = 0;
-			const activeBinsCount = Math.floor(bufferLength * 0.82);
+			const activeBinsCount = Math.floor(bufferLength * 0.72);
 			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
@@ -361,21 +361,20 @@
 	}
 
 	/**
-	 * Full-spectrum acoustic frequency sampler:
-	 * 1. Bass range expanded by +30%:
-	 *    - Low-frequency bins (< 400 Hz) occupy 30% more horizontal space (exponent 2.35).
-	 *    - True acoustic infrasonic roll-off at the left edge (< 30 Hz tapers smoothly to the floor).
-	 * 2. True acoustic ultrasonic roll-off at the right edge (> 16-18 kHz tapers smoothly to the floor).
-	 * 3. Both edges naturally meet the ground, clearly indicating the true outer boundaries of the spectrum.
+	 * Tuned frequency sampler:
+	 * 1. Left side (bass): Perfectly preserved with expanded +30% bass width (p = t^2.35)
+	 *    and smooth infrasound roll-off at the left edge.
+	 * 2. Right side (treble): Truncated by ~10% (maxBin = 0.72, ~15.8 kHz) to remove inactive
+	 *    silent frequencies, keeping the right bars actively bouncing to hi-hats and cymbals.
 	 */
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
 
-		// Wide spectrum boundaries: from 0 Hz sub-bass up to ~18.1 kHz (bin ~420 out of 512)
-		const maxBin = Math.floor(bufferLength * 0.82);
+		// Cut off inactive upper 10% (capping at ~15.8 kHz, bin ~368 out of 512)
+		const maxBin = Math.floor(bufferLength * 0.72);
 		const minBin = 0;
 
-		// Expanded bass perceptual curve (exponent 2.35 gives bass +30% wider space)
+		// Expanded bass perceptual curve (preserved exactly as configured)
 		const p = Math.pow(clampedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
 
@@ -388,14 +387,12 @@
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 
-		// Natural balanced treble compensation without artificial edge boost
-		const trebleTilt = 1.0 + clampedT * 0.45;
+		// Balanced treble tilt compensation so hi-hats bounce vividly
+		const trebleTilt = 1.0 + clampedT * 0.55;
 
-		// Acoustic edge roll-offs:
-		// Left edge: infrasound taper (< 30 Hz smoothly rolls down to the floor at the left boundary)
+		// Left edge roll-off preserved; right edge roll-off narrowed to the final 2.5%
 		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
-		// Right edge: ultrasonic taper (> 17 kHz smoothly rolls down to the floor at the right boundary)
-		const trebleEdgeRollOff = Math.min(1.0, Math.pow((1.0 - clampedT) / 0.07, 1.25));
+		const trebleEdgeRollOff = Math.min(1.0, (1.0 - clampedT) / 0.025);
 		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
 
 		let val = rawVal * sens * trebleTilt * edgeEnvelope;
