@@ -362,20 +362,21 @@
 
 	/**
 	 * Tuned frequency sampler:
-	 * 1. Left side (bass): Perfectly preserved with expanded +30% bass width (p = t^2.35)
-	 *    and smooth infrasound roll-off at the left edge.
-	 * 2. Right side (treble): Truncated by ~10% (maxBin = 0.72, ~15.8 kHz) to remove inactive
-	 *    silent frequencies, keeping the right bars actively bouncing to hi-hats and cymbals.
+	 * - Left edge: trimmed by 1 division (tMin = 1 / 86 = 0.0116) to tame excessive sub-bass.
+	 * - Right edge: trimmed by 4 divisions (tMax = 1.0 - 4 / 86 = 0.9535) to remove dead zero bars.
 	 */
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
 
-		// Cut off inactive upper 10% (capping at ~15.8 kHz, bin ~368 out of 512)
+		// Precise range trimming: cut 1 division left, cut 4 divisions right
+		const tMin = 1 / 86;
+		const tMax = 1.0 - 4 / 86;
+		const mappedT = tMin + clampedT * (tMax - tMin);
+
 		const maxBin = Math.floor(bufferLength * 0.72);
 		const minBin = 0;
 
-		// Expanded bass perceptual curve (preserved exactly as configured)
-		const p = Math.pow(clampedT, 2.35);
+		const p = Math.pow(mappedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
@@ -388,14 +389,12 @@
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 
 		// Balanced treble tilt compensation so hi-hats bounce vividly
-		const trebleTilt = 1.0 + clampedT * 0.55;
+		const trebleTilt = 1.0 + mappedT * 0.55;
 
-		// Left edge roll-off preserved; right edge roll-off narrowed to the final 2.5%
-		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
-		const trebleEdgeRollOff = Math.min(1.0, (1.0 - clampedT) / 0.025);
-		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
+		// Smooth bass roll-off for the lowest register without artificial zero-crushing on the treble edge
+		const bassEdgeRollOff = Math.min(1.0, Math.pow(mappedT / 0.07, 1.2));
 
-		let val = rawVal * sens * trebleTilt * edgeEnvelope;
+		let val = rawVal * sens * trebleTilt * bassEdgeRollOff;
 
 		return Math.min(255, val);
 	}

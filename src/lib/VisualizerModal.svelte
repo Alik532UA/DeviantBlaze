@@ -190,9 +190,16 @@
 
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
+
+		// Precise range trimming: cut 1 division left, cut 4 divisions right
+		const tMin = 1 / 86;
+		const tMax = 1.0 - 4 / 86;
+		const mappedT = tMin + clampedT * (tMax - tMin);
+
 		const maxBin = Math.floor(bufferLength * 0.72);
 		const minBin = 0;
-		const p = Math.pow(clampedT, 2.35);
+
+		const p = Math.pow(mappedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
@@ -202,13 +209,11 @@
 		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
-		const trebleTilt = 1.0 + clampedT * 0.55;
+		const trebleTilt = 1.0 + mappedT * 0.55;
 
-		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
-		const trebleEdgeRollOff = Math.min(1.0, (1.0 - clampedT) / 0.025);
-		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
+		const bassEdgeRollOff = Math.min(1.0, Math.pow(mappedT / 0.07, 1.2));
 
-		let val = rawVal * sens * trebleTilt * edgeEnvelope;
+		let val = rawVal * sens * trebleTilt * bassEdgeRollOff;
 
 		return Math.min(255, val);
 	}
