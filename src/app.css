@@ -67,6 +67,15 @@ body {
 	-webkit-user-select: none;
 }
 
+html:has(.beta-page),
+body:has(.beta-page) {
+	overflow-y: auto !important;
+	height: auto !important;
+	min-height: 100% !important;
+	user-select: text !important;
+	-webkit-user-select: text !important;
+}
+
 /* Custom subtle noise texture overlay for organic analog feel */
 .ambient-backdrop {
 	position: fixed;

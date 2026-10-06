@@ -211,6 +211,27 @@
 			}
 		].filter((l) => l.checks.length > 0);
 	});
+
+	// Enable natural window scrolling on beta checklist page
+	$effect(() => {
+		if (typeof document === 'undefined') return;
+		const prevHtmlOverflowY = document.documentElement.style.overflowY;
+		const prevHtmlHeight = document.documentElement.style.height;
+		const prevBodyOverflowY = document.body.style.overflowY;
+		const prevBodyHeight = document.body.style.height;
+
+		document.documentElement.style.overflowY = 'auto';
+		document.documentElement.style.height = 'auto';
+		document.body.style.overflowY = 'auto';
+		document.body.style.height = 'auto';
+
+		return () => {
+			document.documentElement.style.overflowY = prevHtmlOverflowY;
+			document.documentElement.style.height = prevHtmlHeight;
+			document.body.style.overflowY = prevBodyOverflowY;
+			document.body.style.height = prevBodyHeight;
+		};
+	});
 </script>
 
 <svelte:head>
@@ -455,13 +476,32 @@
 </main>
 
 <style>
+	:global(html:has(.beta-page)),
+	:global(body:has(.beta-page)) {
+		overflow-y: auto !important;
+		height: auto !important;
+		min-height: 100% !important;
+	}
+
+	:global(html:has(.beta-page)) {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+	}
+
+	:global([data-theme="light"] html:has(.beta-page)) {
+		scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+	}
+
 	.beta-page {
 		min-height: 100vh;
+		width: 100%;
 		background: #09090c;
 		color: #f3f4f6;
 		font-family: inherit;
 		padding: 2.5rem 1rem 5rem;
 		box-sizing: border-box;
+		user-select: text;
+		-webkit-user-select: text;
 	}
 
 	:global([data-theme="light"]) .beta-page {
