@@ -30,7 +30,7 @@
 	// 2: Standard default (centered logo, normal buttons, labels only on hover)
 	// 3: Bottom music buttons expanded 2x, labels visible, center logo up
 	// 4: Standard icons, logo & music shifted UP to reveal hidden actions panel
-	let scrollState = $state(2);
+	let scrollState = $state(3);
 
 	// Right-side scroll indicator proximity and scroll-flash logic
 	let indicatorEl = $state(null);
