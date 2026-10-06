@@ -674,6 +674,10 @@
 		.scroll-indicator {
 			display: none !important;
 		}
+
+		.theme-contrast-vignette {
+			display: none !important;
+		}
 	}
 
 	@media (max-width: 640px) {

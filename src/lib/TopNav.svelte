@@ -21,6 +21,22 @@
 
 	let isMobile = $state(false);
 
+	function handleThemeHover(hovered) {
+		if (isMobile) {
+			onThemeHover?.(false);
+			return;
+		}
+		onThemeHover?.(hovered);
+	}
+
+	function handleThemeClick(e) {
+		themeStore.toggle();
+		onThemeHover?.(false);
+		if (isMobile) {
+			e?.currentTarget?.blur();
+		}
+	}
+
 	onMount(() => {
 		const mql = window.matchMedia('(max-width: 768px), (pointer: coarse)');
 		isMobile = mql.matches;
@@ -138,11 +154,11 @@
 	<button
 		class="nav-btn theme-toggle-btn"
 		data-testid="theme-toggle-btn"
-		onclick={() => themeStore.toggle()}
-		onmouseenter={() => onThemeHover?.(true)}
-		onmouseleave={() => onThemeHover?.(false)}
-		onfocus={() => onThemeHover?.(true)}
-		onblur={() => onThemeHover?.(false)}
+		onclick={handleThemeClick}
+		onmouseenter={() => handleThemeHover(true)}
+		onmouseleave={() => handleThemeHover(false)}
+		onfocus={() => { if (!isMobile) handleThemeHover(true); }}
+		onblur={() => handleThemeHover(false)}
 		aria-label={isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}
 	>
 		<div class="theme-icon-wrap" class:is-light={!isDark}>
