@@ -104,9 +104,11 @@
 		onblur={() => onGalleryHover?.(false)}
 		aria-label={langStore.t('gallery')}
 	>
-		<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
-			{@html getIcon('gallery').svg}
-		</svg>
+		{#key style}
+			<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
+				{@html getIcon('gallery').svg}
+			</svg>
+		{/key}
 		<span class="nav-sublabel">{langStore.t('gallery')}</span>
 		<span class="nav-tooltip">{langStore.t('gallery')}</span>
 	</button>
@@ -119,18 +121,20 @@
 		class="nav-btn instagram-btn"
 		aria-label="Instagram Deviant Blaze"
 	>
-		<svg viewBox={getIcon('instagram').viewBox} class="nav-svg instagram-svg" aria-hidden="true">
-			<defs>
-				<linearGradient id="ig-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
-					<stop offset="0%" stop-color="#f09433" />
-					<stop offset="25%" stop-color="#e6683c" />
-					<stop offset="50%" stop-color="#dc2743" />
-					<stop offset="75%" stop-color="#cc2366" />
-					<stop offset="100%" stop-color="#bc1888" />
-				</linearGradient>
-			</defs>
-			{@html getIcon('instagram').svg}
-		</svg>
+		{#key style}
+			<svg viewBox={getIcon('instagram').viewBox} class="nav-svg instagram-svg" aria-hidden="true">
+				<defs>
+					<linearGradient id="ig-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+						<stop offset="0%" stop-color="#f09433" />
+						<stop offset="25%" stop-color="#e6683c" />
+						<stop offset="50%" stop-color="#dc2743" />
+						<stop offset="75%" stop-color="#cc2366" />
+						<stop offset="100%" stop-color="#bc1888" />
+					</linearGradient>
+				</defs>
+				{@html getIcon('instagram').svg}
+			</svg>
+		{/key}
 		<span class="nav-sublabel">Instagram</span>
 		<span class="nav-tooltip">Instagram</span>
 	</a>
@@ -143,9 +147,11 @@
 		class="nav-btn"
 		aria-label={langStore.t('contact')}
 	>
-		<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
-			{@html getIcon('message').svg}
-		</svg>
+		{#key style}
+			<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
+				{@html getIcon('message').svg}
+			</svg>
+		{/key}
 		<span class="nav-sublabel">{langStore.t('contact')}</span>
 		<span class="nav-tooltip">{langStore.t('contact')}</span>
 	</a>
@@ -162,13 +168,15 @@
 		aria-label={isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}
 	>
 		<div class="theme-icon-wrap" class:is-light={!isDark}>
-			<svg
-				viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox}
-				class="nav-svg"
-				aria-hidden="true"
-			>
-				{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
-			</svg>
+			{#key style}
+				<svg
+					viewBox={getIcon(isDark ? 'theme_dark' : 'theme_light').viewBox}
+					class="nav-svg"
+					aria-hidden="true"
+				>
+					{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
+				</svg>
+			{/key}
 		</div>
 		<span class="nav-sublabel">{isDark ? langStore.t('theme_dark') : langStore.t('theme_light')}</span>
 		<span class="nav-tooltip">{isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}</span>

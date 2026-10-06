@@ -48,14 +48,16 @@
 			aria-label={item.name}
 		>
 			<div class="icon-wrap">
-				<svg
-					class="music-icon"
-					class:apple-classic={item.id === 'apple' && style === 'classic'}
-					viewBox={iconData.viewBox}
-					aria-hidden="true"
-				>
-					{@html iconData.svg}
-				</svg>
+				{#key style}
+					<svg
+						class="music-icon"
+						class:apple-classic={item.id === 'apple' && style === 'classic'}
+						viewBox={iconData.viewBox}
+						aria-hidden="true"
+					>
+						{@html iconData.svg}
+					</svg>
+				{/key}
 			</div>
 			<span class="link-sublabel">{item.name}</span>
 			<span class="tooltip">{item.name}</span>

@@ -3,12 +3,14 @@ import { storage } from '#lib/services/storage.js';
 class IconStyleStore {
 	current = $state('gothic'); // 'gothic' | 'classic'
 
-	constructor() {
-		if (typeof window !== 'undefined') {
-			const saved = storage.get('icon_style');
-			if (saved === 'gothic' || saved === 'classic') {
-				this.current = saved;
-			}
+	#initialized = false;
+
+	init() {
+		if (this.#initialized || typeof window === 'undefined') return;
+		this.#initialized = true;
+		const saved = storage.get('icon_style');
+		if (saved === 'gothic' || saved === 'classic') {
+			this.current = saved;
 		}
 	}
 

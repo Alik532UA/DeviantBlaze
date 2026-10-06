@@ -58,14 +58,16 @@
 			aria-label={langStore.t('order_site')}
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('order_site').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('order_site').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={getIcon('order_site').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html getIcon('order_site').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{langStore.t('order_site')}</span>
 		</a>
@@ -79,14 +81,16 @@
 			aria-label={langStore.t('piano')}
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('piano').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('piano').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={getIcon('piano').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html getIcon('piano').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{langStore.t('piano')}</span>
 		</button>
@@ -102,14 +106,16 @@
 			aria-pressed={isVisualizerActive}
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('visualizer').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('visualizer').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={getIcon('visualizer').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html getIcon('visualizer').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{langStore.t('visualizer')}</span>
 		</button>
@@ -123,14 +129,16 @@
 			title="{langStore.t('style_btn')} (G)"
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('style_toggle').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('style_toggle').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={getIcon('style_toggle').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html getIcon('style_toggle').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{langStore.t('style_btn')}</span>
 		</button>
@@ -144,14 +152,16 @@
 			title="{langStore.t('lang_btn')} (L)"
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={getIcon('lang').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html getIcon('lang').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={getIcon('lang').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html getIcon('lang').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{langStore.t('lang_btn')}</span>
 		</button>
@@ -165,14 +175,16 @@
 			title="{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')} (F)"
 		>
 			<span class="action-icon-box">
-				<svg
-					class="action-icon"
-					viewBox={isFullscreen ? getIcon('fullscreen_exit').viewBox : getIcon('fullscreen').viewBox}
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					{@html isFullscreen ? getIcon('fullscreen_exit').svg : getIcon('fullscreen').svg}
-				</svg>
+				{#key style}
+					<svg
+						class="action-icon"
+						viewBox={isFullscreen ? getIcon('fullscreen_exit').viewBox : getIcon('fullscreen').viewBox}
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						{@html isFullscreen ? getIcon('fullscreen_exit').svg : getIcon('fullscreen').svg}
+					</svg>
+				{/key}
 			</span>
 			<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
 		</button>

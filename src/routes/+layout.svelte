@@ -1,12 +1,18 @@
 <script>
+	import { onMount } from 'svelte';
 	import '../app.css';
 	import { asset } from '$app/paths';
 	import { page } from '$app/state';
 	import JsonLd from '#lib/components/JsonLd.svelte';
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
 	import { migrateLegacyKeys } from '#lib/services/storage.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 
 	migrateLegacyKeys();
+
+	onMount(() => {
+		iconStyleStore.init();
+	});
 
 	let { children } = $props();
 
