@@ -35,14 +35,100 @@
 		{ id: 'toxic', nameKey: 'pal_toxic', color: '#10b981' },
 		{ id: 'purple', nameKey: 'pal_purple', color: '#ec4899' }
 	];
+
+	// Proximity (10-100%) and Idle/Exit (0%) logic for collapsed eye button
+	let eyeBtnEl = $state(null);
+	let eyeOpacity = $state(0);
+	let isEyeHovered = $state(false);
+
+	let effectiveEyeOpacity = $derived.by(() => {
+		if (!isActive || !isCollapsed) return 0;
+		if (isEyeHovered) return 1;
+		return eyeOpacity;
+	});
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		if (!isActive || !isCollapsed) {
+			eyeOpacity = 0;
+			return;
+		}
+
+		let eyeIdleTimer = null;
+		const PROXIMITY_RADIUS = 350;
+
+		function updateProximity(clientX, clientY) {
+			if (!eyeBtnEl) return;
+			const r = eyeBtnEl.getBoundingClientRect();
+			const cx = r.left + r.width / 2;
+			const cy = r.top + r.height / 2;
+			const dist = Math.hypot(clientX - cx, clientY - cy);
+
+			if (dist >= PROXIMITY_RADIUS) {
+				// Cursor active in window, but far away: exactly 10% (0.1)
+				eyeOpacity = 0.1;
+			} else {
+				// Cursor approaches: smoothly scale from 10% (0.1) to 100% (1.0)
+				const t = Math.max(0, Math.min(1, 1 - dist / PROXIMITY_RADIUS));
+				const ease = t * t * (3 - 2 * t);
+				eyeOpacity = Math.round((0.1 + 0.9 * ease) * 100) / 100;
+			}
+		}
+
+		function onPointerActivity(e) {
+			if (eyeIdleTimer) clearTimeout(eyeIdleTimer);
+
+			if (isEyeHovered) {
+				eyeOpacity = 1;
+			} else if (e.clientX !== undefined && e.clientY !== undefined) {
+				updateProximity(e.clientX, e.clientY);
+			} else {
+				eyeOpacity = 0.1;
+			}
+
+			// Inactivity timer: when cursor stops moving for 2.5s, fade completely to 0%
+			eyeIdleTimer = setTimeout(() => {
+				if (!isEyeHovered) {
+					eyeOpacity = 0;
+				}
+			}, 2500);
+		}
+
+		function onPointerInactive() {
+			if (eyeIdleTimer) clearTimeout(eyeIdleTimer);
+			if (!isEyeHovered) {
+				eyeOpacity = 0;
+			}
+		}
+
+		window.addEventListener('pointermove', onPointerActivity, { passive: true });
+		window.addEventListener('pointerdown', onPointerActivity, { passive: true });
+		window.addEventListener('pointerleave', onPointerInactive);
+		document.addEventListener('mouseleave', onPointerInactive);
+		window.addEventListener('blur', onPointerInactive);
+
+		return () => {
+			if (eyeIdleTimer) clearTimeout(eyeIdleTimer);
+			window.removeEventListener('pointermove', onPointerActivity);
+			window.removeEventListener('pointerdown', onPointerActivity);
+			window.removeEventListener('pointerleave', onPointerInactive);
+			document.removeEventListener('mouseleave', onPointerInactive);
+			window.removeEventListener('blur', onPointerInactive);
+		};
+	});
 </script>
 
 {#if isActive}
 	{#if isCollapsed}
-		<!-- Згорнутий стан: одна кругла кнопка-глазик -->
+		<!-- Згорнутий стан: кругла кнопка-глазик з динамічною прозорістю 0% / 10%-100% -->
 		<button
 			type="button"
+			bind:this={eyeBtnEl}
 			class="vj-collapsed-eye-btn"
+			class:is-invisible={effectiveEyeOpacity <= 0.01}
+			style="--eye-opacity: {effectiveEyeOpacity}; opacity: var(--eye-opacity);"
+			onmouseenter={() => { isEyeHovered = true; }}
+			onmouseleave={() => { isEyeHovered = false; }}
 			onclick={() => onToggleCollapse?.()}
 			title="{langStore.t('vj_expand')} (V)"
 			aria-label={langStore.t('vj_expand')}
@@ -266,13 +352,19 @@
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
 		            0 0 16px rgba(235, 30, 60, 0.2);
 		cursor: pointer;
-		opacity: 0.8;
-		transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-		animation: eyePulse 3s infinite ease-in-out;
+		opacity: var(--eye-opacity, 0);
+		transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+		            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+		            border-color 0.25s,
+		            box-shadow 0.25s;
+	}
+
+	.vj-collapsed-eye-btn.is-invisible {
+		pointer-events: none;
 	}
 
 	.vj-collapsed-eye-btn:hover {
-		opacity: 1;
+		opacity: 1 !important;
 		transform: translateY(-50%) scale(1.12);
 		border-color: #ff5f1f;
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
@@ -297,15 +389,6 @@
 		width: 22px;
 		height: 22px;
 		display: block;
-	}
-
-	@keyframes eyePulse {
-		0%, 100% {
-			transform: translateY(-50%) scale(1);
-		}
-		50% {
-			transform: translateY(-50%) scale(1.05);
-		}
 	}
 
 	/* Повна панель керування */
@@ -720,13 +803,5 @@
 			}
 		}
 
-		@keyframes eyePulse {
-			0%, 100% {
-				transform: translateX(-50%) scale(1);
-			}
-			50% {
-				transform: translateX(-50%) scale(1.05);
-			}
-		}
 	}
 </style>
