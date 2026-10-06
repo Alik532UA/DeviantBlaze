@@ -46,6 +46,7 @@ export const TRANSLATIONS = {
 		pal_gothic: "Лід",
 		pal_toxic: "Неон",
 		pal_purple: "Аметист",
+		pal_mono: "Монохром",
 
 		// Piano
 		piano_title: "Акустичне Фортепіано",
@@ -115,6 +116,7 @@ export const TRANSLATIONS = {
 		pal_gothic: "Ice",
 		pal_toxic: "Toxic",
 		pal_purple: "Amethyst",
+		pal_mono: "Monochrome",
 
 		// Piano
 		piano_title: "Acoustic Piano",

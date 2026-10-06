@@ -1,12 +1,13 @@
 <script>
 	import { onDestroy } from 'svelte';
+	import { themeStore } from './theme.svelte.js';
 
 	let {
 		isActive = false,
 		mode = 'bars', // 'bars' | 'wave' | 'radar'
 		sensitivity = 1.0, // 0.1 - 1.5
 		spectrumHeight = 1.0, // 0.2 - 1.0 (default 100%)
-		palette = 'blaze', // 'blaze' | 'cyber' | 'gothic' | 'toxic' | 'purple'
+		palette = 'blaze', // 'blaze' | 'cyber' | 'gothic' | 'toxic' | 'purple' | 'mono'
 		onStatusChange = () => {}
 	} = $props();
 
@@ -71,10 +72,41 @@
 			radarHsl: (t) => `hsl(${280 + t * 50}, 100%, 65%)`,
 			auraRgb: '147, 51, 234',
 			particleRgb: '236, 72, 153'
+		},
+		mono_dark: {
+			barsGradient: ['rgba(255, 255, 255, 0.28)', 'rgba(255, 255, 255, 0.58)', 'rgba(255, 255, 255, 0.88)', '#ffffff'],
+			peakColor: 'rgba(255, 255, 255, 1)',
+			wavePrimary: 'rgba(255, 255, 255, 0.95)',
+			waveSecondary: 'rgba(220, 220, 230, 0.6)',
+			waveShadow: 'rgba(255, 255, 255, 0.8)',
+			radarCenter: '#ffffff',
+			radarShadow: 'rgba(255, 255, 255, 0.8)',
+			radarHsl: (t) => `hsl(0, 0%, ${70 + t * 30}%)`,
+			auraRgb: '255, 255, 255',
+			particleRgb: '255, 255, 255'
+		},
+		mono_light: {
+			barsGradient: ['rgba(0, 0, 0, 0.28)', 'rgba(0, 0, 0, 0.58)', 'rgba(0, 0, 0, 0.85)', '#000000'],
+			peakColor: 'rgba(0, 0, 0, 1)',
+			wavePrimary: 'rgba(0, 0, 0, 0.92)',
+			waveSecondary: 'rgba(40, 40, 50, 0.55)',
+			waveShadow: 'rgba(0, 0, 0, 0.35)',
+			radarCenter: '#000000',
+			radarShadow: 'rgba(0, 0, 0, 0.35)',
+			radarHsl: (t) => `hsl(0, 0%, ${30 - t * 30}%)`,
+			auraRgb: '0, 0, 0',
+			particleRgb: '20, 20, 25'
 		}
 	};
 
-	let currentTheme = $derived(PALETTES[palette] || PALETTES.blaze);
+	let isDark = $derived(themeStore.current === 'dark');
+
+	let currentTheme = $derived.by(() => {
+		if (palette === 'mono') {
+			return isDark ? PALETTES.mono_dark : PALETTES.mono_light;
+		}
+		return PALETTES[palette] || PALETTES.blaze;
+	});
 
 	let canvasEl = $state(null);
 	let audioCtx = null;

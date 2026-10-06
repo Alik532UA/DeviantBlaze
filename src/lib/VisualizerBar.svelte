@@ -1,6 +1,7 @@
 <script>
 	import { langStore } from './lang.svelte.js';
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { themeStore } from './theme.svelte.js';
 	import { ICONS } from './icons.js';
 
 	let {
@@ -22,19 +23,21 @@
 	} = $props();
 
 	let style = $derived(iconStyleStore.current);
+	let isDark = $derived(themeStore.current === 'dark');
 
 	function getIcon(name) {
 		const set = ICONS[style] || ICONS.gothic;
 		return set[name] || ICONS.gothic[name] || ICONS.classic[name];
 	}
 
-	const PALETTES_LIST = [
+	let palettesList = $derived([
 		{ id: 'blaze', nameKey: 'pal_blaze', color: '#ff5f1f' },
 		{ id: 'cyber', nameKey: 'pal_cyber', color: '#00f0ff' },
 		{ id: 'gothic', nameKey: 'pal_gothic', color: '#93c5fd' },
 		{ id: 'toxic', nameKey: 'pal_toxic', color: '#10b981' },
-		{ id: 'purple', nameKey: 'pal_purple', color: '#ec4899' }
-	];
+		{ id: 'purple', nameKey: 'pal_purple', color: '#ec4899' },
+		{ id: 'mono', nameKey: 'pal_mono', color: isDark ? '#ffffff' : '#000000' }
+	]);
 
 	// Proximity (10-100%) and Idle/Exit (0%) logic for collapsed eye button
 	let eyeBtnEl = $state(null);
@@ -311,7 +314,7 @@
 						<span class="setting-title">{langStore.t('vj_color_theme')}</span>
 					</div>
 					<div class="palettes-picker">
-						{#each PALETTES_LIST as p}
+						{#each palettesList as p}
 							<button
 								type="button"
 								class="palette-chip"
@@ -768,6 +771,7 @@
 		height: 7px;
 		border-radius: 50%;
 		background: var(--chip-color);
+		box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.4);
 		flex-shrink: 0;
 	}
 
