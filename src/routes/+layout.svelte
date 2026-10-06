@@ -1,11 +1,12 @@
 <script>
 	import '../app.css';
+	import { resolve } from '$app/paths';
 
 	let { children } = $props();
 </script>
 
 <svelte:head>
-	<link rel="icon" href="/favicon.svg" />
+	<link rel="icon" href={resolve('/favicon.svg')} />
 </svelte:head>
 
 {@render children()}

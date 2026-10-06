@@ -1,6 +1,7 @@
 <script>
 	import { iconStyleStore } from './iconStyle.svelte.js';
 	import { ICONS } from './icons.js';
+	import { resolve } from '$app/paths';
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -13,17 +14,17 @@
 
 	const images = [
 		{
-			src: '/gallery/img3.webp',
+			src: resolve('/gallery/img3.webp'),
 			title: 'Deviant Blaze Band',
 			alt: 'Deviant Blaze Band Photoshoot'
 		},
 		{
-			src: '/gallery/img2.webp',
+			src: resolve('/gallery/img2.webp'),
 			title: 'Vocals & Live Energy',
 			alt: 'Vocals & Live Energy'
 		},
 		{
-			src: '/gallery/img1.webp',
+			src: resolve('/gallery/img1.webp'),
 			title: 'Deviant Blaze Live on Stage',
 			alt: 'Deviant Blaze Live on Stage'
 		}

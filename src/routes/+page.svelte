@@ -11,6 +11,7 @@
 	import { themeStore } from '#lib/theme.svelte.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { langStore } from '#lib/lang.svelte.js';
+	import { resolve } from '$app/paths';
 
 	// Modals
 	let isGalleryOpen = $state(false);
@@ -348,7 +349,7 @@
 		aria-hidden="true"
 	>
 		<img
-			src="/gallery-hover-bg.webp"
+			src={resolve('/gallery-hover-bg.webp')}
 			alt=""
 			class="gallery-hover-img"
 		/>
