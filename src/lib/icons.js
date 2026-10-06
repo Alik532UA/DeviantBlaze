@@ -192,6 +192,14 @@ export const ICONS = {
 				<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
 				<line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
 			`
+		},
+		eye: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+			`
 		}
 	},
 
@@ -621,6 +629,23 @@ export const ICONS = {
 				<polygon points="78,22 86,16 84,28" fill="currentColor"/>
 				<polygon points="22,78 14,84 16,72" fill="currentColor"/>
 				<polygon points="78,78 86,84 84,72" fill="currentColor"/>
+			`
+		},
+
+		// 23. Eye: Gothic Barbed Cat-Eye
+		eye: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<path d="M10 50 C26 24 74 24 90 50 C74 76 26 76 10 50 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+				<circle cx="50" cy="50" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/>
+				<circle cx="50" cy="50" r="5" fill="currentColor"/>
+				<polygon points="50,26 46,14 54,14" fill="currentColor"/>
+				<polygon points="30,33 22,23 32,26" fill="currentColor"/>
+				<polygon points="70,33 78,23 68,26" fill="currentColor"/>
+				<polygon points="50,74 46,86 54,86" fill="currentColor"/>
+				<polygon points="30,67 22,77 32,74" fill="currentColor"/>
+				<polygon points="70,67 78,77 68,74" fill="currentColor"/>
 			`
 		}
 	}

@@ -11,6 +11,8 @@
 		palette = 'blaze',
 		sensitivity = 1.5,
 		spectrumHeight = 1.0,
+		isCollapsed = false,
+		onToggleCollapse = () => {},
 		onSelectMode = () => {},
 		onSelectSource = () => {},
 		onSelectPalette = () => {},
@@ -18,8 +20,6 @@
 		onUpdateSpectrumHeight = () => {},
 		onClose = () => {}
 	} = $props();
-
-	let isSettingsOpen = $state(false);
 
 	let style = $derived(iconStyleStore.current);
 
@@ -35,160 +35,154 @@
 		{ id: 'toxic', nameKey: 'pal_toxic', color: '#10b981' },
 		{ id: 'purple', nameKey: 'pal_purple', color: '#ec4899' }
 	];
-
-	function cyclePalette() {
-		const idx = PALETTES_LIST.findIndex(p => p.id === palette);
-		const nextIdx = (idx + 1) % PALETTES_LIST.length;
-		onSelectPalette?.(PALETTES_LIST[nextIdx].id);
-	}
 </script>
 
 {#if isActive}
-	<aside
-		class="vj-control-bar"
-		aria-label="Панель керування візуалізацією"
-	>
-		<!-- 1. Верхній рядок: Статус + Швидкі інструменти -->
-		<div class="vj-row vj-header-row">
-			<div class="vj-status-chip">
-				<span
-					class="vj-pulse-dot"
-					class:is-live={audioSource === 'mic' || audioSource === 'speakers'}
-					class:is-speakers={audioSource === 'speakers'}
-				></span>
-				<span class="vj-status-text">
-					{#if audioSource === 'speakers'}
-						{langStore.t('vj_live_speakers')}
-					{:else if audioSource === 'mic'}
-						{langStore.t('vj_live_mic')}
-					{:else}
-						{langStore.t('vj_live_test')}
-					{/if}
-				</span>
+	{#if isCollapsed}
+		<!-- Згорнутий стан: одна кругла кнопка-глазик -->
+		<button
+			type="button"
+			class="vj-collapsed-eye-btn"
+			onclick={() => onToggleCollapse?.()}
+			title="{langStore.t('vj_expand')} (V)"
+			aria-label={langStore.t('vj_expand')}
+		>
+			{#if getIcon('eye')}
+				{@const icon = getIcon('eye')}
+				<svg viewBox={icon.viewBox} class="vj-eye-svg" aria-hidden="true">
+					{@html icon.svg}
+				</svg>
+			{/if}
+		</button>
+	{:else}
+		<!-- Розгорнута панель керування візуалізацією -->
+		<aside
+			class="vj-control-bar"
+			aria-label="Панель керування візуалізацією"
+		>
+			<!-- 1. Верхній рядок: Статус + Швидкі інструменти -->
+			<div class="vj-row vj-header-row">
+				<div class="vj-status-chip">
+					<span
+						class="vj-pulse-dot"
+						class:is-live={audioSource === 'mic' || audioSource === 'speakers'}
+						class:is-speakers={audioSource === 'speakers'}
+					></span>
+					<span class="vj-status-text">
+						{#if audioSource === 'speakers'}
+							{langStore.t('vj_live_speakers')}
+						{:else if audioSource === 'mic'}
+							{langStore.t('vj_live_mic')}
+						{:else}
+							{langStore.t('vj_live_test')}
+						{/if}
+					</span>
+				</div>
+
+				<div class="vj-actions-group">
+					<!-- Кнопка "Приховати" (глазик) -->
+					<button
+						type="button"
+						class="vj-icon-btn vj-hide-btn"
+						onclick={() => onToggleCollapse?.()}
+						title={langStore.t('vj_hide')}
+						aria-label={langStore.t('vj_hide')}
+					>
+						{#if getIcon('eye')}
+							{@const icon = getIcon('eye')}
+							<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+								{@html icon.svg}
+							</svg>
+						{/if}
+					</button>
+
+					<!-- Exit Visualizer Button -->
+					<button
+						type="button"
+						class="vj-exit-btn"
+						onclick={() => onClose?.()}
+						title={langStore.t('close_visualizer')}
+						aria-label={langStore.t('close_visualizer')}
+					>
+						{#if getIcon('close')}
+							{@const icon = getIcon('close')}
+							<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+								{@html icon.svg}
+							</svg>
+						{/if}
+					</button>
+				</div>
 			</div>
 
-			<div class="vj-actions-group">
-				<!-- Palette quick switch button -->
-				<button
-					type="button"
-					class="vj-icon-btn vj-palette-btn"
-					onclick={cyclePalette}
-					title="{langStore.t('vj_color_theme')}: {langStore.t(PALETTES_LIST.find(p => p.id === palette)?.nameKey || 'pal_blaze')}"
-					aria-label="Змінити палітру кольорів"
-				>
-					<span class="palette-swatch" style="background-color: {PALETTES_LIST.find(p => p.id === palette)?.color || '#ff5f1f'};"></span>
-					{#if getIcon('palette')}
-						{@const icon = getIcon('palette')}
-						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-							{@html icon.svg}
-						</svg>
-					{/if}
-				</button>
-
-				<!-- Settings Popover Toggle Button -->
-				<button
-					type="button"
-					class="vj-icon-btn vj-settings-btn"
-					class:is-active={isSettingsOpen}
-					onclick={() => (isSettingsOpen = !isSettingsOpen)}
-					title={langStore.t('vj_settings')}
-					aria-label="Налаштування візуалізатора"
-				>
-					{#if getIcon('settings')}
-						{@const icon = getIcon('settings')}
-						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-							{@html icon.svg}
-						</svg>
-					{/if}
-				</button>
-
-				<!-- Exit Visualizer Button -->
-				<button
-					type="button"
-					class="vj-exit-btn"
-					onclick={() => onClose?.()}
-					title={langStore.t('close_visualizer')}
-					aria-label={langStore.t('close_visualizer')}
-				>
-					{#if getIcon('close')}
-						{@const icon = getIcon('close')}
-						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-							{@html icon.svg}
-						</svg>
-					{/if}
-				</button>
+			<!-- 2. Рядок джерел звуку: Мікрофон vs З колонок -->
+			<div class="vj-row">
+				<div class="vj-toggle-group vj-sources">
+					<button
+						type="button"
+						class="vj-toggle-btn vj-btn-with-icon"
+						class:is-active={audioSource === 'mic'}
+						onclick={() => onSelectSource?.('mic')}
+						title={langStore.t('source_mic')}
+					>
+						{#if getIcon('mic')}
+							{@const icon = getIcon('mic')}
+							<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+								{@html icon.svg}
+							</svg>
+						{/if}
+						<span>{langStore.t('source_mic')}</span>
+					</button>
+					<button
+						type="button"
+						class="vj-toggle-btn vj-btn-with-icon"
+						class:is-active={audioSource === 'speakers'}
+						onclick={() => onSelectSource?.('speakers')}
+						title={langStore.t('source_speakers')}
+					>
+						{#if getIcon('speakers')}
+							{@const icon = getIcon('speakers')}
+							<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+								{@html icon.svg}
+							</svg>
+						{/if}
+						<span>{langStore.t('source_speakers')}</span>
+					</button>
+				</div>
 			</div>
-		</div>
 
-		<!-- 2. Рядок джерел звуку: Мікрофон vs З колонок -->
-		<div class="vj-row">
-			<div class="vj-toggle-group vj-sources">
-				<button
-					type="button"
-					class="vj-toggle-btn vj-btn-with-icon"
-					class:is-active={audioSource === 'mic'}
-					onclick={() => onSelectSource?.('mic')}
-					title={langStore.t('source_mic')}
-				>
-					{#if getIcon('mic')}
-						{@const icon = getIcon('mic')}
-						<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
-							{@html icon.svg}
-						</svg>
-					{/if}
-					<span>{langStore.t('source_mic')}</span>
-				</button>
-				<button
-					type="button"
-					class="vj-toggle-btn vj-btn-with-icon"
-					class:is-active={audioSource === 'speakers'}
-					onclick={() => onSelectSource?.('speakers')}
-					title={langStore.t('source_speakers')}
-				>
-					{#if getIcon('speakers')}
-						{@const icon = getIcon('speakers')}
-						<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
-							{@html icon.svg}
-						</svg>
-					{/if}
-					<span>{langStore.t('source_speakers')}</span>
-				</button>
+			<!-- 3. Рядок режимів: Спектр | Хвиля | Радар -->
+			<div class="vj-row">
+				<div class="vj-toggle-group vj-modes">
+					<button
+						type="button"
+						class="vj-toggle-btn"
+						class:is-active={currentMode === 'bars'}
+						onclick={() => onSelectMode?.('bars')}
+					>
+						{langStore.t('mode_bars')}
+					</button>
+					<button
+						type="button"
+						class="vj-toggle-btn"
+						class:is-active={currentMode === 'wave'}
+						onclick={() => onSelectMode?.('wave')}
+					>
+						{langStore.t('mode_wave')}
+					</button>
+					<button
+						type="button"
+						class="vj-toggle-btn"
+						class:is-active={currentMode === 'radar'}
+						onclick={() => onSelectMode?.('radar')}
+					>
+						{langStore.t('mode_radar')}
+					</button>
+				</div>
 			</div>
-		</div>
 
-		<!-- 3. Рядок режимів: Спектр | Хвиля | Радар -->
-		<div class="vj-row">
-			<div class="vj-toggle-group vj-modes">
-				<button
-					type="button"
-					class="vj-toggle-btn"
-					class:is-active={currentMode === 'bars'}
-					onclick={() => onSelectMode?.('bars')}
-				>
-					{langStore.t('mode_bars')}
-				</button>
-				<button
-					type="button"
-					class="vj-toggle-btn"
-					class:is-active={currentMode === 'wave'}
-					onclick={() => onSelectMode?.('wave')}
-				>
-					{langStore.t('mode_wave')}
-				</button>
-				<button
-					type="button"
-					class="vj-toggle-btn"
-					class:is-active={currentMode === 'radar'}
-					onclick={() => onSelectMode?.('radar')}
-				>
-					{langStore.t('mode_radar')}
-				</button>
-			</div>
-		</div>
-
-		<!-- Settings Dropdown Drawer (з'являється праворуч від меню на десктопі) -->
-		{#if isSettingsOpen}
-			<div class="vj-settings-dropdown">
+			<!-- 4. Налаштування (завжди видимі внизу панелі) -->
+			<div class="vj-settings-section">
+				<!-- Чутливість -->
 				<div class="setting-item">
 					<div class="setting-label-row">
 						<span class="setting-title">{langStore.t('vj_sensitivity')}</span>
@@ -205,6 +199,7 @@
 					/>
 				</div>
 
+				<!-- Висота спектру (якщо обрано режим "Спектр") -->
 				{#if currentMode === 'bars'}
 					<div class="setting-item">
 						<div class="setting-label-row">
@@ -223,6 +218,7 @@
 					</div>
 				{/if}
 
+				<!-- Колір / Палітри -->
 				<div class="setting-item">
 					<div class="setting-label-row">
 						<span class="setting-title">{langStore.t('vj_color_theme')}</span>
@@ -244,11 +240,75 @@
 					</div>
 				</div>
 			</div>
-		{/if}
-	</aside>
+		</aside>
+	{/if}
 {/if}
 
 <style>
+	/* Згорнута кнопка-глазик для швидкого розгортання */
+	.vj-collapsed-eye-btn {
+		position: fixed;
+		left: 1.5rem;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 120;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(14, 14, 18, 0.78);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		color: var(--text-primary);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+		            0 0 16px rgba(235, 30, 60, 0.2);
+		cursor: pointer;
+		opacity: 0.8;
+		transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+		animation: eyePulse 3s infinite ease-in-out;
+	}
+
+	.vj-collapsed-eye-btn:hover {
+		opacity: 1;
+		transform: translateY(-50%) scale(1.12);
+		border-color: #ff5f1f;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+		            0 0 25px rgba(255, 95, 31, 0.45);
+	}
+
+	:global([data-theme="light"]) .vj-collapsed-eye-btn {
+		background: rgba(255, 255, 255, 0.9);
+		border-color: rgba(0, 0, 0, 0.14);
+		color: #0a0a0d;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12),
+		            0 0 15px rgba(0, 0, 0, 0.05);
+	}
+
+	:global([data-theme="light"]) .vj-collapsed-eye-btn:hover {
+		border-color: #eb1e3c;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18),
+		            0 0 20px rgba(235, 30, 60, 0.25);
+	}
+
+	.vj-eye-svg {
+		width: 22px;
+		height: 22px;
+		display: block;
+	}
+
+	@keyframes eyePulse {
+		0%, 100% {
+			transform: translateY(-50%) scale(1);
+		}
+		50% {
+			transform: translateY(-50%) scale(1.05);
+		}
+	}
+
+	/* Повна панель керування */
 	.vj-control-bar {
 		position: fixed;
 		left: 1.5rem;
@@ -258,8 +318,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.55rem;
-		padding: 0.75rem 0.85rem;
-		min-width: 275px;
+		padding: 0.8rem 0.9rem;
+		min-width: 280px;
+		width: 295px;
 		background: rgba(14, 14, 18, 0.88);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -456,6 +517,8 @@
 	.vj-icon-btn:hover {
 		transform: scale(1.1);
 		background: rgba(255, 255, 255, 0.15);
+		color: #ff5f1f;
+		border-color: #ff5f1f;
 	}
 
 	:global([data-theme="light"]) .vj-icon-btn {
@@ -466,32 +529,8 @@
 
 	:global([data-theme="light"]) .vj-icon-btn:hover {
 		background: rgba(0, 0, 0, 0.1);
-		color: #000000;
-	}
-
-	.vj-icon-btn.is-active {
-		background: rgba(255, 255, 255, 0.22);
-		border-color: #ff5f1f;
-	}
-
-	:global([data-theme="light"]) .vj-icon-btn.is-active {
-		background: rgba(0, 0, 0, 0.1);
-		border-color: #ff5f1f;
-	}
-
-	.palette-swatch {
-		position: absolute;
-		bottom: 1px;
-		right: 1px;
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		border: 1px solid #ffffff;
-		box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-	}
-
-	:global([data-theme="light"]) .palette-swatch {
-		border-color: #ffffff;
+		color: #eb1e3c;
+		border-color: #eb1e3c;
 	}
 
 	.vj-exit-btn {
@@ -523,55 +562,30 @@
 		background: rgba(0, 0, 0, 0.08);
 	}
 
-	/* Settings Popover Drawer (відкривається праворуч на десктопі) */
-	.vj-settings-dropdown {
-		position: absolute;
-		left: calc(100% + 12px);
-		top: 50%;
-		transform: translateY(-50%);
-		width: 280px;
-		padding: 1.1rem;
-		background: rgba(18, 18, 24, 0.96);
-		backdrop-filter: blur(24px) saturate(180%);
-		-webkit-backdrop-filter: blur(24px) saturate(180%);
-		border: 1px solid rgba(255, 255, 255, 0.15);
-		border-radius: 20px;
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+	/* Налаштування завжди внизу меню */
+	.vj-settings-section {
 		display: flex;
 		flex-direction: column;
-		gap: 1.05rem;
-		animation: dropFadeRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		gap: 0.55rem;
+		padding-top: 0.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
-	@keyframes dropFadeRight {
-		from {
-			opacity: 0;
-			transform: translateY(-50%) translateX(-8px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(-50%) translateX(0);
-		}
-	}
-
-	:global([data-theme="light"]) .vj-settings-dropdown {
-		background: rgba(255, 255, 255, 0.98);
-		border-color: rgba(0, 0, 0, 0.14);
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16),
-		            0 0 1px rgba(0, 0, 0, 0.1);
+	:global([data-theme="light"]) .vj-settings-section {
+		border-top-color: rgba(0, 0, 0, 0.08);
 	}
 
 	.setting-item {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0.35rem;
 	}
 
 	.setting-label-row {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		font-size: 0.8rem;
+		font-size: 0.78rem;
 	}
 
 	.setting-title {
@@ -606,8 +620,8 @@
 	.vj-slider::-webkit-slider-thumb {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 16px;
-		height: 16px;
+		width: 15px;
+		height: 15px;
 		border-radius: 50%;
 		background: #ff5f1f;
 		box-shadow: 0 0 8px rgba(255, 95, 31, 0.6);
@@ -617,19 +631,19 @@
 	.palettes-picker {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
+		gap: 0.35rem;
 	}
 
 	.palette-chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.35rem;
-		padding: 0.32rem 0.6rem;
+		gap: 0.32rem;
+		padding: 0.28rem 0.55rem;
 		border-radius: 9999px;
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		color: var(--text-secondary);
-		font-size: 0.74rem;
+		font-size: 0.72rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -666,8 +680,8 @@
 	}
 
 	.palette-dot {
-		width: 8px;
-		height: 8px;
+		width: 7px;
+		height: 7px;
 		border-radius: 50%;
 		background: var(--chip-color);
 		flex-shrink: 0;
@@ -684,6 +698,17 @@
 			min-width: unset;
 		}
 
+		.vj-collapsed-eye-btn {
+			left: 50%;
+			top: auto;
+			bottom: 5.5rem;
+			transform: translateX(-50%);
+		}
+
+		.vj-collapsed-eye-btn:hover {
+			transform: translateX(-50%) scale(1.12);
+		}
+
 		@keyframes barSlideInLeft {
 			from {
 				opacity: 0;
@@ -695,21 +720,12 @@
 			}
 		}
 
-		.vj-settings-dropdown {
-			left: 50%;
-			top: auto;
-			bottom: calc(100% + 12px);
-			transform: translateX(-50%);
-		}
-
-		@keyframes dropFadeRight {
-			from {
-				opacity: 0;
-				transform: translateX(-50%) translateY(8px);
+		@keyframes eyePulse {
+			0%, 100% {
+				transform: translateX(-50%) scale(1);
 			}
-			to {
-				opacity: 1;
-				transform: translateX(-50%) translateY(0);
+			50% {
+				transform: translateX(-50%) scale(1.05);
 			}
 		}
 	}

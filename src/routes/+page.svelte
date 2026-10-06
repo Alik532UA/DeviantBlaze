@@ -52,8 +52,12 @@
 	// 5-second inactivity VJ dimming (everything except central logo fades out)
 	let isVJIdle = $state(false);
 	let vjIdleTimer = null;
+	let isVJCollapsed = $state(false);
+	let lastManualHideTime = 0;
 
 	function resetVJInactivity() {
+		if (isVJCollapsed) return;
+
 		isVJIdle = false;
 		if (vjIdleTimer) clearTimeout(vjIdleTimer);
 		if (isVisualizerActive && !anyModalOpen) {
@@ -63,11 +67,25 @@
 		}
 	}
 
+	function toggleVJCollapse() {
+		if (isVJCollapsed) {
+			isVJCollapsed = false;
+			isVJIdle = false;
+			resetVJInactivity();
+		} else {
+			isVJCollapsed = true;
+			isVJIdle = true;
+			lastManualHideTime = Date.now();
+			if (vjIdleTimer) clearTimeout(vjIdleTimer);
+		}
+	}
+
 	$effect(() => {
 		if (isVisualizerActive) {
 			resetVJInactivity();
 		} else {
 			isVJIdle = false;
+			isVJCollapsed = false;
 			if (vjIdleTimer) clearTimeout(vjIdleTimer);
 		}
 	});
@@ -122,7 +140,13 @@
 	function toggleVisualizer() {
 		isVisualizerActive = !isVisualizerActive;
 		if (isVisualizerActive) {
+			isVJCollapsed = false;
+			isVJIdle = false;
 			resetVJInactivity();
+		} else {
+			isVJCollapsed = false;
+			isVJIdle = false;
+			if (vjIdleTimer) clearTimeout(vjIdleTimer);
 		}
 	}
 
@@ -237,6 +261,10 @@
 
 		const PROXIMITY_RADIUS = 260;
 		function handlePointerMove(e) {
+			if (isVJCollapsed) {
+				return;
+			}
+
 			resetVJInactivity();
 
 			if (!indicatorEl) {
@@ -303,6 +331,8 @@
 		palette={visualizerPalette}
 		sensitivity={visualizerSensitivity}
 		spectrumHeight={visualizerSpectrumHeight}
+		isCollapsed={isVJCollapsed}
+		onToggleCollapse={toggleVJCollapse}
 		onSelectMode={(m) => (visualizerMode = m)}
 		onSelectSource={selectAudioSource}
 		onSelectPalette={(p) => (visualizerPalette = p)}
