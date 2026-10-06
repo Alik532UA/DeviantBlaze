@@ -45,7 +45,7 @@
 	aria-label="Додаткові інструменти та дії"
 	aria-hidden={!isVisible}
 >
-	<div class="hidden-panel-content">
+	<div class="hidden-panel-content" class:has-5-items={!isSupported}>
 		<!-- 1. Замовити сайт -->
 		<a
 			href="https://alik532ua.github.io/DigitalWorkshop/"
@@ -314,7 +314,7 @@
 
 		.hidden-panel-content {
 			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-columns: repeat(6, minmax(0, 1fr));
 			gap: 0.35rem 0.45rem;
 			padding: 0.6rem 0.65rem;
 			width: 100%;
@@ -324,12 +324,23 @@
 		}
 
 		.action-item {
+			grid-column: span 2;
 			padding: 0.35rem 0.25rem;
 			gap: 0.2rem;
 			border-radius: 12px;
 			width: 100%;
 			min-width: 0;
 			box-sizing: border-box;
+		}
+
+		.hidden-panel-content.has-5-items .style-toggle-item,
+		.hidden-panel-content:not(:has(.fullscreen-item)) .style-toggle-item {
+			grid-column: 2 / span 2;
+		}
+
+		.hidden-panel-content.has-5-items .lang-toggle-item,
+		.hidden-panel-content:not(:has(.fullscreen-item)) .lang-toggle-item {
+			grid-column: 4 / span 2;
 		}
 
 		.action-icon-box {
