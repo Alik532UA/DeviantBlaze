@@ -192,7 +192,7 @@
 		const clampedT = Math.max(0, Math.min(1, t));
 		const maxBin = Math.floor(bufferLength * 0.82);
 		const minBin = 0;
-		const p = Math.pow(clampedT, 2.0);
+		const p = Math.pow(clampedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
@@ -203,7 +203,12 @@
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 		const trebleTilt = 1.0 + clampedT * 0.45;
-		let val = rawVal * sens * trebleTilt;
+
+		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
+		const trebleEdgeRollOff = Math.min(1.0, Math.pow((1.0 - clampedT) / 0.07, 1.25));
+		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
+
+		let val = rawVal * sens * trebleTilt * edgeEnvelope;
 
 		return Math.min(255, val);
 	}

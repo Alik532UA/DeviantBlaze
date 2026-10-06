@@ -362,11 +362,11 @@
 
 	/**
 	 * Full-spectrum acoustic frequency sampler:
-	 * 1. Range expanded by +30% on both sides:
-	 *    - Lows: down to true 0-35 Hz sub-bass boundary (< 30 Hz naturally rolls off at the left edge).
-	 *    - Highs: up to ~18.1 kHz studio upper boundary (~16-18 kHz naturally rolls off at the right edge).
-	 * 2. Natural acoustic edges: neither edge is truncated mid-peak; both sides show true musical bounds.
-	 * 3. Quadratic power curve (exponent 2.0) spreads sub-bass, punch, vocal mids, and treble evenly.
+	 * 1. Bass range expanded by +30%:
+	 *    - Low-frequency bins (< 400 Hz) occupy 30% more horizontal space (exponent 2.35).
+	 *    - True acoustic infrasonic roll-off at the left edge (< 30 Hz tapers smoothly to the floor).
+	 * 2. True acoustic ultrasonic roll-off at the right edge (> 16-18 kHz tapers smoothly to the floor).
+	 * 3. Both edges naturally meet the ground, clearly indicating the true outer boundaries of the spectrum.
 	 */
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
@@ -375,8 +375,8 @@
 		const maxBin = Math.floor(bufferLength * 0.82);
 		const minBin = 0;
 
-		// Quadratic perceptual power curve
-		const p = Math.pow(clampedT, 2.0);
+		// Expanded bass perceptual curve (exponent 2.35 gives bass +30% wider space)
+		const p = Math.pow(clampedT, 2.35);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
@@ -390,7 +390,15 @@
 
 		// Natural balanced treble compensation without artificial edge boost
 		const trebleTilt = 1.0 + clampedT * 0.45;
-		let val = rawVal * sens * trebleTilt;
+
+		// Acoustic edge roll-offs:
+		// Left edge: infrasound taper (< 30 Hz smoothly rolls down to the floor at the left boundary)
+		const bassEdgeRollOff = Math.min(1.0, Math.pow(clampedT / 0.07, 1.25));
+		// Right edge: ultrasonic taper (> 17 kHz smoothly rolls down to the floor at the right boundary)
+		const trebleEdgeRollOff = Math.min(1.0, Math.pow((1.0 - clampedT) / 0.07, 1.25));
+		const edgeEnvelope = bassEdgeRollOff * trebleEdgeRollOff;
+
+		let val = rawVal * sens * trebleTilt * edgeEnvelope;
 
 		return Math.min(255, val);
 	}
