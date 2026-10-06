@@ -48,137 +48,145 @@
 		class="vj-control-bar"
 		aria-label="Панель керування візуалізацією"
 	>
-		<!-- Status chip -->
-		<div class="vj-status-chip">
-			<span
-				class="vj-pulse-dot"
-				class:is-live={audioSource === 'mic' || audioSource === 'speakers'}
-				class:is-speakers={audioSource === 'speakers'}
-			></span>
-			<span class="vj-status-text">
-				{#if audioSource === 'speakers'}
-					{langStore.t('vj_live_speakers')}
-				{:else if audioSource === 'mic'}
-					{langStore.t('vj_live_mic')}
-				{:else}
-					{langStore.t('vj_live_test')}
-				{/if}
-			</span>
+		<!-- 1. Верхній рядок: Статус + Швидкі інструменти -->
+		<div class="vj-row vj-header-row">
+			<div class="vj-status-chip">
+				<span
+					class="vj-pulse-dot"
+					class:is-live={audioSource === 'mic' || audioSource === 'speakers'}
+					class:is-speakers={audioSource === 'speakers'}
+				></span>
+				<span class="vj-status-text">
+					{#if audioSource === 'speakers'}
+						{langStore.t('vj_live_speakers')}
+					{:else if audioSource === 'mic'}
+						{langStore.t('vj_live_mic')}
+					{:else}
+						{langStore.t('vj_live_test')}
+					{/if}
+				</span>
+			</div>
+
+			<div class="vj-actions-group">
+				<!-- Palette quick switch button -->
+				<button
+					type="button"
+					class="vj-icon-btn vj-palette-btn"
+					onclick={cyclePalette}
+					title="{langStore.t('vj_color_theme')}: {langStore.t(PALETTES_LIST.find(p => p.id === palette)?.nameKey || 'pal_blaze')}"
+					aria-label="Змінити палітру кольорів"
+				>
+					<span class="palette-swatch" style="background-color: {PALETTES_LIST.find(p => p.id === palette)?.color || '#ff5f1f'};"></span>
+					{#if getIcon('palette')}
+						{@const icon = getIcon('palette')}
+						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+							{@html icon.svg}
+						</svg>
+					{/if}
+				</button>
+
+				<!-- Settings Popover Toggle Button -->
+				<button
+					type="button"
+					class="vj-icon-btn vj-settings-btn"
+					class:is-active={isSettingsOpen}
+					onclick={() => (isSettingsOpen = !isSettingsOpen)}
+					title={langStore.t('vj_settings')}
+					aria-label="Налаштування візуалізатора"
+				>
+					{#if getIcon('settings')}
+						{@const icon = getIcon('settings')}
+						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+							{@html icon.svg}
+						</svg>
+					{/if}
+				</button>
+
+				<!-- Exit Visualizer Button -->
+				<button
+					type="button"
+					class="vj-exit-btn"
+					onclick={() => onClose?.()}
+					title={langStore.t('close_visualizer')}
+					aria-label={langStore.t('close_visualizer')}
+				>
+					{#if getIcon('close')}
+						{@const icon = getIcon('close')}
+						<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+							{@html icon.svg}
+						</svg>
+					{/if}
+				</button>
+			</div>
 		</div>
 
-		<!-- Audio Source Selector: Мікрофон vs З колонок -->
-		<div class="vj-toggle-group vj-sources">
-			<button
-				type="button"
-				class="vj-toggle-btn vj-btn-with-icon"
-				class:is-active={audioSource === 'mic'}
-				onclick={() => onSelectSource?.('mic')}
-				title={langStore.t('source_mic')}
-			>
-				{#if getIcon('mic')}
-					{@const icon = getIcon('mic')}
-					<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
-						{@html icon.svg}
-					</svg>
-				{/if}
-				<span>{langStore.t('source_mic')}</span>
-			</button>
-			<button
-				type="button"
-				class="vj-toggle-btn vj-btn-with-icon"
-				class:is-active={audioSource === 'speakers'}
-				onclick={() => onSelectSource?.('speakers')}
-				title={langStore.t('source_speakers')}
-			>
-				{#if getIcon('speakers')}
-					{@const icon = getIcon('speakers')}
-					<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
-						{@html icon.svg}
-					</svg>
-				{/if}
-				<span>{langStore.t('source_speakers')}</span>
-			</button>
+		<!-- 2. Рядок джерел звуку: Мікрофон vs З колонок -->
+		<div class="vj-row">
+			<div class="vj-toggle-group vj-sources">
+				<button
+					type="button"
+					class="vj-toggle-btn vj-btn-with-icon"
+					class:is-active={audioSource === 'mic'}
+					onclick={() => onSelectSource?.('mic')}
+					title={langStore.t('source_mic')}
+				>
+					{#if getIcon('mic')}
+						{@const icon = getIcon('mic')}
+						<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+							{@html icon.svg}
+						</svg>
+					{/if}
+					<span>{langStore.t('source_mic')}</span>
+				</button>
+				<button
+					type="button"
+					class="vj-toggle-btn vj-btn-with-icon"
+					class:is-active={audioSource === 'speakers'}
+					onclick={() => onSelectSource?.('speakers')}
+					title={langStore.t('source_speakers')}
+				>
+					{#if getIcon('speakers')}
+						{@const icon = getIcon('speakers')}
+						<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+							{@html icon.svg}
+						</svg>
+					{/if}
+					<span>{langStore.t('source_speakers')}</span>
+				</button>
+			</div>
 		</div>
 
-		<!-- Visualization Mode: Спектр | Хвиля | Радар -->
-		<div class="vj-toggle-group vj-modes">
-			<button
-				type="button"
-				class="vj-toggle-btn"
-				class:is-active={currentMode === 'bars'}
-				onclick={() => onSelectMode?.('bars')}
-			>
-				{langStore.t('mode_bars')}
-			</button>
-			<button
-				type="button"
-				class="vj-toggle-btn"
-				class:is-active={currentMode === 'wave'}
-				onclick={() => onSelectMode?.('wave')}
-			>
-				{langStore.t('mode_wave')}
-			</button>
-			<button
-				type="button"
-				class="vj-toggle-btn"
-				class:is-active={currentMode === 'radar'}
-				onclick={() => onSelectMode?.('radar')}
-			>
-				{langStore.t('mode_radar')}
-			</button>
+		<!-- 3. Рядок режимів: Спектр | Хвиля | Радар -->
+		<div class="vj-row">
+			<div class="vj-toggle-group vj-modes">
+				<button
+					type="button"
+					class="vj-toggle-btn"
+					class:is-active={currentMode === 'bars'}
+					onclick={() => onSelectMode?.('bars')}
+				>
+					{langStore.t('mode_bars')}
+				</button>
+				<button
+					type="button"
+					class="vj-toggle-btn"
+					class:is-active={currentMode === 'wave'}
+					onclick={() => onSelectMode?.('wave')}
+				>
+					{langStore.t('mode_wave')}
+				</button>
+				<button
+					type="button"
+					class="vj-toggle-btn"
+					class:is-active={currentMode === 'radar'}
+					onclick={() => onSelectMode?.('radar')}
+				>
+					{langStore.t('mode_radar')}
+				</button>
+			</div>
 		</div>
 
-		<!-- Palette quick switch button -->
-		<button
-			type="button"
-			class="vj-icon-btn vj-palette-btn"
-			onclick={cyclePalette}
-			title="{langStore.t('vj_color_theme')}: {langStore.t(PALETTES_LIST.find(p => p.id === palette)?.nameKey || 'pal_blaze')}"
-			aria-label="Змінити палітру кольорів"
-		>
-			<span class="palette-swatch" style="background-color: {PALETTES_LIST.find(p => p.id === palette)?.color || '#ff5f1f'};"></span>
-			{#if getIcon('palette')}
-				{@const icon = getIcon('palette')}
-				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-					{@html icon.svg}
-				</svg>
-			{/if}
-		</button>
-
-		<!-- Settings Popover Toggle Button -->
-		<button
-			type="button"
-			class="vj-icon-btn vj-settings-btn"
-			class:is-active={isSettingsOpen}
-			onclick={() => (isSettingsOpen = !isSettingsOpen)}
-			title={langStore.t('vj_settings')}
-			aria-label="Налаштування візуалізатора"
-		>
-			{#if getIcon('settings')}
-				{@const icon = getIcon('settings')}
-				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-					{@html icon.svg}
-				</svg>
-			{/if}
-		</button>
-
-		<!-- Exit Visualizer Button -->
-		<button
-			type="button"
-			class="vj-exit-btn"
-			onclick={() => onClose?.()}
-			title={langStore.t('close_visualizer')}
-			aria-label={langStore.t('close_visualizer')}
-		>
-			{#if getIcon('close')}
-				{@const icon = getIcon('close')}
-				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
-					{@html icon.svg}
-				</svg>
-			{/if}
-		</button>
-
-		<!-- Settings Dropdown Drawer -->
+		<!-- Settings Dropdown Drawer (з'являється праворуч від меню на десктопі) -->
 		{#if isSettingsOpen}
 			<div class="vj-settings-dropdown">
 				<div class="setting-item">
@@ -243,55 +251,74 @@
 <style>
 	.vj-control-bar {
 		position: fixed;
-		top: 1.5rem;
-		right: 1.5rem;
+		left: 1.5rem;
+		top: 50%;
+		transform: translateY(-50%);
 		z-index: 120;
 		display: flex;
-		align-items: center;
+		flex-direction: column;
 		gap: 0.55rem;
-		padding: 0.45rem 0.8rem;
+		padding: 0.75rem 0.85rem;
+		min-width: 275px;
 		background: rgba(14, 14, 18, 0.88);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border: 1px solid rgba(255, 255, 255, 0.14);
-		border-radius: 9999px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-		            0 0 20px rgba(235, 30, 60, 0.2);
-		animation: barSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+		border-radius: 20px;
+		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55),
+		            0 0 20px rgba(235, 30, 60, 0.15);
+		animation: barSlideInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
 		            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
 		            background-color var(--transition-speed) var(--transition-easing),
 		            border-color var(--transition-speed) var(--transition-easing);
 	}
 
-	@keyframes barSlideIn {
+	@keyframes barSlideInLeft {
 		from {
 			opacity: 0;
-			transform: translateY(-10px) scale(0.95);
+			transform: translateY(-50%) translateX(-15px) scale(0.96);
 		}
 		to {
 			opacity: 1;
-			transform: translateY(0) scale(1);
+			transform: translateY(-50%) translateX(0) scale(1);
 		}
 	}
 
 	:global([data-theme="light"]) .vj-control-bar {
 		background: rgba(255, 255, 255, 0.95);
 		border-color: rgba(0, 0, 0, 0.12);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12),
+		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12),
 		            0 0 15px rgba(0, 0, 0, 0.05);
+	}
+
+	.vj-row {
+		display: flex;
+		width: 100%;
+	}
+
+	.vj-header-row {
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding-bottom: 0.35rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	:global([data-theme="light"]) .vj-header-row {
+		border-bottom-color: rgba(0, 0, 0, 0.08);
 	}
 
 	.vj-status-chip {
 		display: flex;
 		align-items: center;
 		gap: 0.45rem;
-		padding-right: 0.5rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.14);
 	}
 
-	:global([data-theme="light"]) .vj-status-chip {
-		border-right-color: rgba(0, 0, 0, 0.12);
+	.vj-actions-group {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
 	}
 
 	.vj-pulse-dot {
@@ -299,6 +326,7 @@
 		height: 8px;
 		border-radius: 50%;
 		background: #6b7280;
+		flex-shrink: 0;
 	}
 
 	.vj-pulse-dot.is-live {
@@ -324,7 +352,7 @@
 	}
 
 	.vj-status-text {
-		font-size: 0.75rem;
+		font-size: 0.76rem;
 		font-weight: 600;
 		color: var(--text-primary);
 		letter-spacing: 0.02em;
@@ -337,6 +365,7 @@
 
 	.vj-toggle-group {
 		display: flex;
+		width: 100%;
 		gap: 0.25rem;
 		background: rgba(255, 255, 255, 0.07);
 		padding: 0.2rem;
@@ -348,34 +377,37 @@
 	}
 
 	.vj-toggle-btn {
+		flex: 1;
 		background: transparent;
 		border: none;
 		color: var(--text-secondary);
-		padding: 0.3rem 0.65rem;
+		padding: 0.32rem 0.5rem;
 		border-radius: 9999px;
-		font-size: 0.75rem;
+		font-size: 0.74rem;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		white-space: nowrap;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
 	}
 
 	.vj-btn-with-icon {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
+		gap: 0.35rem;
 	}
 
 	.inline-icon {
-		width: 14px;
-		height: 14px;
+		width: 13px;
+		height: 13px;
 		display: inline-block;
 		flex-shrink: 0;
 	}
 
 	.bar-svg-icon {
-		width: 16px;
-		height: 16px;
+		width: 15px;
+		height: 15px;
 		display: block;
 		flex-shrink: 0;
 	}
@@ -410,8 +442,8 @@
 		background: rgba(255, 255, 255, 0.08);
 		border: 1px solid rgba(255, 255, 255, 0.14);
 		border-radius: 50%;
-		width: 32px;
-		height: 32px;
+		width: 28px;
+		height: 28px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -449,10 +481,10 @@
 
 	.palette-swatch {
 		position: absolute;
-		bottom: 2px;
-		right: 2px;
-		width: 8px;
-		height: 8px;
+		bottom: 1px;
+		right: 1px;
+		width: 7px;
+		height: 7px;
 		border-radius: 50%;
 		border: 1px solid #ffffff;
 		box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
@@ -466,8 +498,8 @@
 		background: transparent;
 		border: none;
 		color: var(--text-secondary);
-		width: 30px;
-		height: 30px;
+		width: 28px;
+		height: 28px;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -491,13 +523,14 @@
 		background: rgba(0, 0, 0, 0.08);
 	}
 
-	/* Settings Popover Drawer */
+	/* Settings Popover Drawer (відкривається праворуч на десктопі) */
 	.vj-settings-dropdown {
 		position: absolute;
-		top: calc(100% + 10px);
-		right: 0;
-		width: 290px;
-		padding: 1.15rem;
+		left: calc(100% + 12px);
+		top: 50%;
+		transform: translateY(-50%);
+		width: 280px;
+		padding: 1.1rem;
 		background: rgba(18, 18, 24, 0.96);
 		backdrop-filter: blur(24px) saturate(180%);
 		-webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -506,18 +539,18 @@
 		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
 		display: flex;
 		flex-direction: column;
-		gap: 1.1rem;
-		animation: dropFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		gap: 1.05rem;
+		animation: dropFadeRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	@keyframes dropFade {
+	@keyframes dropFadeRight {
 		from {
 			opacity: 0;
-			transform: translateY(-8px);
+			transform: translateY(-50%) translateX(-8px);
 		}
 		to {
 			opacity: 1;
-			transform: translateY(0);
+			transform: translateY(-50%) translateX(0);
 		}
 	}
 
@@ -591,7 +624,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.35rem 0.65rem;
+		padding: 0.32rem 0.6rem;
 		border-radius: 9999px;
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.12);
@@ -642,20 +675,42 @@
 
 	@media (max-width: 768px) {
 		.vj-control-bar {
+			left: 50%;
 			top: auto;
 			bottom: 5.5rem;
-			right: 50%;
-			transform: translateX(50%);
-			max-width: 95vw;
-			flex-wrap: wrap;
-			justify-content: center;
-			border-radius: 18px;
+			transform: translateX(-50%);
+			width: calc(100vw - 2rem);
+			max-width: 330px;
+			min-width: unset;
 		}
+
+		@keyframes barSlideInLeft {
+			from {
+				opacity: 0;
+				transform: translateX(-50%) translateY(10px) scale(0.96);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0) scale(1);
+			}
+		}
+
 		.vj-settings-dropdown {
+			left: 50%;
 			top: auto;
-			bottom: calc(100% + 10px);
-			right: 50%;
-			transform: translateX(50%);
+			bottom: calc(100% + 12px);
+			transform: translateX(-50%);
+		}
+
+		@keyframes dropFadeRight {
+			from {
+				opacity: 0;
+				transform: translateX(-50%) translateY(8px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0);
+			}
 		}
 	}
 </style>
