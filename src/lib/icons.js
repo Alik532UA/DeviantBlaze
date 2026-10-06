@@ -170,10 +170,11 @@ export const ICONS = {
 			viewBox: '0 0 24 24',
 			type: 'stroke',
 			svg: `
-				<path d="M12 3a9 9 0 0 0-9 9c0 3.6 2.5 6 6 6 1 0 1.5-.5 1.5-1.5 0-.5.2-1 .5-1.5.4-.6 1-1 2-1h1a7 7 0 0 0 7-7c0-4.4-3.6-8-9-8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-				<circle cx="7.5" cy="10.5" r="1" fill="currentColor"/>
-				<circle cx="12" cy="7.5" r="1" fill="currentColor"/>
-				<circle cx="16.5" cy="10.5" r="1" fill="currentColor"/>
+				<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="13.5" cy="6.5" r="1.2" fill="currentColor"/>
+				<circle cx="17.5" cy="10.5" r="1.2" fill="currentColor"/>
+				<circle cx="8.5" cy="7.5" r="1.2" fill="currentColor"/>
+				<circle cx="6.5" cy="12.5" r="1.2" fill="currentColor"/>
 			`
 		},
 		settings: {
