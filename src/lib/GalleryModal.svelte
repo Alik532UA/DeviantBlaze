@@ -41,8 +41,9 @@
 		const originalOverflow = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
 
-		let isWheelLocked = false;
-		let wheelTimeout;
+		let wheelAccumulator = 0;
+		let lastStepTime = 0;
+		let wheelClearTimer;
 
 		function onWheel(e) {
 			// Allow normal vertical scroll inside thumbnail rail
@@ -52,20 +53,26 @@
 
 			e.preventDefault();
 
-			if (isWheelLocked) return;
+			const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+			const now = performance.now();
+			wheelAccumulator += delta;
 
-			const threshold = 18;
-			if (Math.abs(e.deltaY) > threshold || Math.abs(e.deltaX) > threshold) {
-				if (e.deltaY > 0 || e.deltaX > 0) {
+			if (wheelClearTimer) clearTimeout(wheelClearTimer);
+			wheelClearTimer = setTimeout(() => {
+				wheelAccumulator = 0;
+			}, 140);
+
+			const STEP_COOLDOWN = 60;
+			const THRESHOLD = 35;
+
+			if (Math.abs(wheelAccumulator) >= THRESHOLD && now - lastStepTime >= STEP_COOLDOWN) {
+				if (wheelAccumulator > 0) {
 					next();
 				} else {
 					prev();
 				}
-				isWheelLocked = true;
-				clearTimeout(wheelTimeout);
-				wheelTimeout = setTimeout(() => {
-					isWheelLocked = false;
-				}, 300);
+				lastStepTime = now;
+				wheelAccumulator = 0;
 			}
 		}
 
@@ -73,7 +80,7 @@
 
 		return () => {
 			document.body.style.overflow = originalOverflow;
-			clearTimeout(wheelTimeout);
+			if (wheelClearTimer) clearTimeout(wheelClearTimer);
 			window.removeEventListener('wheel', onWheel);
 		};
 	});

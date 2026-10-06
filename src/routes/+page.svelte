@@ -31,8 +31,6 @@
 	// 4: Standard icons, logo & music shifted UP to reveal hidden actions panel
 	let scrollState = $state(2);
 
-	let isScrollLocked = false;
-
 	// Right-side scroll indicator proximity and scroll-flash logic
 	let indicatorEl = $state(null);
 	let cursorDistOpacity = $state(0);
@@ -99,15 +97,9 @@
 
 	function stepScroll(direction) {
 		if (anyModalOpen) return;
-		if (isScrollLocked) return;
 
 		resetVJInactivity();
 		triggerScrollFlash();
-
-		isScrollLocked = true;
-		setTimeout(() => {
-			isScrollLocked = false;
-		}, 420);
 
 		if (direction > 0) {
 			// Scroll Down: 1 -> 2 -> 3 -> 4 -> 1
@@ -169,13 +161,32 @@
 	$effect(() => {
 		if (typeof window === 'undefined') return;
 
+		let wheelAccumulator = 0;
+		let lastStepTime = 0;
+		let wheelClearTimer = null;
+
 		function handleWheel(e) {
 			if (anyModalOpen) return;
 			e.preventDefault();
 
-			const threshold = 18;
-			if (Math.abs(e.deltaY) >= threshold) {
-				stepScroll(e.deltaY > 0 ? 1 : -1);
+			const now = performance.now();
+			wheelAccumulator += e.deltaY;
+
+			if (wheelClearTimer) clearTimeout(wheelClearTimer);
+			wheelClearTimer = setTimeout(() => {
+				wheelAccumulator = 0;
+			}, 140);
+
+			// Fast scroll is independent and responsive:
+			// Cooldown of only 55ms allows fast successive notches,
+			// while threshold 40 filters minor twitches and accumulates trackpad deltas.
+			const STEP_COOLDOWN = 55;
+			const THRESHOLD = 40;
+
+			if (Math.abs(wheelAccumulator) >= THRESHOLD && now - lastStepTime >= STEP_COOLDOWN) {
+				stepScroll(wheelAccumulator > 0 ? 1 : -1);
+				lastStepTime = now;
+				wheelAccumulator = 0;
 			}
 		}
 
@@ -305,6 +316,7 @@
 			window.removeEventListener('pointerleave', handlePointerLeave);
 			if (vjIdleTimer) clearTimeout(vjIdleTimer);
 			if (scrollFlashTimer) clearTimeout(scrollFlashTimer);
+			if (wheelClearTimer) clearTimeout(wheelClearTimer);
 		};
 	});
 </script>
