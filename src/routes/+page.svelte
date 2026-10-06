@@ -352,6 +352,26 @@
 		onClose={() => (isVisualizerActive = false)}
 	/>
 
+	<!-- Main Theme Artwork Backgrounds (Dark & Light) -->
+	<div class="site-bg-layer site-bg-dark" aria-hidden="true">
+		<img
+			src={asset('bg-dark.webp')}
+			alt=""
+			class="site-bg-img"
+			loading="eager"
+			decoding="async"
+		/>
+	</div>
+	<div class="site-bg-layer site-bg-light" aria-hidden="true">
+		<img
+			src={asset('bg-light.webp')}
+			alt=""
+			class="site-bg-img"
+			loading="eager"
+			decoding="async"
+		/>
+	</div>
+
 	<!-- Gallery Hover Background -->
 	<div
 		class="gallery-hover-bg"
@@ -499,11 +519,48 @@
 		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
 	}
 
+	/* Main Site Theme Artwork Backgrounds */
+	.site-bg-layer {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		opacity: 0;
+		overflow: hidden;
+		transition: opacity var(--transition-speed) var(--transition-easing);
+		will-change: opacity;
+	}
+
+	.site-bg-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		user-select: none;
+		-webkit-user-select: none;
+		pointer-events: none;
+	}
+
+	:root .site-bg-dark,
+	:global([data-theme="dark"]) .site-bg-dark {
+		opacity: 1;
+	}
+
+	:global([data-theme="light"]) .site-bg-dark {
+		opacity: 0;
+	}
+
+	:global([data-theme="light"]) .site-bg-light {
+		opacity: 1;
+	}
+
 	/* Gallery Hover Background */
 	.gallery-hover-bg {
 		position: fixed;
 		inset: 0;
-		z-index: 0;
+		z-index: 1;
 		pointer-events: none;
 		opacity: 0;
 		transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);

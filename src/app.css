@@ -100,7 +100,7 @@ html.no-fullscreen .fullscreen-item {
 	inset: 0;
 	pointer-events: none;
 	background: radial-gradient(circle at center, transparent 40%, var(--bg-primary) 95%);
-	opacity: 0.6;
+	opacity: 0.35;
 	z-index: 2;
 	transition: background var(--transition-speed) var(--transition-easing);
 }
