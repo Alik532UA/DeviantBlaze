@@ -5,7 +5,7 @@
 	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
 
-	let { onOpenGallery, onOpenMessage, onGalleryHover, onThemeHover, isExpanded = false } = $props();
+	let { onOpenGallery, onGalleryHover, onThemeHover, isExpanded = false } = $props();
 
 	let isDark = $derived(themeStore.current === 'dark');
 	let style = $derived(iconStyleStore.current);
@@ -118,10 +118,12 @@
 		<span class="nav-tooltip">Instagram</span>
 	</a>
 
-	<!-- 3. Message / Write Button -->
-	<button
+	<!-- 3. Message / Write Link -->
+	<a
+		href="https://t.me/Moyo_imya_polzovatelya"
+		target="_blank"
+		rel="noopener noreferrer"
 		class="nav-btn"
-		onclick={onOpenMessage}
 		aria-label={langStore.t('contact')}
 	>
 		<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
@@ -129,7 +131,7 @@
 		</svg>
 		<span class="nav-sublabel">{langStore.t('contact')}</span>
 		<span class="nav-tooltip">{langStore.t('contact')}</span>
-	</button>
+	</a>
 
 	<!-- 4. Theme Toggle Button -->
 	<button

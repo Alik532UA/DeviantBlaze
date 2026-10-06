@@ -3,7 +3,6 @@
 	import MusicLinks from '#lib/MusicLinks.svelte';
 	import TopNav from '#lib/TopNav.svelte';
 	import GalleryModal from '#lib/GalleryModal.svelte';
-	import ContactsModal from '#lib/ContactsModal.svelte';
 	import PianoModal from '#lib/PianoModal.svelte';
 	import HiddenPanel from '#lib/HiddenPanel.svelte';
 	import BackgroundVisualizer from '#lib/BackgroundVisualizer.svelte';
@@ -11,15 +10,14 @@
 	import { themeStore } from '#lib/theme.svelte.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { langStore } from '#lib/lang.svelte.js';
-	import { resolve } from '$app/paths';
+	import { asset } from '$app/paths';
 
 	// Modals
 	let isGalleryOpen = $state(false);
-	let isContactsOpen = $state(false);
 	let isPianoOpen = $state(false);
 
 	let anyModalOpen = $derived(
-		isGalleryOpen || isContactsOpen || isPianoOpen
+		isGalleryOpen || isPianoOpen
 	);
 
 	// Hover effects
@@ -349,7 +347,7 @@
 		aria-hidden="true"
 	>
 		<img
-			src={resolve('/gallery-hover-bg.webp')}
+			src={asset('gallery-hover-bg.webp')}
 			alt=""
 			class="gallery-hover-img"
 		/>
@@ -371,13 +369,8 @@
 	<TopNav
 		isExpanded={scrollState === 1}
 		onOpenGallery={() => {
-			isContactsOpen = false;
 			isGalleryOpen = true;
 			isGalleryHovered = false;
-		}}
-		onOpenMessage={() => {
-			isGalleryOpen = false;
-			isContactsOpen = true;
 		}}
 		onGalleryHover={(hovered) => {
 			isGalleryHovered = hovered;
@@ -463,7 +456,6 @@
 
 	<!-- Modals -->
 	<GalleryModal bind:isOpen={isGalleryOpen} />
-	<ContactsModal bind:isOpen={isContactsOpen} />
 	<PianoModal bind:isOpen={isPianoOpen} />
 </main>
 
