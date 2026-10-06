@@ -210,26 +210,38 @@
 	@media (max-width: 768px), (pointer: coarse) {
 		.music-links {
 			bottom: 1.75rem;
-			gap: 1.75rem;
+			gap: 1.6rem;
 			opacity: 1 !important;
 			max-width: calc(100vw - 1rem);
 			box-sizing: border-box;
 		}
 
 		.music-links.is-expanded {
-			bottom: 1.75rem;
-			gap: 0.4rem 0.6rem;
-			width: calc(100vw - 1rem);
-			max-width: 380px;
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			justify-items: center;
+			bottom: 2rem;
+			gap: clamp(1.1rem, 5.5vw, 2.4rem);
 		}
 
-		.music-links.is-expanded .link-item {
-			width: 100%;
-			min-width: 0;
+		.link-item {
+			opacity: 1 !important;
+			padding: 4px 6px;
+			flex-shrink: 0;
 			box-sizing: border-box;
+		}
+
+		.icon-wrap {
+			opacity: 1 !important;
+			color: var(--fg-primary);
+		}
+
+		.music-icon {
+			width: 38px;
+			height: 38px;
+			opacity: 1 !important;
+		}
+
+		.apple-classic {
+			width: 33px;
+			height: 38px;
 		}
 
 		.music-links.is-expanded .music-icon {
@@ -267,26 +279,6 @@
 
 		.music-links.is-shifted-up {
 			transform: translateX(-50%) translateY(-115px);
-		}
-
-		.link-item {
-			opacity: 1 !important;
-		}
-
-		.icon-wrap {
-			opacity: 1 !important;
-			color: var(--fg-primary);
-		}
-
-		.music-icon {
-			width: 38px;
-			height: 38px;
-			opacity: 1 !important;
-		}
-
-		.apple-classic {
-			width: 33px;
-			height: 38px;
 		}
 
 		.tooltip {
