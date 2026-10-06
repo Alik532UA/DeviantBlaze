@@ -4,6 +4,7 @@
 	/* Smooth transitions between themes (twice as slow: 0.7s) */
 	--transition-speed: 0.7s;
 	--transition-easing: cubic-bezier(0.16, 1, 0.3, 1);
+	color-scheme: light dark;
 }
 
 :root,
@@ -42,7 +43,7 @@
 	--cursor-radial: radial-gradient(circle 500px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 0, 0, 0.035), transparent 70%);
 	--logo-glow: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.06));
 	--icon-glow: 0 0 20px rgba(0, 0, 0, 0.15);
-	color-scheme: light;
+	color-scheme: only light;
 }
 
 * {
