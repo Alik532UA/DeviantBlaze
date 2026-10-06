@@ -88,7 +88,7 @@
 	// Auto scroll active thumbnail into view
 	$effect(() => {
 		if (isOpen && thumbEls[index]) {
-			thumbEls[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+			thumbEls[index].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
 		}
 	});
 
@@ -516,20 +516,50 @@
 	}
 
 	@media (max-width: 768px) {
+		.lightbox-backdrop {
+			padding-left: 0;
+			padding-bottom: 84px;
+		}
+
 		.lightbox-backdrop.has-rail {
-			--lightbox-rail: 76px;
+			--lightbox-rail: 0px;
 		}
 
 		.lightbox-rail {
-			gap: 8px;
-			padding: 0.75rem 0.5rem;
+			left: 0;
+			right: 0;
+			top: auto;
+			bottom: 1rem;
+			width: 100%;
+			height: auto;
+			max-height: 68px;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+			padding: 0.25rem 1rem;
+			overflow-x: auto;
+			overflow-y: hidden;
+			scrollbar-width: none;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.lightbox-rail::-webkit-scrollbar {
+			display: none;
+		}
+
+		.lightbox-thumb {
+			width: 52px;
+			height: 52px;
+			flex: 0 0 52px;
+			border-radius: 10px;
 		}
 
 		.lightbox-close {
 			top: 1rem;
 			right: 1rem;
-			width: 40px;
-			height: 40px;
+			width: 42px;
+			height: 42px;
 		}
 
 		.lightbox-nav {
@@ -538,16 +568,34 @@
 		}
 
 		.lightbox-nav--prev {
-			left: calc(var(--lightbox-rail) + 0.5rem);
+			left: 0.75rem;
 		}
 
 		.lightbox-nav--next {
-			right: 0.5rem;
+			right: 0.75rem;
+		}
+
+		.lightbox-content {
+			max-width: 94vw;
+			max-height: calc(100dvh - 160px);
 		}
 
 		.lightbox-img {
 			max-width: 100%;
-			max-height: 70dvh;
+			max-height: calc(100dvh - 230px);
+		}
+
+		.lightbox-footer {
+			margin-top: 0.65rem;
+			gap: 0.25rem;
+		}
+
+		.lightbox-caption {
+			font-size: 0.92rem;
+		}
+
+		.lightbox-counter {
+			font-size: 0.78rem;
 		}
 	}
 </style>
