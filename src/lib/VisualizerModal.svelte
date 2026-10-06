@@ -312,8 +312,9 @@
 		ctx.stroke();
 
 		// Radiating spike bars with expanded bass & active treble
+		// Rotated -90 degrees (counter-clockwise) so bass points straight UP
 		for (let i = 0; i < totalRays; i++) {
-			const angle = (i / totalRays) * Math.PI * 2;
+			const angle = (i / totalRays) * Math.PI * 2 - Math.PI / 2;
 			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
 			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const barLength = (val / 255) * (Math.min(width, height) * 0.28);
@@ -329,7 +330,7 @@
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
-			ctx.strokeStyle = `hsl(${10 + t * 55}, 100%, 60%)`;
+			ctx.strokeStyle = `hsl(${10 + (1 - t) * 55}, 100%, 60%)`;
 			ctx.lineWidth = 2.5;
 			ctx.lineCap = 'round';
 			ctx.stroke();

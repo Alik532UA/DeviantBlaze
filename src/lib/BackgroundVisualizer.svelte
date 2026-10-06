@@ -547,9 +547,10 @@
 		ctx.shadowBlur = 0;
 
 		// 360 degree radial frequency rays emanating from center with balanced spectrum
+		// Rotated -90 degrees (counter-clockwise) so bass (i=0) points straight UP
 		for (let i = 0; i < totalRays; i++) {
-			const angle = (i / totalRays) * Math.PI * 2;
-			// Symmetrical distribution around the circle so bass pulses powerfully and highs shimmer
+			const angle = (i / totalRays) * Math.PI * 2 - Math.PI / 2;
+			// Symmetrical distribution: bass pulses powerfully at the top and highs shimmer at the bottom
 			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
 			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const rayLength = (val / 255) * (Math.min(width, height) * 0.32);
@@ -565,7 +566,7 @@
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
-			ctx.strokeStyle = currentTheme.radarHsl(t);
+			ctx.strokeStyle = currentTheme.radarHsl(1 - t);
 			ctx.lineWidth = 2.8;
 			ctx.lineCap = 'round';
 			ctx.stroke();
