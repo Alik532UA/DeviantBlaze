@@ -80,6 +80,7 @@
 	<!-- 1. Gallery Button -->
 	<button
 		class="nav-btn"
+		data-testid="gallery-open-btn"
 		onclick={onOpenGallery}
 		onmouseenter={() => onGalleryHover?.(true)}
 		onmouseleave={() => onGalleryHover?.(false)}
@@ -136,6 +137,7 @@
 	<!-- 4. Theme Toggle Button -->
 	<button
 		class="nav-btn theme-toggle-btn"
+		data-testid="theme-toggle-btn"
 		onclick={() => themeStore.toggle()}
 		onmouseenter={() => onThemeHover?.(true)}
 		onmouseleave={() => onThemeHover?.(false)}

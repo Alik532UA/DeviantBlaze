@@ -142,6 +142,41 @@ function createStore(area) {
 export const storage = createStore('localStorage');
 
 /**
+ * Convenience JSON/string getter.
+ * @template T
+ * @param {string} key
+ * @param {T} fallback
+ * @returns {any}
+ */
+export function getItem(key, fallback = null) {
+	const raw = storage.get(key);
+	if (raw === null) return fallback;
+	try {
+		return JSON.parse(raw);
+	} catch {
+		return raw;
+	}
+}
+
+/**
+ * Convenience JSON/string setter.
+ * @param {string} key
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+export function setItem(key, value) {
+	return storage.setJSON(key, value);
+}
+
+/**
+ * Convenience key remover.
+ * @param {string} key
+ */
+export function removeItem(key) {
+	storage.remove(key);
+}
+
+/**
  * Migration of legacy keys (STORAGE-NAMESPACE-v10 § 5)
  * Migrates old non-prefixed or hyphenated keys ('deviantblaze-theme' -> 'deviantblaze_theme').
  * Safe and runs once (marked with `__migrated_v1`).

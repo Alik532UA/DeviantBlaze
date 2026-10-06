@@ -170,6 +170,7 @@
 					<button
 						type="button"
 						class="vj-icon-btn vj-hide-btn"
+						data-testid="vj-collapse-btn"
 						onclick={() => onToggleCollapse?.()}
 						title={langStore.t('vj_hide')}
 						aria-label={langStore.t('vj_hide')}

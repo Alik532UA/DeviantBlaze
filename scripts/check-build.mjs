@@ -1,5 +1,6 @@
 import { checkPrerenderEntries, checkSeo } from './check-build/seo.mjs';
 import { checkRobotsAndLlms } from './check-build/robots-llms.mjs';
+import { checkHiddenPages } from './check-hidden-pages.mjs';
 
 const BUILD = 'build';
 const base = '/DeviantBlaze';
@@ -18,7 +19,8 @@ const policy = {
 
 const PARTS = [
 	['SEO § 6.1', () => [...checkSeo(BUILD, policy), ...checkPrerenderEntries(BUILD, policy)]],
-	['SEO § 7.5', () => checkRobotsAndLlms(BUILD, policy)]
+	['SEO § 7.5', () => checkRobotsAndLlms(BUILD, policy)],
+	['BETA-CHECKLIST § 5.5', () => checkHiddenPages(BUILD)]
 ];
 
 let totalProblems = 0;

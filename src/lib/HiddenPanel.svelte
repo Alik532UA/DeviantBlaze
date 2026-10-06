@@ -74,6 +74,7 @@
 		<button
 			type="button"
 			class="action-item"
+			data-testid="piano-open-btn"
 			onclick={() => onOpenPiano?.()}
 			aria-label={langStore.t('piano')}
 		>
@@ -94,6 +95,7 @@
 		<button
 			type="button"
 			class="action-item"
+			data-testid="vj-toggle-btn"
 			class:is-active={isVisualizerActive}
 			onclick={() => onOpenVisualizer?.()}
 			aria-label={langStore.t('visualizer')}
