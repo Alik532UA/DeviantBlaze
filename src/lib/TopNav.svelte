@@ -374,6 +374,17 @@
 			height: 36px;
 		}
 
+		.nav-sublabel {
+			font-size: 0.7rem;
+			letter-spacing: 0.01em;
+			margin-top: 4px;
+			width: 100%;
+			text-align: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
 		.top-center-nav.is-expanded .nav-sublabel {
 			font-size: 0.7rem;
 			letter-spacing: 0.01em;

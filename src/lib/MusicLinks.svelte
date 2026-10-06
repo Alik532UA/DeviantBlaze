@@ -242,6 +242,17 @@
 			height: 50px;
 		}
 
+		.link-sublabel {
+			font-size: 0.72rem;
+			letter-spacing: 0.01em;
+			margin-top: 6px;
+			width: 100%;
+			text-align: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
 		.music-links.is-expanded .link-sublabel {
 			font-size: 0.72rem;
 			letter-spacing: 0.01em;
