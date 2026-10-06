@@ -108,6 +108,10 @@ export function checkSeo(build, policy) {
 		const html = readFileSync(file, 'utf8');
 		pages.set(rel, { html, head: headOf(html) });
 	}
+	if (pages.size === 0) {
+		problems.push('canary: 0 HTML files found in build/ — build path broken or build empty (AI-AGENT-PITFALLS § 1)');
+		return problems;
+	}
 	const toFile = (url) => (url?.startsWith(`${root}/`) ? pageFileFor(build, url.slice(root.length).replace(/[?#].*$/, '')) : undefined);
 
 	for (const [rel, { html, head }] of pages) {

@@ -1,9 +1,11 @@
+import { storage } from '#lib/services/storage.js';
+
 class IconStyleStore {
 	current = $state('gothic'); // 'gothic' | 'classic'
 
 	constructor() {
 		if (typeof window !== 'undefined') {
-			const saved = localStorage.getItem('deviantblaze-icon-style');
+			const saved = storage.get('icon_style');
 			if (saved === 'gothic' || saved === 'classic') {
 				this.current = saved;
 			}
@@ -23,11 +25,7 @@ class IconStyleStore {
 	}
 
 	save() {
-		if (typeof window !== 'undefined') {
-			try {
-				localStorage.setItem('deviantblaze-icon-style', this.current);
-			} catch (e) {}
-		}
+		storage.set('icon_style', this.current);
 	}
 }
 

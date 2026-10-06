@@ -3,6 +3,9 @@
 	import { asset } from '$app/paths';
 	import JsonLd from '#lib/components/JsonLd.svelte';
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
+	import { migrateLegacyKeys } from '#lib/services/storage.js';
+
+	migrateLegacyKeys();
 
 	let { children } = $props();
 

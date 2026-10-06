@@ -11,6 +11,11 @@ const urls = htmlFiles(BUILD)
 	.filter((url) => url !== undefined)
 	.sort();
 
+if (urls.length === 0) {
+	console.error('❌ generate-sitemap: 0 canonical URLs found in build/ (AI-AGENT-PITFALLS § 1 canary)!');
+	process.exit(1);
+}
+
 const body = [...new Set(urls)].map((url) => `  <url><loc>${escapeXml(url)}</loc></url>`).join('\n');
 writeFileSync(
 	join(BUILD, 'sitemap.xml'),

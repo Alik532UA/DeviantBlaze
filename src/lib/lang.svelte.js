@@ -139,12 +139,14 @@ export const TRANSLATIONS = {
 	}
 };
 
+import { storage } from '#lib/services/storage.js';
+
 class LangStore {
 	current = $state('uk'); // 'uk' | 'en'
 
 	constructor() {
 		if (typeof window !== 'undefined') {
-			const saved = localStorage.getItem('deviantblaze-lang');
+			const saved = storage.get('lang');
 			if (saved === 'uk' || saved === 'en') {
 				this.current = saved;
 			}
@@ -175,9 +177,7 @@ class LangStore {
 	apply() {
 		if (typeof window === 'undefined') return;
 		document.documentElement.setAttribute('lang', this.current);
-		try {
-			localStorage.setItem('deviantblaze-lang', this.current);
-		} catch (e) {}
+		storage.set('lang', this.current);
 	}
 }
 

@@ -1,8 +1,12 @@
 import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import pkg from './package.json' with { type: 'json' };
 
 export default defineConfig(({ mode }) => ({
+	define: {
+		__APP_VERSION__: JSON.stringify(pkg.version)
+	},
 	plugins: [
 		sveltekit({
 			compilerOptions: {
@@ -27,6 +31,9 @@ export default defineConfig(({ mode }) => ({
 					if (path.startsWith('/DigitalWorkshop')) return;
 					throw new Error(message);
 				}
+			},
+			version: {
+				pollInterval: 60000
 			}
 		})
 	]

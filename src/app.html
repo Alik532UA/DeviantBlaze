@@ -38,7 +38,7 @@
 		<script>
 			// Prevent theme flash on load
 			try {
-				const saved = localStorage.getItem('deviantblaze-theme');
+				const saved = localStorage.getItem('deviantblaze_theme') || localStorage.getItem('deviantblaze-theme');
 				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 				const theme = saved || (prefersDark ? 'dark' : 'light');
 				document.documentElement.setAttribute('data-theme', theme);
