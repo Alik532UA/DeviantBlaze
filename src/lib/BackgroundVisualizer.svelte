@@ -4,8 +4,77 @@
 	let {
 		isActive = false,
 		mode = 'bars', // 'bars' | 'wave' | 'radar'
+		sensitivity = 1.5, // 0.5 - 3.5
+		spectrumHeight = 1.0, // 0.2 - 1.0 (default 100%)
+		palette = 'blaze', // 'blaze' | 'cyber' | 'gothic' | 'toxic' | 'purple'
 		onStatusChange = () => {}
 	} = $props();
+
+	// Color Palettes
+	const PALETTES = {
+		blaze: {
+			barsGradient: ['#eb1e3c', '#ff5f1f', '#ffcc00', '#ffffff'],
+			peakColor: 'rgba(255, 255, 255, 0.95)',
+			wavePrimary: 'rgba(255, 95, 31, 0.9)',
+			waveSecondary: 'rgba(255, 204, 0, 0.65)',
+			waveShadow: 'rgba(235, 30, 60, 0.8)',
+			radarCenter: '#ff5f1f',
+			radarShadow: '#eb1e3c',
+			radarHsl: (t) => `hsl(${12 + t * 50}, 100%, 60%)`,
+			auraRgb: '235, 30, 60',
+			particleRgb: '255, 130, 40'
+		},
+		cyber: {
+			barsGradient: ['#7928ca', '#d900ff', '#00f0ff', '#ffffff'],
+			peakColor: 'rgba(0, 240, 255, 0.95)',
+			wavePrimary: 'rgba(0, 240, 255, 0.9)',
+			waveSecondary: 'rgba(217, 0, 255, 0.65)',
+			waveShadow: 'rgba(0, 240, 255, 0.8)',
+			radarCenter: '#00f0ff',
+			radarShadow: '#d900ff',
+			radarHsl: (t) => `hsl(${180 + t * 110}, 100%, 60%)`,
+			auraRgb: '0, 240, 255',
+			particleRgb: '0, 240, 255'
+		},
+		gothic: {
+			barsGradient: ['#1e1b4b', '#4f46e5', '#93c5fd', '#ffffff'],
+			peakColor: 'rgba(255, 255, 255, 0.95)',
+			wavePrimary: 'rgba(147, 197, 253, 0.9)',
+			waveSecondary: 'rgba(199, 210, 254, 0.65)',
+			waveShadow: 'rgba(99, 102, 241, 0.8)',
+			radarCenter: '#a5b4fc',
+			radarShadow: '#4f46e5',
+			radarHsl: (t) => `hsl(${220 + t * 40}, 90%, ${55 + t * 30}%)`,
+			auraRgb: '79, 70, 229',
+			particleRgb: '165, 180, 252'
+		},
+		toxic: {
+			barsGradient: ['#047857', '#10b981', '#a3e635', '#ffffff'],
+			peakColor: 'rgba(236, 252, 203, 0.95)',
+			wavePrimary: 'rgba(16, 185, 129, 0.9)',
+			waveSecondary: 'rgba(163, 230, 53, 0.65)',
+			waveShadow: 'rgba(16, 185, 129, 0.8)',
+			radarCenter: '#10b981',
+			radarShadow: '#047857',
+			radarHsl: (t) => `hsl(${115 + t * 45}, 100%, 55%)`,
+			auraRgb: '16, 185, 129',
+			particleRgb: '163, 230, 53'
+		},
+		purple: {
+			barsGradient: ['#581c87', '#9333ea', '#ec4899', '#ffffff'],
+			peakColor: 'rgba(253, 242, 248, 0.95)',
+			wavePrimary: 'rgba(236, 72, 153, 0.9)',
+			waveSecondary: 'rgba(168, 85, 247, 0.65)',
+			waveShadow: 'rgba(236, 72, 153, 0.8)',
+			radarCenter: '#ec4899',
+			radarShadow: '#9333ea',
+			radarHsl: (t) => `hsl(${280 + t * 50}, 100%, 65%)`,
+			auraRgb: '147, 51, 234',
+			particleRgb: '236, 72, 153'
+		}
+	};
+
+	let currentTheme = $derived(PALETTES[palette] || PALETTES.blaze);
 
 	let canvasEl = $state(null);
 	let audioCtx = null;
@@ -14,12 +83,17 @@
 	let animId = null;
 	let testOsc = null;
 
-	let micStatus = $state('idle'); // 'idle' | 'listening' | 'denied' | 'test'
+	let micStatus = $state('idle'); // 'idle' | 'mic' | 'speakers' | 'test'
 	let averageVolume = $state(0);
 	let peakCaps = [];
 
-	// Floating particles for concert atmosphere in radar/bars mode
+	// Smoothed time domain buffer for buttery-smooth waveform
+	let smoothedTimeData = null;
+
+	// Floating particles for concert atmosphere
 	let particles = [];
+	let logicalWidth = 0;
+	let logicalHeight = 0;
 
 	function initParticles(width, height) {
 		particles = [];
@@ -85,7 +159,7 @@
 			});
 			const stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
-			// Discard the video track immediately as we only analyze audio
+			// Discard video track immediately
 			stream.getVideoTracks().forEach((t) => t.stop());
 
 			const audioTracks = stream.getAudioTracks();
@@ -175,6 +249,7 @@
 		analyser = null;
 		peakCaps = [];
 		averageVolume = 0;
+		smoothedTimeData = null;
 	}
 
 	function startRenderLoop() {
@@ -186,6 +261,10 @@
 
 		if (peakCaps.length !== bufferLength) {
 			peakCaps = new Array(bufferLength).fill(0);
+		}
+		if (!smoothedTimeData || smoothedTimeData.length !== bufferLength) {
+			smoothedTimeData = new Float32Array(bufferLength);
+			for (let i = 0; i < bufferLength; i++) smoothedTimeData[i] = 128;
 		}
 
 		let frame = 0;
@@ -209,12 +288,20 @@
 			analyser.getByteFrequencyData(freqData);
 			analyser.getByteTimeDomainData(timeData);
 
+			// Temporal LERP smoothing for waveform (buttery-smooth, no harsh spikes)
+			for (let i = 0; i < bufferLength; i++) {
+				smoothedTimeData[i] += (timeData[i] - smoothedTimeData[i]) * 0.22;
+			}
+
 			const ctx = canvasEl.getContext('2d');
 			if (!ctx) return;
 
-			const width = canvasEl.width;
-			const height = canvasEl.height;
+			const width = logicalWidth || window.innerWidth;
+			const height = logicalHeight || window.innerHeight;
+			const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+			// Reset transform and apply DPR scaling cleanly
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 			ctx.clearRect(0, 0, width, height);
 
 			let sum = 0;
@@ -231,7 +318,7 @@
 			if (mode === 'bars') {
 				renderBars(ctx, width, height, freqData, bufferLength);
 			} else if (mode === 'wave') {
-				renderWave(ctx, width, height, timeData, bufferLength);
+				renderWave(ctx, width, height, smoothedTimeData, bufferLength);
 			} else if (mode === 'radar') {
 				renderRadar(ctx, width, height, freqData, bufferLength);
 			}
@@ -247,14 +334,14 @@
 		if (vol < 0.05) return;
 		const centerX = width / 2;
 		const centerY = height / 2;
-		const radius = Math.min(width, height) * (0.35 + vol * 0.3);
+		const radius = Math.min(width, height) * (0.35 + vol * 0.3 * sensitivity);
 
 		const aura = ctx.createRadialGradient(
 			centerX, centerY, 0,
 			centerX, centerY, radius
 		);
-		aura.addColorStop(0, `rgba(235, 30, 60, ${vol * 0.28})`);
-		aura.addColorStop(0.5, `rgba(255, 95, 31, ${vol * 0.14})`);
+		aura.addColorStop(0, `rgba(${currentTheme.auraRgb}, ${vol * 0.35})`);
+		aura.addColorStop(0.5, `rgba(${currentTheme.auraRgb}, ${vol * 0.15})`);
 		aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
 		ctx.fillStyle = aura;
@@ -263,19 +350,22 @@
 
 	function renderBars(ctx, width, height, freqData, bufferLength) {
 		const visibleBins = Math.floor(bufferLength * 0.72);
-		const barWidth = (width / visibleBins) * 0.72;
-		const gap = (width / visibleBins) * 0.28;
+		const barWidth = (width / visibleBins) * 0.76;
+		const gap = (width / visibleBins) * 0.24;
 
-		const gradient = ctx.createLinearGradient(0, height, 0, height * 0.3);
-		gradient.addColorStop(0, 'rgba(235, 30, 60, 0.85)');
-		gradient.addColorStop(0.4, 'rgba(255, 95, 31, 0.9)');
-		gradient.addColorStop(0.8, 'rgba(255, 204, 0, 0.95)');
-		gradient.addColorStop(1, 'rgba(255, 255, 255, 0.95)');
+		// Gradient spans across the full height
+		const maxBarH = height * spectrumHeight * 0.98;
+		const gradient = ctx.createLinearGradient(0, height, 0, height - maxBarH);
+		const stops = currentTheme.barsGradient;
+		gradient.addColorStop(0, stops[0]);
+		gradient.addColorStop(0.35, stops[1]);
+		gradient.addColorStop(0.75, stops[2]);
+		gradient.addColorStop(1, stops[3]);
 
 		for (let i = 0; i < visibleBins; i++) {
-			let val = freqData[i] * 1.35;
+			let val = freqData[i] * sensitivity;
 			if (val > 255) val = 255;
-			const barHeight = Math.max(4, (val / 255) * (height * 0.45));
+			const barHeight = Math.max(4, (val / 255) * maxBarH);
 
 			const x = i * (barWidth + gap);
 			const y = height - barHeight;
@@ -284,92 +374,113 @@
 			if (barHeight > peakCaps[i]) {
 				peakCaps[i] = barHeight;
 			} else {
-				peakCaps[i] = Math.max(0, peakCaps[i] - 2.2);
+				peakCaps[i] = Math.max(0, peakCaps[i] - 2.4);
 			}
 
-			// Bar
+			// Main Bar with rounded top corners
 			ctx.fillStyle = gradient;
 			ctx.beginPath();
 			ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]);
 			ctx.fill();
 
-			// Cap
+			// Peak Falling Cap
 			const capY = height - peakCaps[i] - 4;
 			if (capY >= 0) {
-				ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+				ctx.fillStyle = currentTheme.peakColor;
 				ctx.fillRect(x, capY, barWidth, 2.5);
 			}
 		}
 	}
 
-	function renderWave(ctx, width, height, timeData, bufferLength) {
+	function renderWave(ctx, width, height, smoothData, bufferLength) {
 		const centerY = height / 2;
-		ctx.lineWidth = 3.5;
-		ctx.strokeStyle = 'rgba(255, 95, 31, 0.85)';
-		ctx.shadowColor = 'rgba(235, 30, 60, 0.8)';
-		ctx.shadowBlur = 18;
+		const amp = height * 0.42 * sensitivity;
+
+		// 1. Primary Smooth Wave with Catmull-Rom / Quadratic Bezier smoothing
+		ctx.lineWidth = 4;
+		ctx.strokeStyle = currentTheme.wavePrimary;
+		ctx.shadowColor = currentTheme.waveShadow;
+		ctx.shadowBlur = 20;
+
+		const sliceWidth = width / (bufferLength - 1);
 
 		ctx.beginPath();
-		const sliceWidth = width / bufferLength;
-		let x = 0;
+		let prevX = 0;
+		let prevY = centerY + ((smoothData[0] - 128) / 128.0) * amp;
+		ctx.moveTo(prevX, prevY);
 
-		for (let i = 0; i < bufferLength; i++) {
-			const v = (timeData[i] - 128) / 128.0;
-			const y = centerY + v * (height * 0.35);
+		for (let i = 1; i < bufferLength; i++) {
+			const v = (smoothData[i] - 128) / 128.0;
+			const curX = i * sliceWidth;
+			const curY = centerY + v * amp;
+			const midX = (prevX + curX) / 2;
+			const midY = (prevY + curY) / 2;
 
-			if (i === 0) {
-				ctx.moveTo(x, y);
-			} else {
-				ctx.lineTo(x, y);
-			}
-			x += sliceWidth;
+			ctx.quadraticCurveTo(prevX, prevY, midX, midY);
+			prevX = curX;
+			prevY = curY;
 		}
-
+		ctx.lineTo(width, prevY);
 		ctx.stroke();
 		ctx.shadowBlur = 0;
 
-		// Secondary harmonic wave for depth
-		ctx.lineWidth = 2;
-		ctx.strokeStyle = 'rgba(255, 204, 0, 0.6)';
+		// 2. Secondary Harmonic Wave (inverted & subtle for cinematic visualizer depth)
+		ctx.lineWidth = 2.2;
+		ctx.strokeStyle = currentTheme.waveSecondary;
 		ctx.beginPath();
-		x = 0;
-		for (let i = 0; i < bufferLength; i++) {
-			const v = (timeData[i] - 128) / 128.0;
-			const y = centerY - v * (height * 0.22);
+		prevX = 0;
+		prevY = centerY - ((smoothData[0] - 128) / 128.0) * (amp * 0.6);
+		ctx.moveTo(prevX, prevY);
 
-			if (i === 0) {
-				ctx.moveTo(x, y);
-			} else {
-				ctx.lineTo(x, y);
-			}
-			x += sliceWidth;
+		for (let i = 1; i < bufferLength; i++) {
+			const v = (smoothData[i] - 128) / 128.0;
+			const curX = i * sliceWidth;
+			const curY = centerY - v * (amp * 0.6);
+			const midX = (prevX + curX) / 2;
+			const midY = (prevY + curY) / 2;
+
+			ctx.quadraticCurveTo(prevX, prevY, midX, midY);
+			prevX = curX;
+			prevY = curY;
 		}
+		ctx.lineTo(width, prevY);
 		ctx.stroke();
 	}
 
 	function renderRadar(ctx, width, height, freqData, bufferLength) {
-		const centerX = width / 2;
-		const centerY = height / 2;
+		// EXACT Centering: dynamically aligns with the Deviant Blaze logo!
+		let centerX = width / 2;
+		let centerY = height / 2;
+
+		if (typeof document !== 'undefined') {
+			const logoEl = document.querySelector('.hero-center');
+			if (logoEl) {
+				const rect = logoEl.getBoundingClientRect();
+				centerX = rect.left + rect.width / 2;
+				centerY = rect.top + rect.height / 2;
+			}
+		}
+
 		const baseRadius = Math.min(width, height) * 0.22;
 		const visibleBins = Math.floor(bufferLength * 0.68);
 
 		ctx.save();
 		ctx.translate(centerX, centerY);
 
-		// Central pulsing core
+		// Central pulsing core ring
 		ctx.beginPath();
-		ctx.arc(0, 0, baseRadius + averageVolume * 35, 0, Math.PI * 2);
-		ctx.strokeStyle = `rgba(255, 95, 31, ${0.4 + averageVolume * 0.5})`;
+		ctx.arc(0, 0, baseRadius + averageVolume * 35 * sensitivity, 0, Math.PI * 2);
+		ctx.strokeStyle = currentTheme.radarCenter;
 		ctx.lineWidth = 2.5;
-		ctx.shadowColor = '#eb1e3c';
-		ctx.shadowBlur = 15;
+		ctx.shadowColor = currentTheme.radarShadow;
+		ctx.shadowBlur = 18;
 		ctx.stroke();
 		ctx.shadowBlur = 0;
 
-		// 360 degree radial audio rays
+		// 360 degree radial frequency rays emanating from center
 		for (let i = 0; i < visibleBins; i++) {
 			const angle = (i / visibleBins) * Math.PI * 2;
-			let val = freqData[i] * 1.3;
+			let val = freqData[i] * sensitivity;
 			if (val > 255) val = 255;
 			const rayLength = (val / 255) * (Math.min(width, height) * 0.32);
 
@@ -384,7 +495,7 @@
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
-			ctx.strokeStyle = `hsl(${12 + (i / visibleBins) * 50}, 100%, 60%)`;
+			ctx.strokeStyle = currentTheme.radarHsl(i / visibleBins);
 			ctx.lineWidth = 2.8;
 			ctx.lineCap = 'round';
 			ctx.stroke();
@@ -395,7 +506,7 @@
 
 	function renderParticles(ctx, width, height, vol) {
 		for (let p of particles) {
-			p.y += p.speedY * (1 + vol * 2.5);
+			p.y += p.speedY * (1 + vol * 2.5 * sensitivity);
 			p.x += p.speedX;
 
 			if (p.y < 0) {
@@ -405,7 +516,7 @@
 			if (p.x < 0) p.x = width;
 			if (p.x > width) p.x = 0;
 
-			ctx.fillStyle = `rgba(255, 150, 50, ${p.opacity * (0.4 + vol * 0.6)})`;
+			ctx.fillStyle = `rgba(${currentTheme.particleRgb}, ${p.opacity * (0.4 + vol * 0.6)})`;
 			ctx.beginPath();
 			ctx.arc(p.x, p.y, p.radius * (1 + vol), 0, Math.PI * 2);
 			ctx.fill();
@@ -414,14 +525,14 @@
 
 	function resize() {
 		if (!canvasEl) return;
-		const w = window.innerWidth;
-		const h = window.innerHeight;
+		logicalWidth = window.innerWidth;
+		logicalHeight = window.innerHeight;
 		const dpr = Math.min(window.devicePixelRatio || 1, 2);
-		canvasEl.width = w * dpr;
-		canvasEl.height = h * dpr;
-		const ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-		initParticles(w, h);
+
+		canvasEl.width = Math.round(logicalWidth * dpr);
+		canvasEl.height = Math.round(logicalHeight * dpr);
+
+		initParticles(logicalWidth, logicalHeight);
 	}
 
 	$effect(() => {

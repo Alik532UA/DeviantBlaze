@@ -45,6 +45,9 @@
 	let visualizerMode = $state('bars'); // 'bars' | 'wave' | 'radar'
 	let micStatus = $state('idle'); // 'idle' | 'listening' | 'test'
 	let backgroundVisRef = $state(null);
+	let visualizerSensitivity = $state(1.5);
+	let visualizerSpectrumHeight = $state(1.0); // 100% by default
+	let visualizerPalette = $state('blaze');
 
 	// 5-second inactivity VJ dimming (everything except central logo fades out)
 	let isVJIdle = $state(false);
@@ -285,6 +288,9 @@
 		bind:this={backgroundVisRef}
 		isActive={isVisualizerActive}
 		mode={visualizerMode}
+		sensitivity={visualizerSensitivity}
+		spectrumHeight={visualizerSpectrumHeight}
+		palette={visualizerPalette}
 		onStatusChange={(status) => (micStatus = status)}
 	/>
 
@@ -294,8 +300,14 @@
 		currentMode={visualizerMode}
 		{audioSource}
 		{micStatus}
+		palette={visualizerPalette}
+		sensitivity={visualizerSensitivity}
+		spectrumHeight={visualizerSpectrumHeight}
 		onSelectMode={(m) => (visualizerMode = m)}
 		onSelectSource={selectAudioSource}
+		onSelectPalette={(p) => (visualizerPalette = p)}
+		onUpdateSensitivity={(s) => (visualizerSensitivity = s)}
+		onUpdateSpectrumHeight={(h) => (visualizerSpectrumHeight = h)}
 		onClose={() => (isVisualizerActive = false)}
 	/>
 

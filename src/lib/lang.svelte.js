@@ -34,6 +34,15 @@ export const TRANSLATIONS = {
 		mode_wave: "Хвиля",
 		mode_radar: "Радар",
 		close_visualizer: "Вимкнути візуалізацію",
+		vj_sensitivity: "Чутливість",
+		vj_spectrum_height: "Висота спектру",
+		vj_color_theme: "Колір",
+		vj_settings: "Налаштування",
+		pal_blaze: "Вогонь",
+		pal_cyber: "Кіберпанк",
+		pal_gothic: "Лід",
+		pal_toxic: "Неон",
+		pal_purple: "Аметист",
 
 		// Piano
 		piano_title: "Акустичне Фортепіано",
@@ -91,6 +100,15 @@ export const TRANSLATIONS = {
 		mode_wave: "Wave",
 		mode_radar: "Radar",
 		close_visualizer: "Exit visualizer",
+		vj_sensitivity: "Sensitivity",
+		vj_spectrum_height: "Spectrum Height",
+		vj_color_theme: "Color Theme",
+		vj_settings: "Settings",
+		pal_blaze: "Blaze",
+		pal_cyber: "Cyber",
+		pal_gothic: "Ice",
+		pal_toxic: "Toxic",
+		pal_purple: "Amethyst",
 
 		// Piano
 		piano_title: "Acoustic Piano",
