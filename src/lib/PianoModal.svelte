@@ -119,33 +119,29 @@
 
 		const now = ctx.currentTime;
 
-		// Master note gain
 		const noteGain = ctx.createGain();
 		noteGain.gain.setValueAtTime(0.0001, now);
-		noteGain.gain.exponentialRampToValueAtTime(0.35, now + 0.015);
-		noteGain.gain.exponentialRampToValueAtTime(0.12, now + 0.4);
-		noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
+		noteGain.gain.exponentialRampToValueAtTime(0.38, now + 0.012);
+		noteGain.gain.exponentialRampToValueAtTime(0.14, now + 0.45);
+		noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
 
-		// Fundamental oscillator
 		const osc1 = ctx.createOscillator();
 		osc1.type = 'triangle';
 		osc1.frequency.setValueAtTime(freq, now);
 
-		// Second harmonic for acoustic brightness
 		const osc2 = ctx.createOscillator();
 		osc2.type = 'sine';
 		osc2.frequency.setValueAtTime(freq * 2, now);
 		const gain2 = ctx.createGain();
-		gain2.gain.setValueAtTime(0.25, now);
+		gain2.gain.setValueAtTime(0.28, now);
 		osc2.connect(gain2);
 		gain2.connect(noteGain);
 
-		// Third harmonic
 		const osc3 = ctx.createOscillator();
 		osc3.type = 'sine';
 		osc3.frequency.setValueAtTime(freq * 3, now);
 		const gain3 = ctx.createGain();
-		gain3.gain.setValueAtTime(0.08, now);
+		gain3.gain.setValueAtTime(0.1, now);
 		osc3.connect(gain3);
 		gain3.connect(noteGain);
 
@@ -235,7 +231,6 @@
 		if (!isOpen) return;
 		if (e.repeat) return;
 
-		// Escape to close
 		if (e.key === 'Escape') {
 			close();
 			return;
@@ -280,26 +275,34 @@
 
 {#if isOpen}
 	<div
-		class="piano-backdrop"
+		class="piano-fullscreen-modal"
 		role="dialog"
 		aria-modal="true"
 		aria-label="Музичне фортепіано"
 	>
-		<div class="piano-card">
-			<!-- Header -->
-			<header class="piano-header">
-				<div class="piano-title-box">
-					<div class="piano-top-row">
-						<span class="piano-badge">Deviant Blaze Studio</span>
-						{#if nowPlaying}
-							<span class="current-note-pill">♪ {nowPlaying}</span>
-						{/if}
-					</div>
-					<h2 class="piano-title">Акустичне Фортепіано</h2>
-				</div>
+		<!-- Close Button Top-Right (teatralo4ka style) -->
+		<button
+			type="button"
+			class="piano-close-btn"
+			onclick={close}
+			aria-label="Закрити фортепіано"
+		>
+			<svg
+				class="close-icon"
+				viewBox={getIcon('gallery_close').viewBox}
+				fill="currentColor"
+				aria-hidden="true"
+			>
+				{@html getIcon('gallery_close').svg}
+			</svg>
+		</button>
 
-				<div class="header-right">
-					<div class="view-toggles">
+		<!-- Main Stage Container (no boxed card window, full stage span) -->
+		<section id="wrap">
+			<!-- Controls Header -->
+			<header class="piano-header">
+				<div class="controls-wrapper">
+					<div class="view-toggle">
 						<button
 							type="button"
 							class="toggle-btn"
@@ -318,35 +321,27 @@
 						</button>
 					</div>
 
-					<button
-						type="button"
-						class="piano-close-btn"
-						onclick={close}
-						aria-label="Закрити фортепіано"
-					>
-						<svg
-							class="close-icon"
-							viewBox={getIcon('gallery_close').viewBox}
-							fill="currentColor"
-							aria-hidden="true"
-						>
-							{@html getIcon('gallery_close').svg}
-						</svg>
-					</button>
+					<div class="nowplaying-display" aria-live="polite">
+						{#if nowPlaying}
+							<span class="note-pill">♪ {nowPlaying}</span>
+						{:else}
+							<span class="note-hint">Торкніться клавіші або натисніть клавіатуру</span>
+						{/if}
+					</div>
 				</div>
 			</header>
 
-			<!-- Content Area -->
-			<div class="piano-stage">
+			<!-- Main Instrument Section -->
+			<section id="main">
 				{#if viewMode === 'keyboard'}
-					<div class="keyboard-container">
-						<div class="keys-bed">
+					<div class="keys-wrapper">
+						<div class="keys">
 							{#each keysData as key}
 								{#if !key.sharp}
 									<!-- White Key -->
 									<button
 										type="button"
-										class="key white-key"
+										class="key white"
 										class:active={activeCodes.has(key.code)}
 										style="left: {key.whiteIndex * whiteKeyWidth}%; width: {whiteKeyWidth}%;"
 										onmousedown={() => startNote(key.code)}
@@ -356,16 +351,14 @@
 										ontouchend={(e) => { e.preventDefault(); stopNote(key.code); }}
 										aria-label="Клавіша {key.fullNote}"
 									>
-										<span class="key-label">{key.note}</span>
-										{#if key.hint}
-											<span class="key-hint">{key.hint}</span>
-										{/if}
+										<span class="hints">{key.hint}</span>
+										<span class="note-title">{key.note}</span>
 									</button>
 								{:else}
 									<!-- Black Key (Sharp) -->
 									<button
 										type="button"
-										class="key black-key"
+										class="key sharp"
 										class:active={activeCodes.has(key.code)}
 										style="left: {(key.whiteIndex + 1) * whiteKeyWidth - (blackKeyWidth / 2)}%; width: {blackKeyWidth}%;"
 										onmousedown={() => startNote(key.code)}
@@ -375,78 +368,117 @@
 										ontouchend={(e) => { e.preventDefault(); stopNote(key.code); }}
 										aria-label="Клавіша {key.fullNote}"
 									>
-										{#if key.hint}
-											<span class="key-hint sharp">{key.hint}</span>
-										{/if}
+										<span class="hints">{key.hint}</span>
 									</button>
 								{/if}
 							{/each}
 						</div>
 					</div>
-					<div class="instructions-row">
-						<span>🎹 Грайте клавішами комп'ютера <strong>A, S, D, F, G, H, J, K, L</strong> та <strong>W, E, R, T, Y, U, I, O, P</strong> або клікайте мишкою / тапайте на екрані</span>
-					</div>
+
+					<footer class="piano-footer">
+						<span>🎹 Клавіші комп'ютера: <strong>A S D F G H J K L ; '</strong> (білі) та <strong>W E R T Y U I O P [</strong> (чорні)</span>
+					</footer>
 				{:else}
 					<!-- Chords Grid -->
 					<div class="chords-grid">
 						{#each chordsData as chord}
 							<button
 								type="button"
-								class="chord-card"
+								class="chord-btn"
 								class:minor={chord.type === 'minor'}
 								class:playing={activeChord === chord.name}
 								onclick={() => playChord(chord)}
 							>
-								<span class="chord-title">{chord.name}</span>
-								<span class="chord-type">{chord.type === 'minor' ? 'мінор' : 'мажор'}</span>
+								<span class="chord-name">{chord.name}</span>
+								<span class="chord-sub">{chord.type === 'minor' ? 'мінор' : 'мажор'}</span>
 								<span class="chord-notes">{chord.notes.join(' • ')}</span>
 							</button>
 						{/each}
 					</div>
 				{/if}
-			</div>
-		</div>
+			</section>
+		</section>
 	</div>
 {/if}
 
 <style>
-	.piano-backdrop {
+	.piano-fullscreen-modal {
 		position: fixed;
 		inset: 0;
-		z-index: 1000;
-		background: rgba(4, 4, 6, 0.85);
+		z-index: 9999;
+		background: rgba(0, 0, 0, 0.82);
 		backdrop-filter: blur(28px) saturate(180%);
 		-webkit-backdrop-filter: blur(28px) saturate(180%);
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 1.5rem;
-		animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+		overflow: hidden;
+		text-align: center;
+		animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	@keyframes fadeIn {
+	:global([data-theme="light"]) .piano-fullscreen-modal {
+		background: rgba(240, 240, 245, 0.88);
+	}
+
+	@keyframes modalFadeIn {
 		from { opacity: 0; }
 		to { opacity: 1; }
 	}
 
-	.piano-card {
-		position: relative;
-		width: 100%;
-		max-width: 940px;
-		background: rgba(18, 18, 22, 0.94);
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 28px;
+	.piano-close-btn {
+		position: absolute;
+		top: 24px;
+		right: 32px;
+		width: 48px;
+		height: 48px;
 		display: flex;
-		flex-direction: column;
-		box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8),
-		            0 0 50px rgba(255, 95, 31, 0.08);
-		overflow: hidden;
-		animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 50%;
+		color: #ffffff;
+		cursor: pointer;
+		z-index: 10001;
+		transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	@keyframes scaleIn {
+	.piano-close-btn:hover {
+		background: rgba(255, 255, 255, 0.2);
+		transform: scale(1.1);
+	}
+
+	:global([data-theme="light"]) .piano-close-btn {
+		background: rgba(0, 0, 0, 0.06);
+		border-color: rgba(0, 0, 0, 0.12);
+		color: #111827;
+	}
+
+	:global([data-theme="light"]) .piano-close-btn:hover {
+		background: rgba(0, 0, 0, 0.12);
+	}
+
+	.close-icon {
+		width: 24px;
+		height: 24px;
+	}
+
+	#wrap {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		max-width: 1240px;
+		padding: 24px 32px;
+		display: flex;
+		flex-direction: column;
+		animation: modalSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	@keyframes modalSlideIn {
 		from {
-			transform: scale(0.94) translateY(12px);
+			transform: scale(0.96) translateY(-16px);
 			opacity: 0;
 		}
 		to {
@@ -455,93 +487,50 @@
 		}
 	}
 
-	:global([data-theme="light"]) .piano-card {
-		background: rgba(255, 255, 255, 0.95);
-		border-color: rgba(0, 0, 0, 0.1);
-		box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.18),
-		            0 0 40px rgba(255, 95, 31, 0.05);
+	.piano-header {
+		margin-bottom: 28px;
 	}
 
-	.piano-header {
+	.controls-wrapper {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 1.4rem 2rem 1.1rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		gap: 1rem;
+		gap: 20px;
 		flex-wrap: wrap;
 	}
 
-	:global([data-theme="light"]) .piano-header {
-		border-bottom-color: rgba(0, 0, 0, 0.06);
-	}
-
-	.piano-top-row {
+	.view-toggle {
 		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		margin-bottom: 0.25rem;
-	}
-
-	.piano-badge {
-		font-size: 0.72rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: #9da3af;
-	}
-
-	.current-note-pill {
-		font-size: 0.75rem;
-		font-weight: 700;
-		padding: 0.15rem 0.6rem;
+		background: rgba(255, 255, 255, 0.08);
+		padding: 4px;
 		border-radius: 9999px;
-		background: rgba(235, 30, 60, 0.2);
-		color: #ff5f1f;
-		border: 1px solid rgba(235, 30, 60, 0.4);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		gap: 4px;
 	}
 
-	.piano-title {
-		font-size: 1.35rem;
-		font-weight: 700;
-		color: var(--text-primary, #ffffff);
-		margin: 0;
-	}
-
-	.header-right {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.view-toggles {
-		display: flex;
-		gap: 0.35rem;
-		background: rgba(255, 255, 255, 0.05);
-		padding: 0.25rem;
-		border-radius: 12px;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-	}
-
-	:global([data-theme="light"]) .view-toggles {
-		background: rgba(0, 0, 0, 0.04);
-		border-color: rgba(0, 0, 0, 0.06);
+	:global([data-theme="light"]) .view-toggle {
+		background: rgba(0, 0, 0, 0.05);
+		border-color: rgba(0, 0, 0, 0.1);
 	}
 
 	.toggle-btn {
-		background: transparent;
+		padding: 8px 24px;
 		border: none;
-		color: var(--text-secondary, #9da3af);
-		padding: 0.45rem 1rem;
-		border-radius: 8px;
-		font-size: 0.82rem;
-		font-weight: 500;
+		border-radius: 9999px;
+		background: transparent;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 600;
+		font-size: 0.9rem;
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.toggle-btn:hover {
 		color: #ffffff;
+	}
+
+	:global([data-theme="light"]) .toggle-btn {
+		color: #4b5563;
 	}
 
 	:global([data-theme="light"]) .toggle-btn:hover {
@@ -549,77 +538,65 @@
 	}
 
 	.toggle-btn.active {
-		background: rgba(255, 255, 255, 0.15);
+		background: linear-gradient(135deg, #eb1e3c 0%, #ff5f1f 100%);
 		color: #ffffff;
-		font-weight: 600;
+		box-shadow: 0 4px 14px rgba(235, 30, 60, 0.4);
 	}
 
-	:global([data-theme="light"]) .toggle-btn.active {
-		background: #ffffff;
-		color: #111827;
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-	}
-
-	.piano-close-btn {
-		width: 42px;
-		height: 42px;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		color: var(--text-secondary, #9da3af);
+	.nowplaying-display {
+		min-height: 40px;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		transition: all 0.2s ease;
 	}
 
-	.piano-close-btn:hover {
-		color: #ffffff;
-		background: rgba(255, 255, 255, 0.14);
-		transform: scale(1.08);
+	.note-pill {
+		font-size: 1.4rem;
+		font-weight: 800;
+		color: #ff5f1f;
+		background: rgba(235, 30, 60, 0.15);
+		border: 1px solid rgba(255, 95, 31, 0.4);
+		padding: 4px 20px;
+		border-radius: 9999px;
+		box-shadow: 0 0 20px rgba(255, 95, 31, 0.3);
+		animation: pillPulse 0.4s ease-out;
 	}
 
-	:global([data-theme="light"]) .piano-close-btn {
-		background: rgba(0, 0, 0, 0.04);
-		border-color: rgba(0, 0, 0, 0.08);
-		color: #4b5563;
+	@keyframes pillPulse {
+		from { transform: scale(0.92); opacity: 0.8; }
+		to { transform: scale(1); opacity: 1; }
 	}
 
-	:global([data-theme="light"]) .piano-close-btn:hover {
-		color: #111827;
-		background: rgba(0, 0, 0, 0.08);
+	.note-hint {
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.45);
 	}
 
-	.close-icon {
-		width: 20px;
-		height: 20px;
+	:global([data-theme="light"]) .note-hint {
+		color: rgba(0, 0, 0, 0.45);
 	}
 
-	.piano-stage {
-		padding: 2rem;
+	#main {
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
 
-	.keyboard-container {
-		position: relative;
+	/* Keys Bed */
+	.keys-wrapper {
 		width: 100%;
-		max-width: 860px;
-		height: 260px;
-		background: #0a0a0d;
-		border-radius: 16px;
-		padding: 10px 10px 0;
-		box-shadow: inset 0 8px 24px rgba(0, 0, 0, 0.8),
-		            0 12px 30px rgba(0, 0, 0, 0.4);
-		border: 2px solid #22222a;
+		padding: 12px;
+		background: #08080a;
+		border-radius: 20px;
+		border: 3px solid #1f1f26;
+		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
+		            inset 0 6px 20px rgba(0, 0, 0, 0.9);
 	}
 
-	.keys-bed {
+	.keys {
 		position: relative;
 		width: 100%;
-		height: 100%;
+		height: 330px;
 		user-select: none;
 		-webkit-user-select: none;
 	}
@@ -633,167 +610,196 @@
 		flex-direction: column;
 		justify-content: flex-end;
 		align-items: center;
-		padding-bottom: 12px;
-		border-radius: 0 0 6px 6px;
+		padding-bottom: 16px;
+		border-radius: 0 0 8px 8px;
 		box-sizing: border-box;
-		transition: background-color 0.1s, transform 0.08s, box-shadow 0.1s;
+		transition: background 0.1s, transform 0.08s, box-shadow 0.1s;
 		user-select: none;
 		-webkit-user-select: none;
 	}
 
-	.white-key {
+	.key.white {
 		height: 100%;
-		background: linear-gradient(to bottom, #f3f3f5 0%, #e2e2e6 90%, #ffffff 100%);
-		border: 1px solid #b5b5bc;
+		background: linear-gradient(to bottom, #ffffff 0%, #ebebef 88%, #d8d8de 100%);
+		border: 1px solid #b8b8c2;
 		border-top: none;
 		z-index: 1;
-		box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.15),
-		            0 4px 6px rgba(0, 0, 0, 0.25);
-		color: #2b2b36;
+		box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.15),
+		            0 4px 8px rgba(0, 0, 0, 0.25);
+		color: #23232b;
 	}
 
-	.white-key.active {
+	.key.white.active {
 		background: linear-gradient(to bottom, #ff9955 0%, #ff5f1f 100%);
 		color: #ffffff;
-		transform: translateY(3px);
-		box-shadow: 0 0 15px rgba(255, 95, 31, 0.6);
+		transform: translateY(4px);
+		box-shadow: 0 0 20px rgba(255, 95, 31, 0.7);
 	}
 
-	.black-key {
+	.key.sharp {
 		height: 60%;
-		background: linear-gradient(to bottom, #111116 0%, #202028 85%, #050508 100%);
+		background: linear-gradient(to bottom, #111116 0%, #1e1e24 85%, #08080c 100%);
 		border: 1px solid #000000;
 		border-top: none;
 		z-index: 2;
-		box-shadow: inset 0 -3px 4px rgba(255, 255, 255, 0.15),
-		            0 6px 12px rgba(0, 0, 0, 0.6);
+		box-shadow: inset 0 -3px 5px rgba(255, 255, 255, 0.2),
+		            0 8px 16px rgba(0, 0, 0, 0.8);
 		color: #ffffff;
-		padding-bottom: 8px;
+		padding-bottom: 12px;
 	}
 
-	.black-key.active {
+	.key.sharp.active {
 		background: linear-gradient(to bottom, #eb1e3c 0%, #8e0018 100%);
-		box-shadow: 0 0 16px rgba(235, 30, 60, 0.8);
-		transform: translateY(3px);
+		box-shadow: 0 0 22px rgba(235, 30, 60, 0.9);
+		transform: translateY(4px);
 	}
 
-	.key-label {
-		font-size: 0.75rem;
+	.hints {
+		font-size: 0.8rem;
 		font-weight: 700;
-		letter-spacing: -0.02em;
+		opacity: 0.55;
+		margin-bottom: 4px;
 	}
 
-	.key-hint {
-		font-size: 0.65rem;
-		font-weight: 600;
-		opacity: 0.5;
-		margin-top: 2px;
-	}
-
-	.key-hint.sharp {
-		opacity: 0.75;
+	.key.sharp .hints {
 		color: #ff9955;
+		opacity: 0.85;
 	}
 
-	.instructions-row {
-		margin-top: 1.2rem;
-		font-size: 0.82rem;
-		color: var(--text-secondary, #9da3af);
-		text-align: center;
-		max-width: 650px;
+	.note-title {
+		font-size: 0.85rem;
+		font-weight: 800;
 	}
 
-	.instructions-row strong {
-		color: var(--text-primary, #ffffff);
+	.piano-footer {
+		margin-top: 20px;
+		font-size: 0.88rem;
+		color: rgba(255, 255, 255, 0.6);
 	}
 
-	/* Chords Grid */
+	:global([data-theme="light"]) .piano-footer {
+		color: rgba(0, 0, 0, 0.6);
+	}
+
+	.piano-footer strong {
+		color: #ffffff;
+	}
+
+	:global([data-theme="light"]) .piano-footer strong {
+		color: #111827;
+	}
+
+	/* Chords Grid (Matching teatralo4ka) */
 	.chords-grid {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
-		gap: 1rem;
+		gap: 20px;
 		width: 100%;
-		max-width: 860px;
+		max-width: 960px;
+		margin: 20px auto 0;
 	}
 
-	.chord-card {
+	.chord-btn {
+		width: 100%;
+		min-height: 120px;
+		padding: 20px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 3px solid rgba(255, 255, 255, 0.15);
+		border-radius: 20px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 1.5rem 1rem;
-		background: rgba(255, 255, 255, 0.04);
-		border: 2px solid rgba(255, 255, 255, 0.12);
-		border-radius: 18px;
 		cursor: pointer;
 		transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-	}
-
-	.chord-card:hover {
-		background: rgba(255, 255, 255, 0.08);
-		border-color: rgba(255, 95, 31, 0.5);
-		transform: translateY(-3px);
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 	}
 
-	.chord-card.minor {
+	:global([data-theme="light"]) .chord-btn {
+		background: rgba(255, 255, 255, 0.7);
+		border-color: rgba(0, 0, 0, 0.12);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+	}
+
+	.chord-btn:hover {
+		transform: translateY(-4px);
+		border-color: #ff5f1f;
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.chord-btn.minor {
 		border-style: dashed;
 	}
 
-	.chord-card.playing {
+	.chord-btn.playing {
+		transform: scale(0.94);
 		background: linear-gradient(135deg, #eb1e3c 0%, #ff5f1f 100%);
 		border-color: #ffffff;
-		transform: scale(0.96);
-		box-shadow: 0 0 25px rgba(255, 95, 31, 0.6);
+		box-shadow: 0 0 35px rgba(255, 95, 31, 0.7);
 	}
 
-	.chord-card.playing .chord-title,
-	.chord-card.playing .chord-type,
-	.chord-card.playing .chord-notes {
-		color: #ffffff !important;
-	}
-
-	.chord-title {
-		font-size: 2rem;
-		font-weight: 800;
-		color: var(--text-primary, #ffffff);
+	.chord-name {
+		font-size: 2.4rem;
+		font-weight: 900;
+		color: #ffffff;
 		line-height: 1;
 	}
 
-	.chord-type {
-		font-size: 0.72rem;
+	:global([data-theme="light"]) .chord-name {
+		color: #111827;
+	}
+
+	.chord-btn.playing .chord-name,
+	.chord-btn.playing .chord-sub,
+	.chord-btn.playing .chord-notes {
+		color: #ffffff !important;
+	}
+
+	.chord-sub {
+		font-size: 0.75rem;
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.06em;
-		color: var(--text-secondary, #9da3af);
-		margin-top: 0.3rem;
+		color: rgba(255, 255, 255, 0.6);
+		margin-top: 6px;
+	}
+
+	:global([data-theme="light"]) .chord-sub {
+		color: rgba(0, 0, 0, 0.6);
 	}
 
 	.chord-notes {
-		font-size: 0.75rem;
+		font-size: 0.8rem;
 		color: #ff9955;
-		margin-top: 0.5rem;
-		font-weight: 500;
+		margin-top: 8px;
+		font-weight: 600;
 	}
 
 	@media (max-width: 768px) {
-		.piano-card {
-			max-height: 95vh;
-			overflow-y: auto;
+		#wrap {
+			padding: 16px;
 		}
-		.piano-header {
-			padding: 1.1rem 1.4rem;
+		.piano-close-btn {
+			top: 14px;
+			right: 18px;
+			width: 40px;
+			height: 40px;
 		}
-		.piano-stage {
-			padding: 1.2rem;
-		}
-		.keyboard-container {
-			height: 190px;
+		.keys {
+			height: 220px;
 		}
 		.chords-grid {
 			grid-template-columns: repeat(2, 1fr);
+			gap: 12px;
 		}
-		.key-hint {
+		.chord-btn {
+			min-height: 80px;
+			padding: 12px;
+		}
+		.chord-name {
+			font-size: 1.6rem;
+		}
+		.hints {
 			display: none;
 		}
 	}

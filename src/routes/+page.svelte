@@ -4,18 +4,18 @@
 	import TopNav from '#lib/TopNav.svelte';
 	import GalleryModal from '#lib/GalleryModal.svelte';
 	import ContactsModal from '#lib/ContactsModal.svelte';
-	import VisualizerModal from '#lib/VisualizerModal.svelte';
 	import PianoModal from '#lib/PianoModal.svelte';
 	import HiddenPanel from '#lib/HiddenPanel.svelte';
+	import BackgroundVisualizer from '#lib/BackgroundVisualizer.svelte';
+	import VisualizerBar from '#lib/VisualizerBar.svelte';
 
 	// Modals
 	let isGalleryOpen = $state(false);
 	let isContactsOpen = $state(false);
-	let isVisualizerOpen = $state(false);
 	let isPianoOpen = $state(false);
 
 	let anyModalOpen = $derived(
-		isGalleryOpen || isContactsOpen || isVisualizerOpen || isPianoOpen
+		isGalleryOpen || isContactsOpen || isPianoOpen
 	);
 
 	// Hover effects
@@ -31,9 +31,55 @@
 
 	let isScrollLocked = false;
 
+	// Right-side scroll indicator proximity and scroll-flash logic
+	let indicatorEl = $state(null);
+	let cursorDistOpacity = $state(0);
+	let isScrollFlashActive = $state(false);
+	let scrollFlashTimer = null;
+
+	// VJ Concert Background Visualizer state
+	let isVisualizerActive = $state(false);
+	let visualizerMode = $state('bars'); // 'bars' | 'wave' | 'radar'
+	let micStatus = $state('idle'); // 'idle' | 'listening' | 'test'
+	let backgroundVisRef = $state(null);
+
+	// 5-second inactivity VJ dimming (everything except central logo fades out)
+	let isVJIdle = $state(false);
+	let vjIdleTimer = null;
+
+	function resetVJInactivity() {
+		isVJIdle = false;
+		if (vjIdleTimer) clearTimeout(vjIdleTimer);
+		if (isVisualizerActive && !anyModalOpen) {
+			vjIdleTimer = setTimeout(() => {
+				isVJIdle = true;
+			}, 5000);
+		}
+	}
+
+	$effect(() => {
+		if (isVisualizerActive) {
+			resetVJInactivity();
+		} else {
+			isVJIdle = false;
+			if (vjIdleTimer) clearTimeout(vjIdleTimer);
+		}
+	});
+
+	function triggerScrollFlash() {
+		isScrollFlashActive = true;
+		if (scrollFlashTimer) clearTimeout(scrollFlashTimer);
+		scrollFlashTimer = setTimeout(() => {
+			isScrollFlashActive = false;
+		}, 1800);
+	}
+
 	function stepScroll(direction) {
 		if (anyModalOpen) return;
 		if (isScrollLocked) return;
+
+		resetVJInactivity();
+		triggerScrollFlash();
 
 		isScrollLocked = true;
 		setTimeout(() => {
@@ -51,17 +97,42 @@
 
 	function goToState(state) {
 		if (anyModalOpen) return;
+		resetVJInactivity();
+		triggerScrollFlash();
 		scrollState = state;
 	}
 
-	// Wheel and Touch listeners
+	let audioSource = $state('mic'); // 'mic' | 'speakers'
+
+	function toggleVisualizer() {
+		isVisualizerActive = !isVisualizerActive;
+		if (isVisualizerActive) {
+			resetVJInactivity();
+		}
+	}
+
+	function selectAudioSource(source) {
+		audioSource = source;
+		if (source === 'speakers') {
+			backgroundVisRef?.startSpeakersAudio();
+		} else {
+			backgroundVisRef?.startMic();
+		}
+	}
+
+	// Effective Opacity for Right-side Scroll Indicator
+	let effectiveIndicatorOpacity = $derived.by(() => {
+		if (isVJIdle) return 0;
+		const base = isScrollFlashActive ? 0.5 : 0;
+		return Math.min(1, Math.max(cursorDistOpacity, base));
+	});
+
+	// Global wheel, pointer, touch listeners
 	$effect(() => {
 		if (typeof window === 'undefined') return;
 
 		function handleWheel(e) {
 			if (anyModalOpen) return;
-
-			// Prevent default browser page bouncing
 			e.preventDefault();
 
 			const threshold = 18;
@@ -72,6 +143,7 @@
 
 		let touchStartY = 0;
 		function handleTouchStart(e) {
+			resetVJInactivity();
 			if (e.touches && e.touches[0]) {
 				touchStartY = e.touches[0].clientY;
 			}
@@ -83,13 +155,13 @@
 				const touchEndY = e.changedTouches[0].clientY;
 				const deltaY = touchStartY - touchEndY;
 				if (Math.abs(deltaY) > 42) {
-					// Swiping UP pulls content down (direction 1), swiping DOWN pulls content up (direction -1)
 					stepScroll(deltaY > 0 ? 1 : -1);
 				}
 			}
 		}
 
 		function handleKeyDown(e) {
+			resetVJInactivity();
 			if (anyModalOpen) return;
 			if (e.key === 'ArrowDown' || e.key === 'PageDown') {
 				e.preventDefault();
@@ -100,21 +172,73 @@
 			}
 		}
 
+		const PROXIMITY_RADIUS = 260;
+		function handlePointerMove(e) {
+			resetVJInactivity();
+
+			if (!indicatorEl) {
+				cursorDistOpacity = 0;
+				return;
+			}
+
+			const r = indicatorEl.getBoundingClientRect();
+			const cx = r.left + r.width / 2;
+			const cy = r.top + r.height / 2;
+			const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+
+			if (dist >= PROXIMITY_RADIUS) {
+				cursorDistOpacity = 0;
+			} else {
+				const t = 1 - dist / PROXIMITY_RADIUS;
+				const ease = t * t * (3 - 2 * t);
+				cursorDistOpacity = ease;
+			}
+		}
+
+		function handlePointerLeave() {
+			cursorDistOpacity = 0;
+		}
+
 		window.addEventListener('wheel', handleWheel, { passive: false });
 		window.addEventListener('touchstart', handleTouchStart, { passive: true });
 		window.addEventListener('touchend', handleTouchEnd, { passive: true });
 		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('pointermove', handlePointerMove, { passive: true });
+		window.addEventListener('pointerleave', handlePointerLeave);
 
 		return () => {
 			window.removeEventListener('wheel', handleWheel);
 			window.removeEventListener('touchstart', handleTouchStart);
 			window.removeEventListener('touchend', handleTouchEnd);
 			window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('pointermove', handlePointerMove);
+			window.removeEventListener('pointerleave', handlePointerLeave);
+			if (vjIdleTimer) clearTimeout(vjIdleTimer);
+			if (scrollFlashTimer) clearTimeout(scrollFlashTimer);
 		};
 	});
 </script>
 
-<main class="page-container">
+<main class="page-container" class:vj-idle-mode={isVJIdle}>
+	<!-- Dynamic Full-Screen Live Concert Background Audio Visualizer -->
+	<BackgroundVisualizer
+		bind:this={backgroundVisRef}
+		isActive={isVisualizerActive}
+		mode={visualizerMode}
+		onStatusChange={(status) => (micStatus = status)}
+	/>
+
+	<!-- Floating VJ Control Bar when visualizer is active -->
+	<VisualizerBar
+		isActive={isVisualizerActive}
+		currentMode={visualizerMode}
+		{audioSource}
+		{micStatus}
+		onSelectMode={(m) => (visualizerMode = m)}
+		onSelectSource={selectAudioSource}
+		onClose={() => (isVisualizerActive = false)}
+	/>
+
 	<!-- Gallery Hover Background -->
 	<div
 		class="gallery-hover-bg"
@@ -178,16 +302,20 @@
 	<!-- Hidden Actions Panel in State 4 -->
 	<HiddenPanel
 		isVisible={scrollState === 4}
-		onOpenVisualizer={() => {
-			isVisualizerOpen = true;
-		}}
+		{isVisualizerActive}
+		onOpenVisualizer={toggleVisualizer}
 		onOpenPiano={() => {
 			isPianoOpen = true;
 		}}
 	/>
 
-	<!-- 4-State Cyclic Scroll Indicator on the side -->
-	<aside class="scroll-indicator" aria-label="Індикатор стану скролу">
+	<!-- 4-State Cyclic Scroll Indicator with proximity & scroll fade -->
+	<aside
+		bind:this={indicatorEl}
+		class="scroll-indicator"
+		style="opacity: {effectiveIndicatorOpacity.toFixed(3)}; pointer-events: {effectiveIndicatorOpacity > 0.05 ? 'auto' : 'none'};"
+		aria-label="Індикатор стану скролу"
+	>
 		<button
 			type="button"
 			class="state-dot"
@@ -233,7 +361,6 @@
 	<!-- Modals -->
 	<GalleryModal bind:isOpen={isGalleryOpen} />
 	<ContactsModal bind:isOpen={isContactsOpen} />
-	<VisualizerModal bind:isOpen={isVisualizerOpen} />
 	<PianoModal bind:isOpen={isPianoOpen} />
 </main>
 
@@ -249,6 +376,20 @@
 		align-items: center;
 		justify-content: center;
 		user-select: none;
+	}
+
+	/* VJ Concert Idle Mode:
+	   After 5s without cursor movement, smoothly fade out everything
+	   except the central logo, leaving a clean live concert backdrop!
+	*/
+	.page-container.vj-idle-mode :global(.top-center-nav),
+	.page-container.vj-idle-mode :global(.music-links),
+	.page-container.vj-idle-mode :global(.hidden-panel-wrapper),
+	.page-container.vj-idle-mode :global(.vj-control-bar),
+	.page-container.vj-idle-mode .scroll-indicator {
+		opacity: 0 !important;
+		pointer-events: none !important;
+		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
 	}
 
 	/* Gallery Hover Background */
@@ -379,6 +520,8 @@
 		-webkit-backdrop-filter: blur(12px);
 		border-radius: 9999px;
 		border: 1px solid rgba(255, 255, 255, 0.08);
+		transition: opacity 0.28s ease-out;
+		will-change: opacity;
 	}
 
 	:global([data-theme="light"]) .scroll-indicator {

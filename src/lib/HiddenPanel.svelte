@@ -4,6 +4,7 @@
 
 	let {
 		isVisible = false,
+		isVisualizerActive = false,
 		onOpenVisualizer = () => {},
 		onOpenPiano = () => {}
 	} = $props();
@@ -51,8 +52,10 @@
 		<button
 			type="button"
 			class="action-item"
+			class:is-active={isVisualizerActive}
 			onclick={() => onOpenVisualizer?.()}
-			aria-label="Відкрити аудіовізуалізацію"
+			aria-label={isVisualizerActive ? 'Вимкнути фонову аудіовізуалізацію' : 'Увімкнути фонову аудіовізуалізацію'}
+			aria-pressed={isVisualizerActive}
 		>
 			<span class="action-icon-box">
 				<svg
@@ -217,6 +220,13 @@
 		background: rgba(255, 255, 255, 0.07);
 		border-color: rgba(255, 255, 255, 0.15);
 		transform: translateY(-2px);
+	}
+
+	.action-item.is-active {
+		color: #ffffff;
+		background: linear-gradient(135deg, rgba(235, 30, 60, 0.3) 0%, rgba(255, 95, 31, 0.3) 100%);
+		border-color: rgba(255, 95, 31, 0.6);
+		box-shadow: 0 0 15px rgba(255, 95, 31, 0.35);
 	}
 
 	:global([data-theme="light"]) .action-item:hover {
