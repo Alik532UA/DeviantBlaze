@@ -2,6 +2,7 @@
 	import { iconStyleStore } from './iconStyle.svelte.js';
 	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
+	import { canFullscreen, toggleFullscreen, isFullscreenActive } from '#lib/services/fullscreen.js';
 
 	let {
 		isVisible = false,
@@ -11,30 +12,26 @@
 	} = $props();
 
 	let style = $derived(iconStyleStore.current);
+	let isSupported = $state(true);
 	let isFullscreen = $state(false);
 
 	$effect(() => {
 		if (typeof document === 'undefined') return;
 
+		isSupported = canFullscreen();
+		isFullscreen = isFullscreenActive();
+
 		function onFsChange() {
-			isFullscreen = !!document.fullscreenElement;
+			isFullscreen = isFullscreenActive();
 		}
 
 		document.addEventListener('fullscreenchange', onFsChange);
+		document.addEventListener('webkitfullscreenchange', onFsChange);
 		return () => {
 			document.removeEventListener('fullscreenchange', onFsChange);
+			document.removeEventListener('webkitfullscreenchange', onFsChange);
 		};
 	});
-
-	function toggleFullscreen() {
-		if (typeof document === 'undefined') return;
-
-		if (!document.fullscreenElement) {
-			document.documentElement.requestFullscreen().catch(() => {});
-		} else {
-			document.exitFullscreen().catch(() => {});
-		}
-	}
 
 	function getIcon(name) {
 		const set = ICONS[style] || ICONS.gothic;
@@ -166,28 +163,30 @@
 			<span class="action-title">{langStore.t('lang_btn')}</span>
 		</button>
 
-		<!-- 6. На весь екран -->
-		<button
-			type="button"
-			class="action-item"
-			onclick={toggleFullscreen}
-			aria-label={isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}
-			title="{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')} (F)"
-		>
-			<span class="action-icon-box">
-				{#key style}
-					<svg
-						class="action-icon"
-						viewBox={isFullscreen ? getIcon('fullscreen_exit').viewBox : getIcon('fullscreen').viewBox}
-						fill="currentColor"
-						aria-hidden="true"
-					>
-						{@html isFullscreen ? getIcon('fullscreen_exit').svg : getIcon('fullscreen').svg}
-					</svg>
-				{/key}
-			</span>
-			<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
-		</button>
+		<!-- 6. На весь екран (тільки якщо пристрій підтримує Fullscreen API) -->
+		{#if isSupported}
+			<button
+				type="button"
+				class="action-item fullscreen-item"
+				onclick={toggleFullscreen}
+				aria-label={isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}
+				title="{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')} (F)"
+			>
+				<span class="action-icon-box">
+					{#key style}
+						<svg
+							class="action-icon"
+							viewBox={isFullscreen ? getIcon('fullscreen_exit').viewBox : getIcon('fullscreen').viewBox}
+							fill="currentColor"
+							aria-hidden="true"
+						>
+							{@html isFullscreen ? getIcon('fullscreen_exit').svg : getIcon('fullscreen').svg}
+						</svg>
+					{/key}
+				</span>
+				<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
+			</button>
+		{/if}
 	</div>
 </nav>
 

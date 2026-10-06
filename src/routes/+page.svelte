@@ -10,6 +10,7 @@
 	import { themeStore } from '#lib/theme.svelte.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { langStore } from '#lib/lang.svelte.js';
+	import { canFullscreen, toggleFullscreen } from '#lib/services/fullscreen.js';
 	import { asset } from '$app/paths';
 
 	// Modals
@@ -118,15 +119,6 @@
 	}
 
 	let audioSource = $state('mic'); // 'mic' | 'speakers'
-
-	function toggleFullscreen() {
-		if (typeof document === 'undefined') return;
-		if (!document.fullscreenElement) {
-			document.documentElement.requestFullscreen().catch(() => {});
-		} else {
-			document.exitFullscreen().catch(() => {});
-		}
-	}
 
 	function toggleVisualizer() {
 		isVisualizerActive = !isVisualizerActive;
@@ -244,10 +236,12 @@
 				return;
 			}
 
-			// f — весь екран
+			// f — весь екран (якщо підтримується)
 			if (code === 'KeyF' || key === 'f' || key === 'а') {
-				e.preventDefault();
-				toggleFullscreen();
+				if (canFullscreen()) {
+					e.preventDefault();
+					toggleFullscreen();
+				}
 				return;
 			}
 

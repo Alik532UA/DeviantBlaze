@@ -47,6 +47,18 @@
 				if (metaTheme) {
 					metaTheme.setAttribute('content', theme === 'dark' ? '#08080a' : '#f9f9fb');
 				}
+
+				// Fullscreen support detection on first frame (e.g. iPhone does not support Web Fullscreen API)
+				try {
+					const root = document.documentElement;
+					const canFs = Boolean(
+						(root.requestFullscreen || root.webkitRequestFullscreen) &&
+						(document.fullscreenEnabled ?? document.webkitFullscreenEnabled !== false)
+					);
+					if (!canFs) {
+						document.documentElement.classList.add('no-fullscreen');
+					}
+				} catch (e) {}
 			} catch (e) {}
 		</script>
 		%sveltekit.head%

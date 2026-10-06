@@ -79,6 +79,11 @@ body:has(.beta-page) {
 	-webkit-user-select: text !important;
 }
 
+/* Hide fullscreen trigger on devices without Fullscreen API support (e.g. iPhone) */
+html.no-fullscreen .fullscreen-item {
+	display: none !important;
+}
+
 /* Custom subtle noise texture overlay for organic analog feel */
 .ambient-backdrop {
 	position: fixed;
