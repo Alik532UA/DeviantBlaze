@@ -69,11 +69,11 @@
 				<div class="contact-item">
 					<span class="label">Music Streaming</span>
 					<div class="stream-links">
-						<a href="https://music.youtube.com/channel/UCp97EB_HMto3E4bghq3jViA" target="_blank" rel="noopener noreferrer">YouTube Music</a>
+						<a href="https://music.youtube.com/watch?v=tlZPReIOTuQ&si=D8i77XIoe5O871U4" target="_blank" rel="noopener noreferrer">YouTube Music</a>
 						<span>·</span>
-						<a href="https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs" target="_blank" rel="noopener noreferrer">Spotify</a>
+						<a href="https://open.spotify.com/album/6J3G38WFCEGf97AqrCp8Dq" target="_blank" rel="noopener noreferrer">Spotify</a>
 						<span>·</span>
-						<a href="https://music.apple.com/ua/artist/deviant-blaze/1728765974" target="_blank" rel="noopener noreferrer">Apple Music</a>
+						<a href="https://music.apple.com/ua/album/%D0%BD%D1%83%D0%BB%D1%8C/6805608429?i=6805608430" target="_blank" rel="noopener noreferrer">Apple Music</a>
 					</div>
 				</div>
 			</div>

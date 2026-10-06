@@ -6,21 +6,21 @@
 		{
 			id: 'ytm',
 			name: 'YouTube Music',
-			url: 'https://music.youtube.com/channel/UCp97EB_HMto3E4bghq3jViA',
+			url: 'https://music.youtube.com/watch?v=tlZPReIOTuQ&si=D8i77XIoe5O871U4',
 			brandColor: '#FF0000',
 			brandGlow: 'rgba(255, 0, 0, 0.65)'
 		},
 		{
 			id: 'spotify',
 			name: 'Spotify',
-			url: 'https://open.spotify.com/artist/3UHW8Sd1RHc87Yilotw3Qs',
+			url: 'https://open.spotify.com/album/6J3G38WFCEGf97AqrCp8Dq',
 			brandColor: '#1ED760',
 			brandGlow: 'rgba(30, 215, 96, 0.65)'
 		},
 		{
 			id: 'apple',
 			name: 'Apple Music',
-			url: 'https://music.apple.com/ua/artist/deviant-blaze/1728765974',
+			url: 'https://music.apple.com/ua/album/%D0%BD%D1%83%D0%BB%D1%8C/6805608429?i=6805608430',
 			brandColor: '#FA243C',
 			brandGlow: 'rgba(250, 36, 60, 0.65)'
 		}
