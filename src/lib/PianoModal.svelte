@@ -1,5 +1,6 @@
 <script>
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
 
 	let { isOpen = $bindable(false) } = $props();
@@ -309,7 +310,7 @@
 							class:active={viewMode === 'keyboard'}
 							onclick={() => (viewMode = 'keyboard')}
 						>
-							Клавіатура
+							{langStore.t('piano_keyboard')}
 						</button>
 						<button
 							type="button"
@@ -317,7 +318,7 @@
 							class:active={viewMode === 'chords'}
 							onclick={() => (viewMode = 'chords')}
 						>
-							Акорди
+							{langStore.t('piano_chords')}
 						</button>
 					</div>
 
@@ -325,7 +326,7 @@
 						{#if nowPlaying}
 							<span class="note-pill">♪ {nowPlaying}</span>
 						{:else}
-							<span class="note-hint">Торкніться клавіші або натисніть клавіатуру</span>
+							<span class="note-hint">{langStore.t('piano_hint')}</span>
 						{/if}
 					</div>
 				</div>
@@ -376,7 +377,7 @@
 					</div>
 
 					<footer class="piano-footer">
-						<span>🎹 Клавіші комп'ютера: <strong>A S D F G H J K L ; '</strong> (білі) та <strong>W E R T Y U I O P [</strong> (чорні)</span>
+						<span>{langStore.t('piano_keys_hint')}</span>
 					</footer>
 				{:else}
 					<!-- Chords Grid -->
@@ -390,7 +391,7 @@
 								onclick={() => playChord(chord)}
 							>
 								<span class="chord-name">{chord.name}</span>
-								<span class="chord-sub">{chord.type === 'minor' ? 'мінор' : 'мажор'}</span>
+								<span class="chord-sub">{chord.type === 'minor' ? langStore.t('chord_minor') : langStore.t('chord_major')}</span>
 								<span class="chord-notes">{chord.notes.join(' • ')}</span>
 							</button>
 						{/each}
@@ -681,13 +682,7 @@
 		color: rgba(0, 0, 0, 0.6);
 	}
 
-	.piano-footer strong {
-		color: #ffffff;
-	}
 
-	:global([data-theme="light"]) .piano-footer strong {
-		color: #111827;
-	}
 
 	/* Chords Grid (Matching teatralo4ka) */
 	.chords-grid {

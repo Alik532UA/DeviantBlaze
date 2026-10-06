@@ -1,5 +1,6 @@
 <script>
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
 
 	let {
@@ -54,7 +55,7 @@
 			class="action-item"
 			class:is-active={isVisualizerActive}
 			onclick={() => onOpenVisualizer?.()}
-			aria-label={isVisualizerActive ? 'Вимкнути фонову аудіовізуалізацію' : 'Увімкнути фонову аудіовізуалізацію'}
+			aria-label={langStore.t('visualizer')}
 			aria-pressed={isVisualizerActive}
 		>
 			<span class="action-icon-box">
@@ -67,7 +68,7 @@
 					{@html getIcon('visualizer').svg}
 				</svg>
 			</span>
-			<span class="action-title">Візуалізація</span>
+			<span class="action-title">{langStore.t('visualizer')}</span>
 		</button>
 
 		<!-- 2. Фортепіано -->
@@ -75,7 +76,7 @@
 			type="button"
 			class="action-item"
 			onclick={() => onOpenPiano?.()}
-			aria-label="Відкрити фортепіано"
+			aria-label={langStore.t('piano')}
 		>
 			<span class="action-icon-box">
 				<svg
@@ -87,7 +88,7 @@
 					{@html getIcon('piano').svg}
 				</svg>
 			</span>
-			<span class="action-title">Фортепіано</span>
+			<span class="action-title">{langStore.t('piano')}</span>
 		</button>
 
 		<!-- 3. На весь екран -->
@@ -95,7 +96,7 @@
 			type="button"
 			class="action-item"
 			onclick={toggleFullscreen}
-			aria-label={isFullscreen ? 'Вийти з повного екрану' : 'На весь екран'}
+			aria-label={isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}
 		>
 			<span class="action-icon-box">
 				<svg
@@ -107,7 +108,7 @@
 					{@html isFullscreen ? getIcon('fullscreen_exit').svg : getIcon('fullscreen').svg}
 				</svg>
 			</span>
-			<span class="action-title">{isFullscreen ? 'Згорнути' : 'На весь екран'}</span>
+			<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
 		</button>
 
 		<!-- 4. Замовити сайт -->
@@ -116,7 +117,7 @@
 			target="_blank"
 			rel="noopener noreferrer"
 			class="action-item"
-			aria-label="Замовити сайт у DigitalWorkshop (відкривається в новому вікні)"
+			aria-label={langStore.t('order_site')}
 		>
 			<span class="action-icon-box">
 				<svg
@@ -128,7 +129,7 @@
 					{@html getIcon('order_site').svg}
 				</svg>
 			</span>
-			<span class="action-title">Замовити сайт</span>
+			<span class="action-title">{langStore.t('order_site')}</span>
 		</a>
 
 		<!-- 5. Стиль іконок (Готика / Класика) -->
@@ -148,7 +149,28 @@
 					{@html getIcon('style_toggle').svg}
 				</svg>
 			</span>
-			<span class="action-title">{style === 'gothic' ? 'Готика' : 'Класика'}</span>
+			<span class="action-title">{style === 'gothic' ? langStore.t('style_gothic') : langStore.t('style_classic')}</span>
+		</button>
+
+		<!-- 6. Мова (UA / EN) -->
+		<button
+			type="button"
+			class="action-item lang-toggle-item"
+			onclick={() => langStore.toggle()}
+			aria-label={langStore.current === 'uk' ? 'Switch to English' : 'Перемкнути на українську'}
+			title="Змінити мову (L)"
+		>
+			<span class="action-icon-box">
+				<svg
+					class="action-icon"
+					viewBox={getIcon('lang').viewBox}
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					{@html getIcon('lang').svg}
+				</svg>
+			</span>
+			<span class="action-title">{langStore.current.toUpperCase()}</span>
 		</button>
 	</div>
 </nav>

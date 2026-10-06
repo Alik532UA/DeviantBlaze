@@ -1,4 +1,6 @@
 <script>
+	import { langStore } from './lang.svelte.js';
+
 	let {
 		isActive = false,
 		currentMode = 'bars',
@@ -24,11 +26,11 @@
 			></span>
 			<span class="vj-status-text">
 				{#if audioSource === 'speakers'}
-					VJ Live (З колонок)
+					{langStore.t('vj_live_speakers')}
 				{:else if audioSource === 'mic'}
-					VJ Live (Мікрофон)
+					{langStore.t('vj_live_mic')}
 				{:else}
-					VJ Live (Тест)
+					{langStore.t('vj_live_test')}
 				{/if}
 			</span>
 		</div>
@@ -40,18 +42,18 @@
 				class="vj-toggle-btn"
 				class:is-active={audioSource === 'mic'}
 				onclick={() => onSelectSource?.('mic')}
-				title="Слухати аудіо через мікрофон"
+				title={langStore.t('source_mic')}
 			>
-				🎤 Мікрофон
+				{langStore.t('source_mic')}
 			</button>
 			<button
 				type="button"
 				class="vj-toggle-btn"
 				class:is-active={audioSource === 'speakers'}
 				onclick={() => onSelectSource?.('speakers')}
-				title="Слухати звук прямо з колонок (виберіть вкладку або екран та увімкніть передачу звуку)"
+				title={langStore.t('source_speakers')}
 			>
-				🔊 З колонок
+				{langStore.t('source_speakers')}
 			</button>
 		</div>
 
@@ -63,7 +65,7 @@
 				class:is-active={currentMode === 'bars'}
 				onclick={() => onSelectMode?.('bars')}
 			>
-				Спектр
+				{langStore.t('mode_bars')}
 			</button>
 			<button
 				type="button"
@@ -71,7 +73,7 @@
 				class:is-active={currentMode === 'wave'}
 				onclick={() => onSelectMode?.('wave')}
 			>
-				Хвиля
+				{langStore.t('mode_wave')}
 			</button>
 			<button
 				type="button"
@@ -79,7 +81,7 @@
 				class:is-active={currentMode === 'radar'}
 				onclick={() => onSelectMode?.('radar')}
 			>
-				Радар
+				{langStore.t('mode_radar')}
 			</button>
 		</div>
 
@@ -88,8 +90,8 @@
 			type="button"
 			class="vj-exit-btn"
 			onclick={() => onClose?.()}
-			title="Вимкнути візуалізацію"
-			aria-label="Вимкнути візуалізацію"
+			title={langStore.t('close_visualizer')}
+			aria-label={langStore.t('close_visualizer')}
 		>
 			✕
 		</button>

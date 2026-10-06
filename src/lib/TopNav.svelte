@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { themeStore } from './theme.svelte.js';
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
 
 	let { onOpenGallery, onOpenMessage, onGalleryHover, onThemeHover, isExpanded = false } = $props();
@@ -84,13 +85,13 @@
 		onmouseleave={() => onGalleryHover?.(false)}
 		onfocus={() => onGalleryHover?.(true)}
 		onblur={() => onGalleryHover?.(false)}
-		aria-label="Галерея"
+		aria-label={langStore.t('gallery')}
 	>
 		<svg viewBox={getIcon('gallery').viewBox} class="nav-svg" aria-hidden="true">
 			{@html getIcon('gallery').svg}
 		</svg>
-		<span class="nav-sublabel">Галерея</span>
-		<span class="nav-tooltip">Галерея</span>
+		<span class="nav-sublabel">{langStore.t('gallery')}</span>
+		<span class="nav-tooltip">{langStore.t('gallery')}</span>
 	</button>
 
 	<!-- 2. Instagram Link -->
@@ -121,13 +122,13 @@
 	<button
 		class="nav-btn"
 		onclick={onOpenMessage}
-		aria-label="Повідомлення / Написати"
+		aria-label={langStore.t('contact')}
 	>
 		<svg viewBox={getIcon('message').viewBox} class="nav-svg" aria-hidden="true">
 			{@html getIcon('message').svg}
 		</svg>
-		<span class="nav-sublabel">Написати</span>
-		<span class="nav-tooltip">Написати</span>
+		<span class="nav-sublabel">{langStore.t('contact')}</span>
+		<span class="nav-tooltip">{langStore.t('contact')}</span>
 	</button>
 
 	<!-- 4. Theme Toggle Button -->
@@ -138,7 +139,7 @@
 		onmouseleave={() => onThemeHover?.(false)}
 		onfocus={() => onThemeHover?.(true)}
 		onblur={() => onThemeHover?.(false)}
-		aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+		aria-label={isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}
 	>
 		<div class="theme-icon-wrap" class:is-light={!isDark}>
 			<svg
@@ -149,8 +150,8 @@
 				{@html getIcon(isDark ? 'theme_dark' : 'theme_light').svg}
 			</svg>
 		</div>
-		<span class="nav-sublabel">{isDark ? 'Світла' : 'Темна'}</span>
-		<span class="nav-tooltip">{isDark ? 'Світла тема' : 'Темна тема'}</span>
+		<span class="nav-sublabel">{isDark ? langStore.t('theme_dark') : langStore.t('theme_light')}</span>
+		<span class="nav-tooltip">{isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}</span>
 	</button>
 </nav>
 

@@ -8,6 +8,9 @@
 	import HiddenPanel from '#lib/HiddenPanel.svelte';
 	import BackgroundVisualizer from '#lib/BackgroundVisualizer.svelte';
 	import VisualizerBar from '#lib/VisualizerBar.svelte';
+	import { themeStore } from '#lib/theme.svelte.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { langStore } from '#lib/lang.svelte.js';
 
 	// Modals
 	let isGalleryOpen = $state(false);
@@ -104,6 +107,15 @@
 
 	let audioSource = $state('mic'); // 'mic' | 'speakers'
 
+	function toggleFullscreen() {
+		if (typeof document === 'undefined') return;
+		if (!document.fullscreenElement) {
+			document.documentElement.requestFullscreen().catch(() => {});
+		} else {
+			document.exitFullscreen().catch(() => {});
+		}
+	}
+
 	function toggleVisualizer() {
 		isVisualizerActive = !isVisualizerActive;
 		if (isVisualizerActive) {
@@ -161,8 +173,56 @@
 		}
 
 		function handleKeyDown(e) {
+			const target = /** @type {HTMLElement} */ (e.target);
+			const tag = target?.tagName?.toLowerCase();
+			if (tag === 'input' || tag === 'textarea' || target?.isContentEditable) {
+				return;
+			}
+
+			if (isPianoOpen) return;
+
 			resetVJInactivity();
+
+			const key = e.key.toLowerCase();
+			const code = e.code;
+
+			// v — Аудіовізуалізатор
+			if (code === 'KeyV' || key === 'v' || key === 'м') {
+				e.preventDefault();
+				toggleVisualizer();
+				return;
+			}
+
+			// t — зміна теми
+			if (code === 'KeyT' || key === 't' || key === 'е') {
+				e.preventDefault();
+				themeStore.toggle();
+				return;
+			}
+
+			// g — зміна стилю готика чи стандарт
+			if (code === 'KeyG' || key === 'g' || key === 'п') {
+				e.preventDefault();
+				iconStyleStore.toggle();
+				return;
+			}
+
+			// f — весь екран
+			if (code === 'KeyF' || key === 'f' || key === 'а') {
+				e.preventDefault();
+				toggleFullscreen();
+				return;
+			}
+
+			// l — зміна мови
+			if (code === 'KeyL' || key === 'l' || key === 'д') {
+				e.preventDefault();
+				langStore.toggle();
+				return;
+			}
+
 			if (anyModalOpen) return;
+
 			if (e.key === 'ArrowDown' || e.key === 'PageDown') {
 				e.preventDefault();
 				stepScroll(1);
@@ -321,8 +381,8 @@
 			class="state-dot"
 			class:active={scrollState === 1}
 			onclick={() => goToState(1)}
-			aria-label="Стан 1: Верхнє меню розширене"
-			title="Верхнє меню"
+			aria-label={langStore.t('scroll_top')}
+			title={langStore.t('scroll_top')}
 		>
 			<span class="dot-inner"></span>
 		</button>
@@ -331,8 +391,8 @@
 			class="state-dot"
 			class:active={scrollState === 2}
 			onclick={() => goToState(2)}
-			aria-label="Стан 2: Стандартний вигляд"
-			title="Головна"
+			aria-label={langStore.t('scroll_home')}
+			title={langStore.t('scroll_home')}
 		>
 			<span class="dot-inner"></span>
 		</button>
@@ -341,8 +401,8 @@
 			class="state-dot"
 			class:active={scrollState === 3}
 			onclick={() => goToState(3)}
-			aria-label="Стан 3: Музичні платформи розширені"
-			title="Музика"
+			aria-label={langStore.t('scroll_music')}
+			title={langStore.t('scroll_music')}
 		>
 			<span class="dot-inner"></span>
 		</button>
@@ -351,8 +411,8 @@
 			class="state-dot"
 			class:active={scrollState === 4}
 			onclick={() => goToState(4)}
-			aria-label="Стан 4: Додаткові інструменти"
-			title="Інструменти"
+			aria-label={langStore.t('scroll_tools')}
+			title={langStore.t('scroll_tools')}
 		>
 			<span class="dot-inner"></span>
 		</button>

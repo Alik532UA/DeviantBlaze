@@ -140,6 +140,15 @@ export const ICONS = {
 			svg: `
 				<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 			`
+		},
+		lang: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+				<path d="M3.6 9h16.8M3.6 15h16.8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+				<path d="M12 3a14 14 0 0 0 0 18 14 14 0 0 0 0-18Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+			`
 		}
 	},
 
@@ -468,6 +477,23 @@ export const ICONS = {
 				<!-- Ascending Blade / Arrow NE -->
 				<path d="M46 54 L76 24 L70 20 L88 12 L80 30 L76 24 L46 54 Z" fill="currentColor"/>
 				<polygon points="88,12 96,4 84,10" fill="currentColor"/>
+			`
+		},
+
+		// 17. Language: Gothic Rune Celestial Astrolabe with Barbed Cardinal Points
+		lang: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<!-- Gothic Globe / Rune Portal -->
+				<circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="3"/>
+				<ellipse cx="50" cy="50" rx="18" ry="38" fill="none" stroke="currentColor" stroke-width="2.5"/>
+				<line x1="12" y1="50" x2="88" y2="50" stroke="currentColor" stroke-width="3"/>
+				<!-- Cardinal Spikes -->
+				<polygon points="50,12 46,2 54,2" fill="currentColor"/>
+				<polygon points="50,88 46,98 54,98" fill="currentColor"/>
+				<polygon points="12,50 2,46 2,54" fill="currentColor"/>
+				<polygon points="88,50 98,46 98,54" fill="currentColor"/>
 			`
 		}
 	}
