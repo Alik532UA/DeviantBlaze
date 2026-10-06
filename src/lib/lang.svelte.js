@@ -59,6 +59,7 @@ export const TRANSLATIONS = {
 		chord_minor: "мінор",
 
 		// Scroll Indicator
+		music_single_heading: "Слухати сингл «Нуль» на всіх платформах",
 		scroll_top: "Верхнє меню",
 		scroll_home: "Головна",
 		scroll_music: "Музика",
@@ -129,6 +130,7 @@ export const TRANSLATIONS = {
 		chord_minor: "minor",
 
 		// Scroll Indicator
+		music_single_heading: "Listen to the single «Null» on all platforms",
 		scroll_top: "Top Menu",
 		scroll_home: "Home",
 		scroll_music: "Music",

@@ -1,5 +1,6 @@
 <script>
 	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { langStore } from './lang.svelte.js';
 	import { ICONS } from './icons.js';
 
 	const platforms = [
@@ -31,12 +32,18 @@
 	let style = $derived(iconStyleStore.current);
 </script>
 
-<nav
-	class="music-links"
+<div
+	class="music-container"
 	class:is-expanded={isExpanded}
 	class:is-shifted-up={isShiftedUp}
-	aria-label="Music Platforms"
 >
+	<h2 class="music-heading">
+		{langStore.t('music_single_heading')}
+	</h2>
+	<nav
+		class="music-links"
+		aria-label="Music Platforms"
+	>
 	{#each platforms as item}
 		{@const iconData = ICONS[style]?.[item.id] || ICONS.gothic[item.id]}
 		<a
@@ -63,31 +70,83 @@
 			<span class="tooltip">{item.name}</span>
 		</a>
 	{/each}
-</nav>
+	</nav>
+</div>
 
 <style>
-	.music-links {
+	.music-container {
 		position: fixed;
-		bottom: 2.75rem;
+		bottom: 2.25rem;
 		left: 50%;
 		transform: translateX(-50%);
 		z-index: 50;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		gap: 2.25rem;
-		padding: 0.5rem 1rem;
+		justify-content: center;
+		pointer-events: none;
 		transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-		            gap 0.6s cubic-bezier(0.16, 1, 0.3, 1),
 		            bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	.music-links.is-expanded {
-		bottom: 3.25rem;
-		gap: 4.5rem;
+	.music-container.is-expanded {
+		bottom: 2.75rem;
 	}
 
-	.music-links.is-shifted-up {
+	.music-container.is-shifted-up {
 		transform: translateX(-50%) translateY(-105px);
+	}
+
+	.music-heading {
+		margin: 0 0 0.5rem 0;
+		padding: 0;
+		font-family: inherit;
+		font-size: 0.82rem;
+		font-weight: 500;
+		letter-spacing: 0.06em;
+		color: var(--fg-secondary);
+		text-align: center;
+		white-space: nowrap;
+		pointer-events: auto;
+		user-select: none;
+		-webkit-user-select: none;
+		opacity: 0.72;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+		transition: font-size 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		            opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		            margin-bottom 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		            color 0.35s ease,
+		            text-shadow 0.35s ease,
+		            transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.music-container.is-expanded .music-heading {
+		font-size: 1.05rem;
+		font-weight: 600;
+		letter-spacing: 0.07em;
+		color: var(--fg-primary);
+		opacity: 1;
+		margin-bottom: 0.85rem;
+		transform: translateY(-2px);
+		text-shadow: 0 0 20px rgba(255, 255, 255, 0.35), 0 2px 10px rgba(0, 0, 0, 0.5);
+	}
+
+	:global([data-theme="light"]) .music-container.is-expanded .music-heading {
+		text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+	}
+
+	.music-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2.25rem;
+		padding: 0.25rem 1rem;
+		pointer-events: auto;
+		transition: gap 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.is-expanded .music-links {
+		gap: 4.5rem;
 	}
 
 	.link-item {
@@ -208,16 +267,46 @@
 	}
 
 	@media (max-width: 768px), (pointer: coarse) {
-		.music-links {
-			bottom: 1.75rem;
-			gap: 1.6rem;
-			opacity: 1 !important;
+		.music-container {
+			bottom: 1.45rem;
 			max-width: calc(100vw - 1rem);
 			box-sizing: border-box;
 		}
 
-		.music-links.is-expanded {
-			bottom: 2rem;
+		.music-container.is-expanded {
+			bottom: 1.85rem;
+		}
+
+		.music-container.is-shifted-up {
+			transform: translateX(-50%) translateY(-115px);
+		}
+
+		.music-heading {
+			font-size: 0.72rem;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.35rem;
+			opacity: 0.78;
+			max-width: calc(100vw - 1.5rem);
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.music-container.is-expanded .music-heading {
+			font-size: 0.86rem;
+			margin-bottom: 0.55rem;
+			opacity: 1;
+			transform: translateY(-1px);
+		}
+
+		.music-links {
+			gap: 1.6rem;
+			opacity: 1 !important;
+			max-width: calc(100vw - 1rem);
+			box-sizing: border-box;
+			padding: 0.2rem 0.5rem;
+		}
+
+		.is-expanded .music-links {
 			gap: clamp(1.1rem, 5.5vw, 2.4rem);
 		}
 
@@ -244,12 +333,12 @@
 			height: 38px;
 		}
 
-		.music-links.is-expanded .music-icon {
+		.is-expanded .music-icon {
 			width: 50px;
 			height: 50px;
 		}
 
-		.music-links.is-expanded .apple-classic {
+		.is-expanded .apple-classic {
 			width: 44px;
 			height: 50px;
 		}
@@ -265,7 +354,7 @@
 			text-overflow: ellipsis;
 		}
 
-		.music-links.is-expanded .link-sublabel {
+		.is-expanded .link-sublabel {
 			font-size: 0.72rem;
 			letter-spacing: 0.01em;
 			margin-top: 6px;
@@ -275,10 +364,6 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-		}
-
-		.music-links.is-shifted-up {
-			transform: translateX(-50%) translateY(-115px);
 		}
 
 		.tooltip {
