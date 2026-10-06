@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && node scripts/generate-sitemap.mjs",
+		"check:build": "node scripts/check-build.mjs",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"prepare": "svelte-kit sync || echo ''"

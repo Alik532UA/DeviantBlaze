@@ -38,6 +38,9 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Verify build quality (SEO-v10)
+        run: npm run check:build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

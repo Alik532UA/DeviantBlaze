@@ -53,7 +53,7 @@
 		<a
 			href="https://alik532ua.github.io/DigitalWorkshop/"
 			target="_blank"
-			rel="noopener noreferrer"
+			rel="external noopener noreferrer"
 			class="action-item"
 			aria-label={langStore.t('order_site')}
 		>

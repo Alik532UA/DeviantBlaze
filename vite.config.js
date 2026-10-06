@@ -18,7 +18,15 @@ export default defineConfig(({ mode }) => ({
 				strict: true
 			}),
 			paths: {
-				base: mode === 'production' ? '/DeviantBlaze' : ''
+				base: mode === 'production' ? '/DeviantBlaze' : '',
+				relative: false,
+				origin: 'https://alik532ua.github.io'
+			},
+			prerender: {
+				handleHttpError: ({ path, message }) => {
+					if (path.startsWith('/DigitalWorkshop')) return;
+					throw new Error(message);
+				}
 			}
 		})
 	]
