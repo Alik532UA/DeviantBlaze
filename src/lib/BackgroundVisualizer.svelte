@@ -127,7 +127,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 256;
+			analyser.fftSize = 512;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -177,7 +177,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 256;
+			analyser.fftSize = 512;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -200,28 +200,34 @@
 		const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 		audioCtx = new AudioContextClass();
 		analyser = audioCtx.createAnalyser();
-		analyser.fftSize = 256;
+		analyser.fftSize = 512;
 		analyser.smoothingTimeConstant = 0.85;
 
 		const osc = audioCtx.createOscillator();
 		const osc2 = audioCtx.createOscillator();
+		const osc3 = audioCtx.createOscillator();
 		const gain = audioCtx.createGain();
 
 		osc.type = 'sawtooth';
-		osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+		osc.frequency.setValueAtTime(80, audioCtx.currentTime);
 
 		osc2.type = 'sine';
 		osc2.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+		osc3.type = 'triangle';
+		osc3.frequency.setValueAtTime(2400, audioCtx.currentTime);
 
 		gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
 
 		osc.connect(gain);
 		osc2.connect(gain);
+		osc3.connect(gain);
 		gain.connect(analyser);
 
 		osc.start();
 		osc2.start();
-		testOsc = { osc, osc2, gain };
+		osc3.start();
+		testOsc = { osc, osc2, osc3, gain };
 
 		startRenderLoop();
 	}
@@ -239,6 +245,7 @@
 			try {
 				testOsc.osc.stop();
 				testOsc.osc2.stop();
+				testOsc.osc3.stop();
 			} catch {}
 			testOsc = null;
 		}
@@ -276,11 +283,15 @@
 			if (micStatus === 'test' && testOsc) {
 				const now = audioCtx ? audioCtx.currentTime : frame * 0.016;
 				testOsc.osc.frequency.setValueAtTime(
-					80 + Math.sin(now * 3.2) * 55 + Math.cos(now * 6.5) * 35,
+					75 + Math.sin(now * 3.2) * 45 + Math.cos(now * 6.5) * 25,
 					now
 				);
 				testOsc.osc2.frequency.setValueAtTime(
-					190 + Math.sin(now * 2.1) * 90 + Math.sin(now * 4.8) * 60,
+					240 + Math.sin(now * 2.1) * 120 + Math.sin(now * 4.8) * 70,
+					now
+				);
+				testOsc.osc3.frequency.setValueAtTime(
+					2600 + Math.sin(now * 1.7) * 1500 + Math.cos(now * 3.9) * 800,
 					now
 				);
 			}
@@ -305,10 +316,11 @@
 			ctx.clearRect(0, 0, width, height);
 
 			let sum = 0;
-			for (let i = 0; i < bufferLength; i++) {
+			const activeBinsCount = Math.floor(bufferLength * 0.56);
+			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
-			const avg = sum / bufferLength;
+			const avg = sum / activeBinsCount;
 			averageVolume = avg / 255;
 
 			// Ambient bass glow in center
@@ -318,7 +330,7 @@
 			if (mode === 'bars') {
 				renderBars(ctx, width, height, freqData, bufferLength);
 			} else if (mode === 'wave') {
-				renderWave(ctx, width, height, smoothedTimeData, bufferLength);
+				renderWave(ctx, width, height, smoothedTimeData, bufferLength, freqData);
 			} else if (mode === 'radar') {
 				renderRadar(ctx, width, height, freqData, bufferLength);
 			}
@@ -348,10 +360,45 @@
 		ctx.fillRect(0, 0, width, height);
 	}
 
+	/**
+	 * Perceptual frequency sampler:
+	 * 1. Range expanded by +30% in both directions:
+	 *    - Lows: down into deep sub-bass (~25-60 Hz) for heavy kicks and 808s.
+	 *    - Highs: up to ~12.3 kHz (+30% higher) for crisp cymbals, air, and percussion.
+	 * 2. Balanced perceptual power curve (exponent 1.85) spreads bass across the left and treble across the right.
+	 * 3. Equalized treble tilt compensation keeps the upper range lively and dynamic.
+	 */
+	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
+		const clampedT = Math.max(0, Math.min(1, t));
+
+		// Expanded frequency bounds (+30% higher highs up to ~12.3 kHz, deep sub-bass down to ~25 Hz)
+		const maxBin = Math.floor(bufferLength * 0.56);
+		const minBin = 0.3;
+
+		// Non-linear perceptual power curve
+		const p = Math.pow(clampedT, 1.85);
+		const binFloat = minBin + p * (maxBin - minBin);
+
+		const i0 = Math.floor(binFloat);
+		const i1 = Math.min(maxBin, i0 + 1);
+		const frac = binFloat - i0;
+
+		// DC-safe linear interpolation for lowest bins
+		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.3) : freqData[i0];
+		const val1 = freqData[i1];
+		const rawVal = val0 * (1 - frac) + val1 * frac;
+
+		// Treble tilt compensation to equalize visual responsiveness across the width
+		const trebleTilt = 1.0 + Math.pow(clampedT, 0.70) * 1.55;
+		let val = rawVal * sens * trebleTilt;
+
+		return Math.min(255, val);
+	}
+
 	function renderBars(ctx, width, height, freqData, bufferLength) {
-		const visibleBins = Math.floor(bufferLength * 0.72);
-		const barWidth = (width / visibleBins) * 0.76;
-		const gap = (width / visibleBins) * 0.24;
+		const numBars = 86; // Clean, high-density concert bar display
+		const barWidth = (width / numBars) * 0.74;
+		const gap = (width / numBars) * 0.26;
 
 		// Gradient spans across the full height
 		const maxBarH = height * spectrumHeight * 0.98;
@@ -362,9 +409,13 @@
 		gradient.addColorStop(0.75, stops[2]);
 		gradient.addColorStop(1, stops[3]);
 
-		for (let i = 0; i < visibleBins; i++) {
-			let val = freqData[i] * sensitivity;
-			if (val > 255) val = 255;
+		if (peakCaps.length !== numBars) {
+			peakCaps = new Array(numBars).fill(0);
+		}
+
+		for (let i = 0; i < numBars; i++) {
+			const t = i / (numBars - 1);
+			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const barHeight = Math.max(4, (val / 255) * maxBarH);
 
 			const x = i * (barWidth + gap);
@@ -392,9 +443,9 @@
 		}
 	}
 
-	function renderWave(ctx, width, height, smoothData, bufferLength) {
+	function renderWave(ctx, width, height, smoothData, bufferLength, freqData) {
 		const centerY = height / 2;
-		const amp = height * 0.42 * sensitivity;
+		const baseAmp = height * 0.40 * sensitivity;
 
 		// 1. Primary Smooth Wave with Catmull-Rom / Quadratic Bezier smoothing
 		ctx.lineWidth = 4;
@@ -402,17 +453,25 @@
 		ctx.shadowColor = currentTheme.waveShadow;
 		ctx.shadowBlur = 20;
 
-		const sliceWidth = width / (bufferLength - 1);
+		const pointsCount = 96;
+		const sliceWidth = width / (pointsCount - 1);
 
 		ctx.beginPath();
 		let prevX = 0;
-		let prevY = centerY + ((smoothData[0] - 128) / 128.0) * amp;
+		const firstFreq = freqData ? getSampledFreq(0, freqData, bufferLength, 1.0) / 255 : 0.5;
+		const firstAmp = baseAmp * (0.35 + 0.95 * firstFreq);
+		let prevY = centerY + ((smoothData[0] - 128) / 128.0) * firstAmp;
 		ctx.moveTo(prevX, prevY);
 
-		for (let i = 1; i < bufferLength; i++) {
-			const v = (smoothData[i] - 128) / 128.0;
+		for (let i = 1; i < pointsCount; i++) {
+			const t = i / (pointsCount - 1);
+			const freqVal = freqData ? getSampledFreq(t, freqData, bufferLength, 1.0) / 255 : 0.5;
+			const timeIdx = Math.min(bufferLength - 1, Math.floor(t * (bufferLength - 1)));
+			const v = (smoothData[timeIdx] - 128) / 128.0;
+			const localAmp = baseAmp * (0.35 + 0.95 * freqVal);
+
 			const curX = i * sliceWidth;
-			const curY = centerY + v * amp;
+			const curY = centerY + v * localAmp;
 			const midX = (prevX + curX) / 2;
 			const midY = (prevY + curY) / 2;
 
@@ -429,13 +488,18 @@
 		ctx.strokeStyle = currentTheme.waveSecondary;
 		ctx.beginPath();
 		prevX = 0;
-		prevY = centerY - ((smoothData[0] - 128) / 128.0) * (amp * 0.6);
+		prevY = centerY - ((smoothData[0] - 128) / 128.0) * (firstAmp * 0.6);
 		ctx.moveTo(prevX, prevY);
 
-		for (let i = 1; i < bufferLength; i++) {
-			const v = (smoothData[i] - 128) / 128.0;
+		for (let i = 1; i < pointsCount; i++) {
+			const t = i / (pointsCount - 1);
+			const freqVal = freqData ? getSampledFreq(t, freqData, bufferLength, 1.0) / 255 : 0.5;
+			const timeIdx = Math.min(bufferLength - 1, Math.floor(t * (bufferLength - 1)));
+			const v = (smoothData[timeIdx] - 128) / 128.0;
+			const localAmp = (baseAmp * 0.6) * (0.35 + 0.95 * freqVal);
+
 			const curX = i * sliceWidth;
-			const curY = centerY - v * (amp * 0.6);
+			const curY = centerY - v * localAmp;
 			const midX = (prevX + curX) / 2;
 			const midY = (prevY + curY) / 2;
 
@@ -462,7 +526,7 @@
 		}
 
 		const baseRadius = Math.min(width, height) * 0.22;
-		const visibleBins = Math.floor(bufferLength * 0.68);
+		const totalRays = 120;
 
 		ctx.save();
 		ctx.translate(centerX, centerY);
@@ -477,11 +541,12 @@
 		ctx.stroke();
 		ctx.shadowBlur = 0;
 
-		// 360 degree radial frequency rays emanating from center
-		for (let i = 0; i < visibleBins; i++) {
-			const angle = (i / visibleBins) * Math.PI * 2;
-			let val = freqData[i] * sensitivity;
-			if (val > 255) val = 255;
+		// 360 degree radial frequency rays emanating from center with balanced spectrum
+		for (let i = 0; i < totalRays; i++) {
+			const angle = (i / totalRays) * Math.PI * 2;
+			// Symmetrical distribution around the circle so bass pulses powerfully and highs shimmer
+			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
+			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const rayLength = (val / 255) * (Math.min(width, height) * 0.32);
 
 			const cos = Math.cos(angle);
@@ -495,7 +560,7 @@
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
-			ctx.strokeStyle = currentTheme.radarHsl(i / visibleBins);
+			ctx.strokeStyle = currentTheme.radarHsl(t);
 			ctx.lineWidth = 2.8;
 			ctx.lineCap = 'round';
 			ctx.stroke();

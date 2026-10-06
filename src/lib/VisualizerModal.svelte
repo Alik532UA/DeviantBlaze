@@ -46,7 +46,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 256;
+			analyser.fftSize = 512;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -73,7 +73,7 @@
 		const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 		audioCtx = new AudioContextClass();
 		analyser = audioCtx.createAnalyser();
-		analyser.fftSize = 256;
+		analyser.fftSize = 512;
 		analyser.smoothingTimeConstant = 0.85;
 
 		// Create rhythmically pulsating test oscillators
@@ -167,18 +167,19 @@
 
 			ctx.clearRect(0, 0, width, height);
 
-			// Calculate average volume
+			// Calculate average volume from active spectrum bins
 			let sum = 0;
-			for (let i = 0; i < bufferLength; i++) {
+			const activeBinsCount = Math.floor(bufferLength * 0.56);
+			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
-			const avg = sum / bufferLength;
+			const avg = sum / activeBinsCount;
 			averageVolume = avg / 255;
 
 			if (visualizerMode === 'bars') {
 				renderBars(ctx, width, height, freqData, bufferLength);
 			} else if (visualizerMode === 'wave') {
-				renderWave(ctx, width, height, timeData, bufferLength);
+				renderWave(ctx, width, height, timeData, bufferLength, freqData);
 			} else {
 				renderCircle(ctx, width, height, freqData, bufferLength);
 			}
@@ -187,10 +188,30 @@
 		render();
 	}
 
+	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
+		const clampedT = Math.max(0, Math.min(1, t));
+		const maxBin = Math.floor(bufferLength * 0.56);
+		const minBin = 0.3;
+		const p = Math.pow(clampedT, 1.85);
+		const binFloat = minBin + p * (maxBin - minBin);
+
+		const i0 = Math.floor(binFloat);
+		const i1 = Math.min(maxBin, i0 + 1);
+		const frac = binFloat - i0;
+
+		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.3) : freqData[i0];
+		const val1 = freqData[i1];
+		const rawVal = val0 * (1 - frac) + val1 * frac;
+		const trebleTilt = 1.0 + Math.pow(clampedT, 0.70) * 1.55;
+		let val = rawVal * sens * trebleTilt;
+
+		return Math.min(255, val);
+	}
+
 	function renderBars(ctx, width, height, freqData, bufferLength) {
-		const visibleBins = Math.floor(bufferLength * 0.75);
-		const barWidth = (width / visibleBins) * 0.78;
-		const gap = (width / visibleBins) * 0.22;
+		const numBars = 76;
+		const barWidth = (width / numBars) * 0.76;
+		const gap = (width / numBars) * 0.24;
 
 		const gradient = ctx.createLinearGradient(0, height, 0, 0);
 		gradient.addColorStop(0, 'rgba(235, 30, 60, 0.95)');
@@ -198,9 +219,13 @@
 		gradient.addColorStop(0.75, 'rgba(255, 204, 0, 0.95)');
 		gradient.addColorStop(1, 'rgba(255, 255, 255, 0.95)');
 
-		for (let i = 0; i < visibleBins; i++) {
-			let val = freqData[i] * sensitivity;
-			if (val > 255) val = 255;
+		if (peakCaps.length !== numBars) {
+			peakCaps = new Array(numBars).fill(0);
+		}
+
+		for (let i = 0; i < numBars; i++) {
+			const t = i / (numBars - 1);
+			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const barHeight = Math.max(3, (val / 255) * (height * 0.88));
 
 			const x = i * (barWidth + gap);
@@ -228,29 +253,39 @@
 		}
 	}
 
-	function renderWave(ctx, width, height, timeData, bufferLength) {
+	function renderWave(ctx, width, height, timeData, bufferLength, freqData) {
 		ctx.lineWidth = 3;
 		ctx.strokeStyle = 'rgba(255, 95, 31, 0.9)';
 		ctx.shadowColor = 'rgba(235, 30, 60, 0.7)';
 		ctx.shadowBlur = 12;
 
+		const pointsCount = 80;
+		const sliceWidth = width / (pointsCount - 1);
+
 		ctx.beginPath();
-		const sliceWidth = width / bufferLength;
-		let x = 0;
+		let prevX = 0;
+		const firstFreq = freqData ? getSampledFreq(0, freqData, bufferLength, 1.0) / 255 : 0.5;
+		let prevY = (height / 2) + ((timeData[0] - 128) / 128.0) * (height * 0.35 * (0.4 + 0.8 * firstFreq));
+		ctx.moveTo(prevX, prevY);
 
-		for (let i = 0; i < bufferLength; i++) {
-			const v = timeData[i] / 128.0;
-			const y = (v * height) / 2;
+		for (let i = 1; i < pointsCount; i++) {
+			const t = i / (pointsCount - 1);
+			const freqVal = freqData ? getSampledFreq(t, freqData, bufferLength, 1.0) / 255 : 0.5;
+			const timeIdx = Math.min(bufferLength - 1, Math.floor(t * (bufferLength - 1)));
+			const v = (timeData[timeIdx] - 128) / 128.0;
+			const localAmp = height * 0.35 * (0.4 + 0.8 * freqVal) * sensitivity;
 
-			if (i === 0) {
-				ctx.moveTo(x, y);
-			} else {
-				ctx.lineTo(x, y);
-			}
-			x += sliceWidth;
+			const curX = i * sliceWidth;
+			const curY = (height / 2) + v * localAmp;
+			const midX = (prevX + curX) / 2;
+			const midY = (prevY + curY) / 2;
+
+			ctx.quadraticCurveTo(prevX, prevY, midX, midY);
+			prevX = curX;
+			prevY = curY;
 		}
 
-		ctx.lineTo(width, height / 2);
+		ctx.lineTo(width, prevY);
 		ctx.stroke();
 		ctx.shadowBlur = 0;
 	}
@@ -259,7 +294,7 @@
 		const centerX = width / 2;
 		const centerY = height / 2;
 		const baseRadius = Math.min(width, height) * 0.22;
-		const visibleBins = Math.floor(bufferLength * 0.7);
+		const totalRays = 96;
 
 		ctx.save();
 		ctx.translate(centerX, centerY);
@@ -271,11 +306,11 @@
 		ctx.lineWidth = 2;
 		ctx.stroke();
 
-		// Radiating spike bars
-		for (let i = 0; i < visibleBins; i++) {
-			const angle = (i / visibleBins) * Math.PI * 2;
-			let val = freqData[i] * sensitivity;
-			if (val > 255) val = 255;
+		// Radiating spike bars with expanded bass & active treble
+		for (let i = 0; i < totalRays; i++) {
+			const angle = (i / totalRays) * Math.PI * 2;
+			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
+			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const barLength = (val / 255) * (Math.min(width, height) * 0.28);
 
 			const cos = Math.cos(angle);
@@ -289,7 +324,7 @@
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
-			ctx.strokeStyle = `hsl(${10 + (i / visibleBins) * 55}, 100%, 60%)`;
+			ctx.strokeStyle = `hsl(${10 + t * 55}, 100%, 60%)`;
 			ctx.lineWidth = 2.5;
 			ctx.lineCap = 'round';
 			ctx.stroke();
