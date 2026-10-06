@@ -149,6 +149,48 @@ export const ICONS = {
 				<path d="M3.6 9h16.8M3.6 15h16.8" fill="none" stroke="currentColor" stroke-width="1.8"/>
 				<path d="M12 3a14 14 0 0 0 0 18 14 14 0 0 0 0-18Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
 			`
+		},
+		mic: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			`
+		},
+		speakers: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9.5 9.5 0 0 1 0 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			`
+		},
+		palette: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12 3a9 9 0 0 0-9 9c0 3.6 2.5 6 6 6 1 0 1.5-.5 1.5-1.5 0-.5.2-1 .5-1.5.4-.6 1-1 2-1h1a7 7 0 0 0 7-7c0-4.4-3.6-8-9-8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+				<circle cx="7.5" cy="10.5" r="1" fill="currentColor"/>
+				<circle cx="12" cy="7.5" r="1" fill="currentColor"/>
+				<circle cx="16.5" cy="10.5" r="1" fill="currentColor"/>
+			`
+		},
+		settings: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+			`
+		},
+		close: {
+			viewBox: '0 0 24 24',
+			type: 'stroke',
+			svg: `
+				<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				<line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			`
 		}
 	},
 
@@ -494,6 +536,90 @@ export const ICONS = {
 				<polygon points="50,88 46,98 54,98" fill="currentColor"/>
 				<polygon points="12,50 2,46 2,54" fill="currentColor"/>
 				<polygon points="88,50 98,46 98,54" fill="currentColor"/>
+			`
+		},
+
+		// 18. Mic: Gothic Microphone with Barbed Cradle
+		mic: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<rect x="42" y="14" width="16" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+				<line x1="42" y1="28" x2="58" y2="28" stroke="currentColor" stroke-width="2"/>
+				<line x1="42" y1="36" x2="58" y2="36" stroke="currentColor" stroke-width="2"/>
+				<path d="M28 36 C28 58 42 66 50 66 C58 66 72 58 72 36" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+				<polygon points="28,36 20,32 26,44" fill="currentColor"/>
+				<polygon points="72,36 80,32 74,44" fill="currentColor"/>
+				<line x1="50" y1="66" x2="50" y2="84" stroke="currentColor" stroke-width="3"/>
+				<path d="M34 84 L50 80 L66 84 L50 92 Z" fill="currentColor"/>
+			`
+		},
+
+		// 19. Speakers: Gothic Acoustic Horn with Barbed Soundwaves
+		speakers: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<polygon points="18,36 32,36 54,18 54,82 32,64 18,64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter"/>
+				<polygon points="54,18 54,82 50,78 50,22" fill="currentColor"/>
+				<path d="M66 34 C72 40 76 46 76 50 C76 54 72 60 66 66" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+				<polygon points="66,34 72,28 69,38" fill="currentColor"/>
+				<polygon points="66,66 72,72 69,62" fill="currentColor"/>
+				<path d="M78 22 C88 32 94 42 94 50 C94 58 88 68 78 78" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+				<polygon points="78,22 84,14 82,26" fill="currentColor"/>
+				<polygon points="78,78 84,86 82,74" fill="currentColor"/>
+			`
+		},
+
+		// 20. Palette: Gothic Alchemy Palette with Thorn Rim
+		palette: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<path d="M50 14 C28 14 14 30 14 52 C14 74 32 86 48 86 C54 86 58 82 58 76 C58 72 56 68 60 64 C64 60 70 60 76 60 C86 60 92 52 92 42 C92 24 74 14 50 14 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+				<polygon points="50,14 47,4 53,4" fill="currentColor"/>
+				<polygon points="14,52 4,50 6,56" fill="currentColor"/>
+				<circle cx="34" cy="38" r="4.5" fill="currentColor"/>
+				<circle cx="52" cy="28" r="4.5" fill="currentColor"/>
+				<circle cx="70" cy="38" r="4.5" fill="currentColor"/>
+				<circle cx="76" cy="50" r="4" fill="currentColor"/>
+				<circle cx="42" cy="70" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/>
+			`
+		},
+
+		// 21. Settings: Gothic Razor Cogwheel
+		settings: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<circle cx="50" cy="50" r="16" fill="none" stroke="currentColor" stroke-width="3"/>
+				<circle cx="50" cy="50" r="6" fill="currentColor"/>
+				<path d="M46 12 L50 2 L54 12 L50 18 Z" fill="currentColor"/>
+				<path d="M46 88 L50 98 L54 88 L50 82 Z" fill="currentColor"/>
+				<path d="M12 46 L2 50 L12 54 L18 50 Z" fill="currentColor"/>
+				<path d="M88 46 L98 50 L88 54 L82 50 Z" fill="currentColor"/>
+				<path d="M23 23 L16 16 L27 27 L28 22 Z" fill="currentColor"/>
+				<path d="M77 77 L84 84 L73 73 L72 78 Z" fill="currentColor"/>
+				<path d="M77 23 L84 16 L73 27 L78 28 Z" fill="currentColor"/>
+				<path d="M23 77 L16 84 L27 73 L22 72 Z" fill="currentColor"/>
+				<circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="2.5"/>
+			`
+		},
+
+		// 22. Close: Gothic Crossed Daggers
+		close: {
+			viewBox: '0 0 100 100',
+			type: 'fill',
+			svg: `
+				<path d="M22 22 L78 78 M78 22 L22 78" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+				<polygon points="50,50 42,42 46,38" fill="currentColor"/>
+				<polygon points="50,50 58,58 54,62" fill="currentColor"/>
+				<polygon points="50,50 58,42 54,38" fill="currentColor"/>
+				<polygon points="50,50 42,58 46,62" fill="currentColor"/>
+				<polygon points="22,22 14,16 16,28" fill="currentColor"/>
+				<polygon points="78,22 86,16 84,28" fill="currentColor"/>
+				<polygon points="22,78 14,84 16,72" fill="currentColor"/>
+				<polygon points="78,78 86,84 84,72" fill="currentColor"/>
 			`
 		}
 	}

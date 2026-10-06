@@ -1,5 +1,7 @@
 <script>
 	import { langStore } from './lang.svelte.js';
+	import { iconStyleStore } from './iconStyle.svelte.js';
+	import { ICONS } from './icons.js';
 
 	let {
 		isActive = false,
@@ -19,12 +21,19 @@
 
 	let isSettingsOpen = $state(false);
 
+	let style = $derived(iconStyleStore.current);
+
+	function getIcon(name) {
+		const set = ICONS[style] || ICONS.gothic;
+		return set[name] || ICONS.gothic[name] || ICONS.classic[name];
+	}
+
 	const PALETTES_LIST = [
-		{ id: 'blaze', nameKey: 'pal_blaze', icon: '🔥', color: '#ff5f1f' },
-		{ id: 'cyber', nameKey: 'pal_cyber', icon: '⚡', color: '#00f0ff' },
-		{ id: 'gothic', nameKey: 'pal_gothic', icon: '💀', color: '#93c5fd' },
-		{ id: 'toxic', nameKey: 'pal_toxic', icon: '🌿', color: '#10b981' },
-		{ id: 'purple', nameKey: 'pal_purple', icon: '💜', color: '#ec4899' }
+		{ id: 'blaze', nameKey: 'pal_blaze', color: '#ff5f1f' },
+		{ id: 'cyber', nameKey: 'pal_cyber', color: '#00f0ff' },
+		{ id: 'gothic', nameKey: 'pal_gothic', color: '#93c5fd' },
+		{ id: 'toxic', nameKey: 'pal_toxic', color: '#10b981' },
+		{ id: 'purple', nameKey: 'pal_purple', color: '#ec4899' }
 	];
 
 	function cyclePalette() {
@@ -61,21 +70,33 @@
 		<div class="vj-toggle-group vj-sources">
 			<button
 				type="button"
-				class="vj-toggle-btn"
+				class="vj-toggle-btn vj-btn-with-icon"
 				class:is-active={audioSource === 'mic'}
 				onclick={() => onSelectSource?.('mic')}
 				title={langStore.t('source_mic')}
 			>
-				{langStore.t('source_mic')}
+				{#if getIcon('mic')}
+					{@const icon = getIcon('mic')}
+					<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+						{@html icon.svg}
+					</svg>
+				{/if}
+				<span>{langStore.t('source_mic')}</span>
 			</button>
 			<button
 				type="button"
-				class="vj-toggle-btn"
+				class="vj-toggle-btn vj-btn-with-icon"
 				class:is-active={audioSource === 'speakers'}
 				onclick={() => onSelectSource?.('speakers')}
 				title={langStore.t('source_speakers')}
 			>
-				{langStore.t('source_speakers')}
+				{#if getIcon('speakers')}
+					{@const icon = getIcon('speakers')}
+					<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+						{@html icon.svg}
+					</svg>
+				{/if}
+				<span>{langStore.t('source_speakers')}</span>
 			</button>
 		</div>
 
@@ -116,7 +137,12 @@
 			aria-label="Змінити палітру кольорів"
 		>
 			<span class="palette-swatch" style="background-color: {PALETTES_LIST.find(p => p.id === palette)?.color || '#ff5f1f'};"></span>
-			<span>🎨</span>
+			{#if getIcon('palette')}
+				{@const icon = getIcon('palette')}
+				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+					{@html icon.svg}
+				</svg>
+			{/if}
 		</button>
 
 		<!-- Settings Popover Toggle Button -->
@@ -128,7 +154,12 @@
 			title={langStore.t('vj_settings')}
 			aria-label="Налаштування візуалізатора"
 		>
-			⚙️
+			{#if getIcon('settings')}
+				{@const icon = getIcon('settings')}
+				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+					{@html icon.svg}
+				</svg>
+			{/if}
 		</button>
 
 		<!-- Exit Visualizer Button -->
@@ -139,7 +170,12 @@
 			title={langStore.t('close_visualizer')}
 			aria-label={langStore.t('close_visualizer')}
 		>
-			✕
+			{#if getIcon('close')}
+				{@const icon = getIcon('close')}
+				<svg viewBox={icon.viewBox} class="bar-svg-icon" aria-hidden="true">
+					{@html icon.svg}
+				</svg>
+			{/if}
 		</button>
 
 		<!-- Settings Dropdown Drawer -->
@@ -214,16 +250,18 @@
 		align-items: center;
 		gap: 0.55rem;
 		padding: 0.45rem 0.8rem;
-		background: rgba(14, 14, 18, 0.82);
+		background: rgba(14, 14, 18, 0.88);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		border: 1px solid rgba(255, 255, 255, 0.14);
 		border-radius: 9999px;
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
 		            0 0 20px rgba(235, 30, 60, 0.2);
 		animation: barSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-		            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+		            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+		            background-color var(--transition-speed) var(--transition-easing),
+		            border-color var(--transition-speed) var(--transition-easing);
 	}
 
 	@keyframes barSlideIn {
@@ -238,10 +276,10 @@
 	}
 
 	:global([data-theme="light"]) .vj-control-bar {
-		background: rgba(255, 255, 255, 0.9);
-		border-color: rgba(0, 0, 0, 0.1);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1),
-		            0 0 20px rgba(235, 30, 60, 0.1);
+		background: rgba(255, 255, 255, 0.95);
+		border-color: rgba(0, 0, 0, 0.12);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12),
+		            0 0 15px rgba(0, 0, 0, 0.05);
 	}
 
 	.vj-status-chip {
@@ -249,11 +287,11 @@
 		align-items: center;
 		gap: 0.45rem;
 		padding-right: 0.5rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.12);
+		border-right: 1px solid rgba(255, 255, 255, 0.14);
 	}
 
 	:global([data-theme="light"]) .vj-status-chip {
-		border-right-color: rgba(0, 0, 0, 0.1);
+		border-right-color: rgba(0, 0, 0, 0.12);
 	}
 
 	.vj-pulse-dot {
@@ -288,27 +326,31 @@
 	.vj-status-text {
 		font-size: 0.75rem;
 		font-weight: 600;
-		color: var(--text-primary, #ffffff);
+		color: var(--text-primary);
 		letter-spacing: 0.02em;
 		white-space: nowrap;
+	}
+
+	:global([data-theme="light"]) .vj-status-text {
+		color: #0a0a0d;
 	}
 
 	.vj-toggle-group {
 		display: flex;
 		gap: 0.25rem;
-		background: rgba(255, 255, 255, 0.06);
+		background: rgba(255, 255, 255, 0.07);
 		padding: 0.2rem;
 		border-radius: 9999px;
 	}
 
 	:global([data-theme="light"]) .vj-toggle-group {
-		background: rgba(0, 0, 0, 0.05);
+		background: rgba(0, 0, 0, 0.06);
 	}
 
 	.vj-toggle-btn {
 		background: transparent;
 		border: none;
-		color: var(--text-secondary, #9da3af);
+		color: var(--text-secondary);
 		padding: 0.3rem 0.65rem;
 		border-radius: 9999px;
 		font-size: 0.75rem;
@@ -318,12 +360,36 @@
 		white-space: nowrap;
 	}
 
+	.vj-btn-with-icon {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	.inline-icon {
+		width: 14px;
+		height: 14px;
+		display: inline-block;
+		flex-shrink: 0;
+	}
+
+	.bar-svg-icon {
+		width: 16px;
+		height: 16px;
+		display: block;
+		flex-shrink: 0;
+	}
+
 	.vj-toggle-btn:hover {
-		color: #ffffff;
+		color: var(--text-primary);
+	}
+
+	:global([data-theme="light"]) .vj-toggle-btn {
+		color: #4b5563;
 	}
 
 	:global([data-theme="light"]) .vj-toggle-btn:hover {
-		color: #111827;
+		color: #000000;
 	}
 
 	.vj-toggle-btn.is-active {
@@ -336,21 +402,23 @@
 	.vj-sources .vj-toggle-btn.is-active {
 		background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
 		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+		color: #ffffff;
 	}
 
 	.vj-icon-btn {
 		position: relative;
 		background: rgba(255, 255, 255, 0.08);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		border: 1px solid rgba(255, 255, 255, 0.14);
 		border-radius: 50%;
-		width: 30px;
-		height: 30px;
+		width: 32px;
+		height: 32px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 0.85rem;
+		color: var(--text-primary);
 		cursor: pointer;
 		transition: all 0.2s ease;
+		padding: 0;
 	}
 
 	.vj-icon-btn:hover {
@@ -358,8 +426,24 @@
 		background: rgba(255, 255, 255, 0.15);
 	}
 
+	:global([data-theme="light"]) .vj-icon-btn {
+		background: rgba(0, 0, 0, 0.05);
+		border-color: rgba(0, 0, 0, 0.12);
+		color: #0a0a0d;
+	}
+
+	:global([data-theme="light"]) .vj-icon-btn:hover {
+		background: rgba(0, 0, 0, 0.1);
+		color: #000000;
+	}
+
 	.vj-icon-btn.is-active {
 		background: rgba(255, 255, 255, 0.22);
+		border-color: #ff5f1f;
+	}
+
+	:global([data-theme="light"]) .vj-icon-btn.is-active {
+		background: rgba(0, 0, 0, 0.1);
 		border-color: #ff5f1f;
 	}
 
@@ -371,21 +455,26 @@
 		height: 8px;
 		border-radius: 50%;
 		border: 1px solid #ffffff;
+		box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+	}
+
+	:global([data-theme="light"]) .palette-swatch {
+		border-color: #ffffff;
 	}
 
 	.vj-exit-btn {
 		background: transparent;
 		border: none;
-		color: var(--text-secondary, #9da3af);
-		width: 26px;
-		height: 26px;
+		color: var(--text-secondary);
+		width: 30px;
+		height: 30px;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
-		font-size: 0.85rem;
 		transition: all 0.2s ease;
+		padding: 0;
 	}
 
 	.vj-exit-btn:hover {
@@ -393,22 +482,31 @@
 		background: rgba(255, 255, 255, 0.1);
 	}
 
+	:global([data-theme="light"]) .vj-exit-btn {
+		color: #656573;
+	}
+
+	:global([data-theme="light"]) .vj-exit-btn:hover {
+		color: #0a0a0d;
+		background: rgba(0, 0, 0, 0.08);
+	}
+
 	/* Settings Popover Drawer */
 	.vj-settings-dropdown {
 		position: absolute;
 		top: calc(100% + 10px);
 		right: 0;
-		width: 280px;
-		padding: 1.1rem;
-		background: rgba(18, 18, 24, 0.94);
+		width: 290px;
+		padding: 1.15rem;
+		background: rgba(18, 18, 24, 0.96);
 		backdrop-filter: blur(24px) saturate(180%);
 		-webkit-backdrop-filter: blur(24px) saturate(180%);
-		border: 1px solid rgba(255, 255, 255, 0.14);
+		border: 1px solid rgba(255, 255, 255, 0.15);
 		border-radius: 20px;
 		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.1rem;
 		animation: dropFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
@@ -424,27 +522,33 @@
 	}
 
 	:global([data-theme="light"]) .vj-settings-dropdown {
-		background: rgba(255, 255, 255, 0.95);
-		border-color: rgba(0, 0, 0, 0.12);
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+		background: rgba(255, 255, 255, 0.98);
+		border-color: rgba(0, 0, 0, 0.14);
+		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16),
+		            0 0 1px rgba(0, 0, 0, 0.1);
 	}
 
 	.setting-item {
 		display: flex;
 		flex-direction: column;
-		gap: 0.4rem;
+		gap: 0.45rem;
 	}
 
 	.setting-label-row {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		font-size: 0.78rem;
+		font-size: 0.8rem;
 	}
 
 	.setting-title {
 		font-weight: 600;
-		color: var(--text-primary, #ffffff);
+		color: var(--text-primary);
+	}
+
+	:global([data-theme="light"]) .setting-title {
+		color: #0a0a0d;
+		font-weight: 700;
 	}
 
 	.setting-val {
@@ -457,9 +561,13 @@
 		appearance: none;
 		width: 100%;
 		height: 6px;
-		background: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.2);
 		border-radius: 9999px;
 		outline: none;
+	}
+
+	:global([data-theme="light"]) .vj-slider {
+		background: rgba(0, 0, 0, 0.16);
 	}
 
 	.vj-slider::-webkit-slider-thumb {
@@ -483,15 +591,21 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.3rem 0.6rem;
+		padding: 0.35rem 0.65rem;
 		border-radius: 9999px;
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.12);
-		color: var(--text-secondary, #9da3af);
-		font-size: 0.72rem;
+		color: var(--text-secondary);
+		font-size: 0.74rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s ease;
+	}
+
+	:global([data-theme="light"]) .palette-chip {
+		background: rgba(0, 0, 0, 0.04);
+		border-color: rgba(0, 0, 0, 0.12);
+		color: #4b5563;
 	}
 
 	.palette-chip:hover {
@@ -499,11 +613,23 @@
 		border-color: var(--chip-color);
 	}
 
+	:global([data-theme="light"]) .palette-chip:hover {
+		color: #0a0a0d;
+	}
+
 	.palette-chip.is-active {
-		background: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.16);
 		border-color: var(--chip-color);
 		color: #ffffff;
 		box-shadow: 0 0 10px var(--chip-color);
+	}
+
+	:global([data-theme="light"]) .palette-chip.is-active {
+		background: rgba(0, 0, 0, 0.08);
+		border-color: var(--chip-color);
+		color: #0a0a0d;
+		font-weight: 700;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.12), 0 0 8px var(--chip-color);
 	}
 
 	.palette-dot {
@@ -511,6 +637,7 @@
 		height: 8px;
 		border-radius: 50%;
 		background: var(--chip-color);
+		flex-shrink: 0;
 	}
 
 	@media (max-width: 768px) {

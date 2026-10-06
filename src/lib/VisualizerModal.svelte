@@ -385,7 +385,7 @@
 
 				{#if micError}
 					<div class="error-pill">
-						<span>⚠️ {micError} (увімкнено симуляцію спектру)</span>
+						<span>{micError} (увімкнено симуляцію спектру)</span>
 					</div>
 				{/if}
 			</div>
@@ -426,7 +426,13 @@
 							class="action-btn mic-btn"
 							onclick={startMicrophone}
 						>
-							🎤 Увімкнути мікрофон
+							{#if getIcon('mic')}
+								{@const icon = getIcon('mic')}
+								<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
+									{@html icon.svg}
+								</svg>
+							{/if}
+							<span>Увімкнути мікрофон</span>
 						</button>
 					{:else}
 						<button
@@ -434,7 +440,7 @@
 							class="action-btn test-btn"
 							onclick={startTestMode}
 						>
-							🎵 Тестовий звук
+							<span>Тестовий звук</span>
 						</button>
 					{/if}
 				</div>
@@ -718,6 +724,13 @@
 		cursor: pointer;
 		transition: all 0.2s ease;
 		border: 1px solid transparent;
+	}
+
+	.inline-icon {
+		width: 14px;
+		height: 14px;
+		display: inline-block;
+		flex-shrink: 0;
 	}
 
 	.mic-btn {
