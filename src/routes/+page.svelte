@@ -670,6 +670,12 @@
 		box-shadow: 0 0 12px rgba(255, 95, 31, 0.8);
 	}
 
+	@media (max-width: 768px), (pointer: coarse) {
+		.scroll-indicator {
+			display: none !important;
+		}
+	}
+
 	@media (max-width: 640px) {
 		.hero-center {
 			padding-bottom: 4.5rem;
@@ -688,13 +694,7 @@
 		}
 
 		.scroll-indicator {
-			right: 0.5rem;
-			gap: 0.6rem;
-		}
-
-		.state-dot {
-			width: 18px;
-			height: 18px;
+			display: none !important;
 		}
 	}
 </style>

@@ -294,19 +294,29 @@
 
 	@media (max-width: 640px) {
 		.hidden-panel-wrapper {
-			bottom: 1rem;
+			bottom: 0.85rem;
+			padding: 0 0.5rem;
+			box-sizing: border-box;
 		}
 
 		.hidden-panel-content {
-			gap: 0.4rem;
-			padding: 0.5rem 0.8rem;
-			max-width: 95vw;
-			overflow-x: auto;
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0.35rem 0.45rem;
+			padding: 0.6rem 0.65rem;
+			width: 100%;
+			max-width: 360px;
+			border-radius: 22px;
+			overflow: visible;
 		}
 
 		.action-item {
-			padding: 0.35rem 0.45rem;
-			gap: 0.25rem;
+			padding: 0.35rem 0.25rem;
+			gap: 0.2rem;
+			border-radius: 12px;
+			width: 100%;
+			min-width: 0;
+			box-sizing: border-box;
 		}
 
 		.action-icon-box {
@@ -315,12 +325,17 @@
 		}
 
 		.action-icon {
-			width: 19px;
-			height: 19px;
+			width: 20px;
+			height: 20px;
 		}
 
 		.action-title {
-			font-size: 0.65rem;
+			font-size: 0.66rem;
+			text-align: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 100%;
 		}
 	}
 </style>

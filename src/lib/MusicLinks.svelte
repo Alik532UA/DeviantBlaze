@@ -210,6 +210,50 @@
 			bottom: 1.75rem;
 			gap: 1.75rem;
 			opacity: 1 !important;
+			max-width: calc(100vw - 1rem);
+			box-sizing: border-box;
+		}
+
+		.music-links.is-expanded {
+			bottom: 1.75rem;
+			gap: 0.4rem 0.6rem;
+			width: calc(100vw - 1rem);
+			max-width: 380px;
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			justify-items: center;
+		}
+
+		.music-links.is-expanded .link-item {
+			width: 100%;
+			min-width: 0;
+			box-sizing: border-box;
+		}
+
+		.music-links.is-expanded .music-icon {
+			width: 50px;
+			height: 50px;
+		}
+
+		.music-links.is-expanded .apple-classic {
+			width: 44px;
+			height: 50px;
+		}
+
+		.music-links.is-expanded .link-sublabel {
+			font-size: 0.72rem;
+			letter-spacing: 0.01em;
+			margin-top: 6px;
+			max-height: 24px;
+			width: 100%;
+			text-align: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.music-links.is-shifted-up {
+			transform: translateX(-50%) translateY(-115px);
 		}
 
 		.link-item {
