@@ -46,7 +46,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 512;
+			analyser.fftSize = 1024;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -73,7 +73,7 @@
 		const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 		audioCtx = new AudioContextClass();
 		analyser = audioCtx.createAnalyser();
-		analyser.fftSize = 512;
+		analyser.fftSize = 1024;
 		analyser.smoothingTimeConstant = 0.85;
 
 		// Create rhythmically pulsating test oscillators
@@ -169,7 +169,7 @@
 
 			// Calculate average volume from active spectrum bins
 			let sum = 0;
-			const activeBinsCount = Math.floor(bufferLength * 0.56);
+			const activeBinsCount = Math.floor(bufferLength * 0.82);
 			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
@@ -190,19 +190,19 @@
 
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
-		const maxBin = Math.floor(bufferLength * 0.56);
-		const minBin = 0.3;
-		const p = Math.pow(clampedT, 1.85);
+		const maxBin = Math.floor(bufferLength * 0.82);
+		const minBin = 0;
+		const p = Math.pow(clampedT, 2.0);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
 		const i1 = Math.min(maxBin, i0 + 1);
 		const frac = binFloat - i0;
 
-		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.3) : freqData[i0];
+		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
-		const trebleTilt = 1.0 + Math.pow(clampedT, 0.70) * 1.55;
+		const trebleTilt = 1.0 + clampedT * 0.45;
 		let val = rawVal * sens * trebleTilt;
 
 		return Math.min(255, val);

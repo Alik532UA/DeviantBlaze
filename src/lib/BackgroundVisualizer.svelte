@@ -127,7 +127,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 512;
+			analyser.fftSize = 1024;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -177,7 +177,7 @@
 			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
-			analyser.fftSize = 512;
+			analyser.fftSize = 1024;
 			analyser.smoothingTimeConstant = 0.82;
 
 			const source = audioCtx.createMediaStreamSource(stream);
@@ -200,7 +200,7 @@
 		const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 		audioCtx = new AudioContextClass();
 		analyser = audioCtx.createAnalyser();
-		analyser.fftSize = 512;
+		analyser.fftSize = 1024;
 		analyser.smoothingTimeConstant = 0.85;
 
 		const osc = audioCtx.createOscillator();
@@ -209,13 +209,13 @@
 		const gain = audioCtx.createGain();
 
 		osc.type = 'sawtooth';
-		osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+		osc.frequency.setValueAtTime(65, audioCtx.currentTime);
 
 		osc2.type = 'sine';
-		osc2.frequency.setValueAtTime(220, audioCtx.currentTime);
+		osc2.frequency.setValueAtTime(320, audioCtx.currentTime);
 
 		osc3.type = 'triangle';
-		osc3.frequency.setValueAtTime(2400, audioCtx.currentTime);
+		osc3.frequency.setValueAtTime(3200, audioCtx.currentTime);
 
 		gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
 
@@ -316,7 +316,7 @@
 			ctx.clearRect(0, 0, width, height);
 
 			let sum = 0;
-			const activeBinsCount = Math.floor(bufferLength * 0.56);
+			const activeBinsCount = Math.floor(bufferLength * 0.82);
 			for (let i = 0; i < activeBinsCount; i++) {
 				sum += freqData[i];
 			}
@@ -361,22 +361,22 @@
 	}
 
 	/**
-	 * Perceptual frequency sampler:
-	 * 1. Range expanded by +30% in both directions:
-	 *    - Lows: down into deep sub-bass (~25-60 Hz) for heavy kicks and 808s.
-	 *    - Highs: up to ~12.3 kHz (+30% higher) for crisp cymbals, air, and percussion.
-	 * 2. Balanced perceptual power curve (exponent 1.85) spreads bass across the left and treble across the right.
-	 * 3. Equalized treble tilt compensation keeps the upper range lively and dynamic.
+	 * Full-spectrum acoustic frequency sampler:
+	 * 1. Range expanded by +30% on both sides:
+	 *    - Lows: down to true 0-35 Hz sub-bass boundary (< 30 Hz naturally rolls off at the left edge).
+	 *    - Highs: up to ~18.1 kHz studio upper boundary (~16-18 kHz naturally rolls off at the right edge).
+	 * 2. Natural acoustic edges: neither edge is truncated mid-peak; both sides show true musical bounds.
+	 * 3. Quadratic power curve (exponent 2.0) spreads sub-bass, punch, vocal mids, and treble evenly.
 	 */
 	function getSampledFreq(t, freqData, bufferLength, sens = 1.0) {
 		const clampedT = Math.max(0, Math.min(1, t));
 
-		// Expanded frequency bounds (+30% higher highs up to ~12.3 kHz, deep sub-bass down to ~25 Hz)
-		const maxBin = Math.floor(bufferLength * 0.56);
-		const minBin = 0.3;
+		// Wide spectrum boundaries: from 0 Hz sub-bass up to ~18.1 kHz (bin ~420 out of 512)
+		const maxBin = Math.floor(bufferLength * 0.82);
+		const minBin = 0;
 
-		// Non-linear perceptual power curve
-		const p = Math.pow(clampedT, 1.85);
+		// Quadratic perceptual power curve
+		const p = Math.pow(clampedT, 2.0);
 		const binFloat = minBin + p * (maxBin - minBin);
 
 		const i0 = Math.floor(binFloat);
@@ -384,12 +384,12 @@
 		const frac = binFloat - i0;
 
 		// DC-safe linear interpolation for lowest bins
-		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.3) : freqData[i0];
+		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 
-		// Treble tilt compensation to equalize visual responsiveness across the width
-		const trebleTilt = 1.0 + Math.pow(clampedT, 0.70) * 1.55;
+		// Natural balanced treble compensation without artificial edge boost
+		const trebleTilt = 1.0 + clampedT * 0.45;
 		let val = rawVal * sens * trebleTilt;
 
 		return Math.min(255, val);
