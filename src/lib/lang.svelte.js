@@ -150,9 +150,14 @@ class LangStore {
 
 	constructor() {
 		if (typeof window !== 'undefined') {
-			const saved = storage.get('lang');
-			if (saved === 'uk' || saved === 'en') {
-				this.current = saved;
+			const queryLang = new URLSearchParams(window.location.search).get('lang');
+			if (queryLang === 'uk' || queryLang === 'en') {
+				this.current = queryLang;
+			} else {
+				const saved = storage.get('lang');
+				if (saved === 'uk' || saved === 'en') {
+					this.current = saved;
+				}
 			}
 			this.apply();
 		}
