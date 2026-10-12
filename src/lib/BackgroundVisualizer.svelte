@@ -278,7 +278,9 @@
 				testOsc.osc.stop();
 				testOsc.osc2.stop();
 				testOsc.osc3.stop();
-			} catch {}
+			} catch {
+				// log-exempt: stopping an already stopped oscillator
+			}
 			testOsc = null;
 		}
 		if (audioCtx && audioCtx.state !== 'closed') {

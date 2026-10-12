@@ -7,12 +7,25 @@
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
 	import { migrateLegacyKeys } from '#lib/services/storage.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { logService } from '#lib/services/logService.svelte.js';
 	import ServiceBadge from '#lib/components/ServiceBadge.svelte';
 
 	migrateLegacyKeys();
 
 	onMount(() => {
+		const onRejection = (e) =>
+			logService.error('app', `Unhandled rejection: ${String(e.reason)}`);
+		const onWindowError = (e) =>
+			logService.error('app', `${e.message} at ${e.filename}:${e.lineno}`);
+		window.addEventListener('unhandledrejection', onRejection);
+		window.addEventListener('error', onWindowError);
+
 		iconStyleStore.init();
+
+		return () => {
+			window.removeEventListener('unhandledrejection', onRejection);
+			window.removeEventListener('error', onWindowError);
+		};
 	});
 
 	let { children } = $props();

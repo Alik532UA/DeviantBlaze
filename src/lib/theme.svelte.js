@@ -42,7 +42,9 @@ class ThemeStore {
           this.current === "dark" ? "#08080a" : "#f8f8fa",
         );
       }
-    } catch (e) {}
+    } catch {
+      // log-exempt: meta tag not present or DOM operation failed
+    }
   }
 }
 

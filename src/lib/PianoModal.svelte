@@ -169,9 +169,13 @@
 							osc2.disconnect();
 							osc3.disconnect();
 							noteGain.disconnect();
-						} catch {}
+						} catch {
+							// log-exempt: stopping notes safely
+						}
 					}, 400);
-				} catch {}
+				} catch {
+					// log-exempt: timeout safe cleanup
+				}
 			}
 		};
 	}

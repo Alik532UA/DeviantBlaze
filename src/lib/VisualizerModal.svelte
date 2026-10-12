@@ -114,7 +114,9 @@
 			try {
 				testOsc.osc.stop();
 				testOsc.osc2.stop();
-			} catch {}
+			} catch {
+				// log-exempt: stopping test oscillator safely
+			}
 			testOsc = null;
 		}
 		if (audioCtx && audioCtx.state !== 'closed') {
