@@ -8,13 +8,13 @@
  * @returns {string}
  */
 export function escapeHtml(str) {
-  if (!str) return '';
+  if (!str) return "";
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
@@ -23,11 +23,11 @@ export function escapeHtml(str) {
  * @returns {string}
  */
 export function sanitizeSvg(svg) {
-  if (!svg) return '';
+  if (!svg) return "";
   return svg
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/javascript:/gi, '');
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/javascript:/gi, "");
 }
 
 /**
@@ -36,6 +36,6 @@ export function sanitizeSvg(svg) {
  * @returns {string}
  */
 export function sanitizeHtml(dirty) {
-  if (!dirty) return '';
+  if (!dirty) return "";
   return sanitizeSvg(dirty);
 }

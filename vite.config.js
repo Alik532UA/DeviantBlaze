@@ -18,7 +18,7 @@ export function inlineScriptHash() {
   const end = start < 0 ? -1 : html.indexOf(close, start);
   if (start < 0 || end < 0) {
     throw new Error(
-      "app.html: інлайн-скрипт першого кадру не знайдено. Без хеша CSP заблокує тему мовчки."
+      "app.html: інлайн-скрипт першого кадру не знайдено. Без хеша CSP заблокує тему мовчки.",
     );
   }
   const body = asBrowserSees(html.slice(start + open.length, end));
@@ -83,4 +83,3 @@ export default defineConfig(({ mode }) => ({
     }),
   ],
 }));
-
