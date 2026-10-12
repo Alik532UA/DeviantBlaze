@@ -1,4 +1,5 @@
-import { browser, dev } from '$app/environment';
+const browser = typeof window !== 'undefined';
+const dev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
 import { storage } from './storage.js';
 
 const STORAGE_KEY = 'debug_mode';

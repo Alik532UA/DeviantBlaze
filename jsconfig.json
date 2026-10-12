@@ -2,7 +2,14 @@
 	"extends": "$app/tsconfig",
 	"compilerOptions": {
 		"strict": false,
-		"noImplicitAny": false
+		"noImplicitAny": false,
+		"types": ["$app/types", "@types/node"],
+		"paths": {
+			"#lib": ["./src/lib/index.js"],
+			"#lib/*": ["./src/lib/*"],
+			"$lib": ["./src/lib/index.js"],
+			"$lib/*": ["./src/lib/*"]
+		}
 	},
 	"include": [
 		"src",

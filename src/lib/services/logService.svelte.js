@@ -1,4 +1,5 @@
-import { browser, dev } from '$app/environment';
+const browser = typeof window !== 'undefined';
+const dev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
 
 const MAX_LOGS = 1000;
 const SESSION_STORAGE_KEY = 'deviantblaze_logs_history';
@@ -24,7 +25,7 @@ export function scrubUrl(raw) {
 class LogService {
 	logs = $state([]);
 	errorCount = $derived(this.logs.filter((l) => l.level === 'error').length);
-	appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.2';
+	appVersion = typeof globalThis.__APP_VERSION__ !== 'undefined' ? globalThis.__APP_VERSION__ : '0.0.2';
 	mirrorEnabled = true;
 
 	constructor() {

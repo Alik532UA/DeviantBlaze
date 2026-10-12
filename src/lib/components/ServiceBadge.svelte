@@ -1,11 +1,10 @@
 <script>
-	import { browser } from '$app/environment';
-	import { page } from '$app/state';
 	import { onDestroy } from 'svelte';
 	import { debugMode } from '#lib/services/debugMode.svelte.js';
 	import { createKeySequence } from '#lib/services/keySequence.js';
 	import { logService } from '#lib/services/logService.svelte.js';
 
+	const browser = typeof window !== 'undefined';
 	let copied = $state(false);
 	let fallbackReport = $state(null);
 	let copyTimer;
@@ -25,7 +24,7 @@
 	const appVersion = $derived(logService.appVersion);
 	const errorCount = $derived(logService.errorCount);
 
-	const urlDebug = $derived(browser && page.url.searchParams.get('debug') === '1');
+	const urlDebug = $derived(browser && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1');
 	const isVisible = $derived(urlDebug || debugMode.enabled);
 
 	onDestroy(() => {

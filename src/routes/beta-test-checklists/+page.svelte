@@ -470,6 +470,9 @@
 						{/each}
 					</div>
 				</section>
+			{/each}
+		{/if}
+
 		<!-- Action Bar (§ 6.1, § 6.2, § 6.3) -->
 		<footer class="beta-actions-bar">
 			<div class="beta-action-buttons">
