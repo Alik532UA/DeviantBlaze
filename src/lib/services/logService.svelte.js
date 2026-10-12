@@ -1,9 +1,11 @@
+import { sessionStore } from "./storage.js";
+
 const browser = typeof window !== "undefined";
 const dev =
   typeof process !== "undefined" && process.env?.NODE_ENV !== "production";
 
 const MAX_LOGS = 1000;
-const SESSION_STORAGE_KEY = "deviantblaze_logs_history";
+const SESSION_STORAGE_KEY = "logs_history";
 const EMAIL_REGEX = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/g;
 const SENSITIVE_PARAM =
   /^(token|access_token|code|state|key|api_?key|password|email)$/i;
@@ -35,26 +37,20 @@ class LogService {
 
   constructor() {
     if (browser) {
-      try {
-        const saved = window.sessionStorage?.getItem(SESSION_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) this.logs = parsed;
-        }
-      } catch {
-        // Ignore storage quota error
+      const saved = sessionStore.getJSON(SESSION_STORAGE_KEY, Array.isArray);
+      if (saved) {
+        this.logs = saved;
       }
     }
   }
 
   mirror() {
     if (!browser || !this.mirrorEnabled) return;
-    try {
-      window.sessionStorage?.setItem(
-        SESSION_STORAGE_KEY,
-        JSON.stringify($state.snapshot(this.logs)),
-      );
-    } catch {
+    const ok = sessionStore.setJSON(
+      SESSION_STORAGE_KEY,
+      $state.snapshot(this.logs),
+    );
+    if (!ok) {
       this.mirrorEnabled = false;
     }
   }

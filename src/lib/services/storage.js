@@ -16,7 +16,7 @@ function createStore(area) {
   let available = true;
 
   function open() {
-    if (!isBrowser || !available) return null;
+    if (typeof window === "undefined" || !available) return null;
     try {
       return window[area];
     } catch (error) {
@@ -105,7 +105,7 @@ function createStore(area) {
      * Parse JSON with validator guard (STORAGE-NAMESPACE-v10 § 2).
      * @template T
      * @param {string} key
-     * @param {(val: unknown) => val is T} isValid
+     * @param {((val: unknown) => val is T) | ((val: any) => boolean)} [isValid]
      * @returns {T | null}
      */
     getJSON(key, isValid) {
@@ -140,6 +140,7 @@ function createStore(area) {
 }
 
 export const storage = createStore("localStorage");
+export const sessionStore = createStore("sessionStorage");
 
 /**
  * Convenience JSON/string getter.
