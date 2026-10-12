@@ -1,22 +1,16 @@
 {
-	"extends": "$app/tsconfig",
-	"compilerOptions": {
-		"strict": false,
-		"noImplicitAny": false,
-		"types": ["$app/types", "@types/node"],
-		"paths": {
-			"#lib": ["./src/lib/index.js"],
-			"#lib/*": ["./src/lib/*"],
-			"$lib": ["./src/lib/index.js"],
-			"$lib/*": ["./src/lib/*"]
-		}
-	},
-	"include": [
-		"src",
-		"test",
-		"*"
-	],
-	"exclude": [
-		"src/service-worker"
-	]
+  "extends": "$app/tsconfig",
+  "compilerOptions": {
+    "strict": false,
+    "noImplicitAny": false,
+    "types": ["$app/types", "@types/node"],
+    "paths": {
+      "#lib": ["./src/lib/index.js"],
+      "#lib/*": ["./src/lib/*"],
+      "$lib": ["./src/lib/index.js"],
+      "$lib/*": ["./src/lib/*"]
+    }
+  },
+  "include": ["src", "test", "*"],
+  "exclude": ["src/service-worker"]
 }

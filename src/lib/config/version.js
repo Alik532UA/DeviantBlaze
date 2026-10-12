@@ -4,5 +4,7 @@
  * Never hardcoded manually in components.
  */
 
-// @ts-expect-error __APP_VERSION__ is injected by Vite define
-export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.1';
+export const APP_VERSION =
+  typeof globalThis.__APP_VERSION__ !== "undefined"
+    ? globalThis.__APP_VERSION__
+    : "0.0.1";
