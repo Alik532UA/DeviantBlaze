@@ -7,6 +7,7 @@
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
 	import { migrateLegacyKeys } from '#lib/services/storage.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import ServiceBadge from '#lib/components/ServiceBadge.svelte';
 
 	migrateLegacyKeys();
 
@@ -58,3 +59,4 @@
 {/if}
 
 {@render children()}
+<ServiceBadge />
