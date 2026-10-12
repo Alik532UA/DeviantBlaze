@@ -470,8 +470,51 @@
 						{/each}
 					</div>
 				</section>
-			{/each}
-		{/if}
+		<!-- Action Bar (§ 6.1, § 6.2, § 6.3) -->
+		<footer class="beta-actions-bar">
+			<div class="beta-action-buttons">
+				<button
+					type="button"
+					class="btn-report"
+					data-testid="beta-report-btn"
+					onclick={handleCopyReport}
+				>
+					📋 {lang === 'uk' ? 'Скопіювати звіт' : 'Copy Report'}
+				</button>
+
+				<button
+					type="button"
+					class="btn-clear"
+					class:armed={clearArmed}
+					data-testid="beta-clear-btn"
+					onclick={handleClear}
+				>
+					⚠️ {clearArmed
+						? (lang === 'uk' ? 'Точно стерти? Натисніть ще раз' : 'Confirm clear? Press again')
+						: (lang === 'uk' ? 'Стерти позначки' : 'Clear marks')}
+				</button>
+			</div>
+
+			{#if reportHintVisible}
+				<p class="report-hint" role="status" data-testid="beta-report-hint">
+					✓ {lang === 'uk' ? 'Звіт успішно скопійовано в буфер обміну!' : 'Report copied to clipboard!'}
+				</p>
+			{/if}
+
+			{#if reportFailedVisible}
+				<p class="report-failed-hint" role="alert" data-testid="beta-report-failed-hint">
+					✗ {lang === 'uk' ? 'Буфер обміну відмовив — скопіюйте звіт із поля нижче:' : 'Clipboard refused — copy report from field below:'}
+				</p>
+				<textarea
+					class="beta-report-textarea"
+					readonly
+					rows="12"
+					data-testid="beta-report-textarea"
+					value={reportText}
+					aria-label={lang === 'uk' ? 'Текст звіту' : 'Report text'}
+				></textarea>
+			{/if}
+		</footer>
 	</div>
 </main>
 
