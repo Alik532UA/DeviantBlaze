@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
 				strict: true
 			}),
 			paths: {
-				base: mode === 'production' ? '/DeviantBlaze' : '',
+				base: process.env.BASE_PATH ?? (mode === 'production' ? '/DeviantBlaze' : ''),
 				relative: false,
 				origin: 'https://alik532ua.github.io'
 			},
