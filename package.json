@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "audit:ci": "node scripts/check-audit.mjs",
     "build": "vite build && node scripts/generate-sitemap.mjs",
     "check:build": "node scripts/check-build.mjs",
     "preview": "vite preview",
