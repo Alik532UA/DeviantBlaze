@@ -1,6 +1,6 @@
-<script>
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { ICONS } from './icons.js';
+﻿<script>
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 	import { asset } from '$app/paths';
 
 	let { isOpen = $bindable(false) } = $props();
@@ -282,8 +282,12 @@
 	}
 
 	@keyframes lightboxFadeIn {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	/* Close button */
@@ -370,12 +374,16 @@
 	/* Gothic style button accents */
 	.lightbox-close.is-gothic {
 		border-color: rgba(255, 255, 255, 0.32);
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.06);
+		box-shadow:
+			0 4px 20px rgba(0, 0, 0, 0.5),
+			inset 0 0 10px rgba(255, 255, 255, 0.06);
 	}
 
 	.lightbox-close.is-gothic:hover {
 		border-color: rgba(255, 255, 255, 0.65);
-		box-shadow: 0 0 20px rgba(255, 255, 255, 0.25), inset 0 0 14px rgba(255, 255, 255, 0.12);
+		box-shadow:
+			0 0 20px rgba(255, 255, 255, 0.25),
+			inset 0 0 14px rgba(255, 255, 255, 0.12);
 	}
 
 	.lightbox-close.is-gothic:hover .lightbox-btn-svg {
@@ -384,12 +392,16 @@
 
 	.lightbox-nav.is-gothic {
 		border-color: rgba(255, 255, 255, 0.32);
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.06);
+		box-shadow:
+			0 4px 20px rgba(0, 0, 0, 0.5),
+			inset 0 0 10px rgba(255, 255, 255, 0.06);
 	}
 
 	.lightbox-nav.is-gothic:hover {
 		border-color: rgba(255, 255, 255, 0.65);
-		box-shadow: 0 0 24px rgba(255, 255, 255, 0.3), inset 0 0 16px rgba(255, 255, 255, 0.15);
+		box-shadow:
+			0 0 24px rgba(255, 255, 255, 0.3),
+			inset 0 0 16px rgba(255, 255, 255, 0.15);
 	}
 
 	.lightbox-nav.is-gothic.lightbox-nav--prev:hover .lightbox-btn-svg {
@@ -430,7 +442,10 @@
 		background: none;
 		cursor: pointer;
 		opacity: 0.55;
-		transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+		transition:
+			opacity 0.2s ease,
+			border-color 0.2s ease,
+			transform 0.2s ease;
 	}
 
 	.lightbox-thumb img {

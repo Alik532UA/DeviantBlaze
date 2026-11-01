@@ -1,6 +1,6 @@
-<script>
+﻿<script>
 	import { onDestroy } from 'svelte';
-	import { themeStore } from './theme.svelte.js';
+	import { themeStore } from '#lib/theme.svelte.js';
 
 	let {
 		isActive = false,
@@ -74,7 +74,12 @@
 			particleRgb: '236, 72, 153'
 		},
 		mono_dark: {
-			barsGradient: ['rgba(255, 255, 255, 0.28)', 'rgba(255, 255, 255, 0.58)', 'rgba(255, 255, 255, 0.88)', '#ffffff'],
+			barsGradient: [
+				'rgba(255, 255, 255, 0.28)',
+				'rgba(255, 255, 255, 0.58)',
+				'rgba(255, 255, 255, 0.88)',
+				'#ffffff'
+			],
 			peakColor: 'rgba(255, 255, 255, 1)',
 			wavePrimary: 'rgba(255, 255, 255, 0.95)',
 			waveSecondary: 'rgba(220, 220, 230, 0.6)',
@@ -86,7 +91,12 @@
 			particleRgb: '255, 255, 255'
 		},
 		mono_light: {
-			barsGradient: ['rgba(0, 0, 0, 0.28)', 'rgba(0, 0, 0, 0.58)', 'rgba(0, 0, 0, 0.85)', '#000000'],
+			barsGradient: [
+				'rgba(0, 0, 0, 0.28)',
+				'rgba(0, 0, 0, 0.58)',
+				'rgba(0, 0, 0, 0.85)',
+				'#000000'
+			],
 			peakColor: 'rgba(0, 0, 0, 1)',
 			wavePrimary: 'rgba(0, 0, 0, 0.92)',
 			waveSecondary: 'rgba(40, 40, 50, 0.55)',
@@ -156,7 +166,8 @@
 			});
 			micStream = stream;
 
-			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+			const AudioContextClass =
+				window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
 			analyser.fftSize = 1024;
@@ -196,7 +207,9 @@
 
 			const audioTracks = stream.getAudioTracks();
 			if (!audioTracks || audioTracks.length === 0) {
-				alert('Увага: у вікні вибору увімкніть галочку "Поділитися аудіо" (Share audio), щоб візуалізувати звук колонок. Повертаємося до мікрофона.');
+				alert(
+					'Увага: у вікні вибору увімкніть галочку "Поділитися аудіо" (Share audio), щоб візуалізувати звук колонок. Повертаємося до мікрофона.'
+				);
 				startMic();
 				return;
 			}
@@ -206,7 +219,8 @@
 				startMic();
 			};
 
-			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+			const AudioContextClass =
+				window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
 			analyser.fftSize = 1024;
@@ -382,10 +396,7 @@
 		const centerY = height / 2;
 		const radius = Math.min(width, height) * (0.35 + vol * 0.3 * sensitivity);
 
-		const aura = ctx.createRadialGradient(
-			centerX, centerY, 0,
-			centerX, centerY, radius
-		);
+		const aura = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
 		aura.addColorStop(0, `rgba(${currentTheme.auraRgb}, ${vol * 0.35})`);
 		aura.addColorStop(0.5, `rgba(${currentTheme.auraRgb}, ${vol * 0.15})`);
 		aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
@@ -418,7 +429,7 @@
 		const frac = binFloat - i0;
 
 		// DC-safe linear interpolation for lowest bins
-		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
+		const val0 = i0 === 0 ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 
@@ -483,7 +494,7 @@
 
 	function renderWave(ctx, width, height, smoothData, bufferLength, freqData) {
 		const centerY = height / 2;
-		const baseAmp = height * 0.40 * sensitivity;
+		const baseAmp = height * 0.4 * sensitivity;
 
 		// 1. Primary Smooth Wave with Catmull-Rom / Quadratic Bezier smoothing
 		ctx.lineWidth = 4;
@@ -534,7 +545,7 @@
 			const freqVal = freqData ? getSampledFreq(t, freqData, bufferLength, 1.0) / 255 : 0.5;
 			const timeIdx = Math.min(bufferLength - 1, Math.floor(t * (bufferLength - 1)));
 			const v = (smoothData[timeIdx] - 128) / 128.0;
-			const localAmp = (baseAmp * 0.6) * (0.35 + 0.95 * freqVal);
+			const localAmp = baseAmp * 0.6 * (0.35 + 0.95 * freqVal);
 
 			const curX = i * sliceWidth;
 			const curY = centerY - v * localAmp;
@@ -584,7 +595,7 @@
 		for (let i = 0; i < totalRays; i++) {
 			const angle = (i / totalRays) * Math.PI * 2 - Math.PI / 2;
 			// Symmetrical distribution: bass pulses powerfully at the top and highs shimmer at the bottom
-			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
+			const t = i < totalRays / 2 ? i / (totalRays / 2) : 1 - (i - totalRays / 2) / (totalRays / 2);
 			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const rayLength = (val / 255) * (Math.min(width, height) * 0.32);
 

@@ -7,7 +7,6 @@
 	import { getItem, setItem, removeItem } from '#lib/services/storage.js';
 	import {
 		BETA_TABS,
-		VOTES,
 		sortChecks,
 		vote,
 		readMarks,
@@ -125,7 +124,14 @@
 		const skipped = voted.filter((c) => marks[c.id]?.vote === 'skip');
 
 		const formatItem = (c, mark) => {
-			const status = mark.vote === 'ok' ? 'ПРАЦЮЄ' : mark.vote === 'fail' ? 'НЕ ПРАЦЮЄ' : mark.vote === 'unclear' ? 'НЕ ЗРОЗУМІЛО' : 'ПРОПУЩЕНО';
+			const status =
+				mark.vote === 'ok'
+					? 'ПРАЦЮЄ'
+					: mark.vote === 'fail'
+						? 'НЕ ПРАЦЮЄ'
+						: mark.vote === 'unclear'
+							? 'НЕ ЗРОЗУМІЛО'
+							: 'ПРОПУЩЕНО';
 			const stale = mark.version !== APP_VERSION ? ` (позначено на v${mark.version})` : '';
 			let res = `[${status}] ${c.id} (${c.category[lang]}): ${c.text[lang]}${stale}`;
 			if (c.coverage === 'covered' && mark.vote === 'fail' && c.test) {
@@ -194,19 +200,26 @@
 			{
 				coverage: 'manual',
 				title: lang === 'uk' ? 'Тільки людина' : 'Human Only',
-				subtitle: lang === 'uk' ? 'Машина цього не побачить. Починайте звідси.' : 'Automation cannot detect this. Start here.',
+				subtitle:
+					lang === 'uk'
+						? 'Машина цього не побачить. Починайте звідси.'
+						: 'Automation cannot detect this. Start here.',
 				checks: manual
 			},
 			{
 				coverage: 'testable',
 				title: lang === 'uk' ? 'Можна автотестом' : 'Automated Backlog',
-				subtitle: lang === 'uk' ? 'Кандидати на покриття автотестами.' : 'Candidates for test automation.',
+				subtitle:
+					lang === 'uk' ? 'Кандидати на покриття автотестами.' : 'Candidates for test automation.',
 				checks: testable
 			},
 			{
 				coverage: 'covered',
 				title: lang === 'uk' ? 'Контрольна група' : 'Control Group',
-				subtitle: lang === 'uk' ? 'Покрито автотестами. Знайдена помилка вказує на дефект тесту.' : 'Covered by tests. Finding a bug here indicates test defect.',
+				subtitle:
+					lang === 'uk'
+						? 'Покрито автотестами. Знайдена помилка вказує на дефект тесту.'
+						: 'Covered by tests. Finding a bug here indicates test defect.',
 				checks: covered
 			}
 		].filter((l) => l.checks.length > 0);
@@ -245,7 +258,10 @@
 			<div class="beta-top-bar">
 				<a href={siteUrl('/')} class="beta-back-btn" data-testid="beta-home-link">
 					<svg viewBox="0 0 24 24" class="back-icon" aria-hidden="true">
-						<path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+						<path
+							fill="currentColor"
+							d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+						/>
 					</svg>
 					<span>{lang === 'uk' ? 'Головний екран' : 'Main Screen'}</span>
 				</a>
@@ -255,7 +271,9 @@
 					class="beta-lang-btn"
 					data-testid="beta-lang-btn"
 					onclick={toggleLang}
-					aria-label={lang === 'uk' ? 'Switch checklist language to English' : 'Перемкнути чеклист на українську'}
+					aria-label={lang === 'uk'
+						? 'Switch checklist language to English'
+						: 'Перемкнути чеклист на українську'}
 				>
 					{lang === 'uk' ? 'EN' : 'UA'}
 				</button>
@@ -277,11 +295,16 @@
 			<!-- Overall Progress & Actions -->
 			<div class="beta-summary-card">
 				<div class="progress-info">
-					<span class="progress-label">{lang === 'uk' ? 'Загальний поступ:' : 'Overall progress:'}</span>
-					<strong class="progress-value" data-testid="beta-progress-value">{doneCount} / {totalCount}</strong>
+					<span class="progress-label"
+						>{lang === 'uk' ? 'Загальний поступ:' : 'Overall progress:'}</span
+					>
+					<strong class="progress-value" data-testid="beta-progress-value"
+						>{doneCount} / {totalCount}</strong
+					>
 					{#if otherVersionCount > 0}
 						<span class="stale-count">
-							({lang === 'uk' ? 'з іншої збірки:' : 'from other builds:'} {otherVersionCount})
+							({lang === 'uk' ? 'з іншої збірки:' : 'from other builds:'}
+							{otherVersionCount})
 						</span>
 					{/if}
 				</div>
@@ -305,35 +328,43 @@
 						onclick={handleClear}
 					>
 						{clearArmed
-							? (lang === 'uk' ? '⚠️ Підтвердити очищення' : '⚠️ Confirm Reset')
-							: (lang === 'uk' ? 'Скинути позначки' : 'Reset Marks')}
+							? lang === 'uk'
+								? '⚠️ Підтвердити очищення'
+								: '⚠️ Confirm Reset'
+							: lang === 'uk'
+								? 'Скинути позначки'
+								: 'Reset Marks'}
 					</button>
 				</div>
 
 				{#if reportHintVisible}
 					<p class="report-hint success" data-testid="beta-report-hint">
-						✅ {lang === 'uk' ? 'Звіт успішно скопійовано в буфер обміну!' : 'Report copied to clipboard!'}
+						✅ {lang === 'uk'
+							? 'Звіт успішно скопійовано в буфер обміну!'
+							: 'Report copied to clipboard!'}
 					</p>
 				{/if}
 
 				{#if reportFailedVisible}
 					<div class="report-fallback" data-testid="beta-report-failed-hint">
 						<p class="report-hint error">
-							⚠️ {lang === 'uk' ? 'Буфер обміну недоступний. Скопіюйте текст із поля нижче:' : 'Clipboard unavailable. Copy text from the box below:'}
+							⚠️ {lang === 'uk'
+								? 'Буфер обміну недоступний. Скопіюйте текст із поля нижче:'
+								: 'Clipboard unavailable. Copy text from the box below:'}
 						</p>
-						<textarea
-							class="report-textarea"
-							readonly
-							data-testid="beta-report-textarea"
-							rows="8"
-						>{reportText}</textarea>
+						<textarea class="report-textarea" readonly data-testid="beta-report-textarea" rows="8"
+							>{reportText}</textarea
+						>
 					</div>
 				{/if}
 			</div>
 		</header>
 
 		<!-- Tabs bar (§ 8.2) -->
-		<nav class="beta-tabs-nav" aria-label={lang === 'uk' ? 'Розділи чеклиста' : 'Checklist sections'}>
+		<nav
+			class="beta-tabs-nav"
+			aria-label={lang === 'uk' ? 'Розділи чеклиста' : 'Checklist sections'}
+		>
 			{#each BETA_TABS as tab (tab.id)}
 				<button
 					type="button"
@@ -355,7 +386,7 @@
 		{#if currentTab?.routes?.length}
 			<div class="screen-links-bar" data-sveltekit-preload-data="off">
 				<span class="screen-links-label">{lang === 'uk' ? 'Маршрут:' : 'Route:'}</span>
-				{#each currentTab.routes as route}
+				{#each currentTab.routes as route (route)}
 					<a href={siteUrl(route)} class="screen-link-badge">
 						{route === '/' ? (lang === 'uk' ? 'Головна (/)' : 'Home (/)') : route}
 					</a>
@@ -401,11 +432,10 @@
 										</span>
 									{/if}
 									{#if currentMark && currentMark.version !== APP_VERSION}
-										<span
-											class="check-stale-badge"
-											data-testid="beta-check-{checkTid}-stale-hint"
-										>
-											{lang === 'uk' ? `позначено на v${currentMark.version}` : `marked on v${currentMark.version}`}
+										<span class="check-stale-badge" data-testid="beta-check-{checkTid}-stale-hint">
+											{lang === 'uk'
+												? `позначено на v${currentMark.version}`
+												: `marked on v${currentMark.version}`}
 										</span>
 									{/if}
 								</div>
@@ -493,20 +523,28 @@
 					onclick={handleClear}
 				>
 					⚠️ {clearArmed
-						? (lang === 'uk' ? 'Точно стерти? Натисніть ще раз' : 'Confirm clear? Press again')
-						: (lang === 'uk' ? 'Стерти позначки' : 'Clear marks')}
+						? lang === 'uk'
+							? 'Точно стерти? Натисніть ще раз'
+							: 'Confirm clear? Press again'
+						: lang === 'uk'
+							? 'Стерти позначки'
+							: 'Clear marks'}
 				</button>
 			</div>
 
 			{#if reportHintVisible}
 				<p class="report-hint" role="status" data-testid="beta-report-hint">
-					✓ {lang === 'uk' ? 'Звіт успішно скопійовано в буфер обміну!' : 'Report copied to clipboard!'}
+					✓ {lang === 'uk'
+						? 'Звіт успішно скопійовано в буфер обміну!'
+						: 'Report copied to clipboard!'}
 				</p>
 			{/if}
 
 			{#if reportFailedVisible}
 				<p class="report-failed-hint" role="alert" data-testid="beta-report-failed-hint">
-					✗ {lang === 'uk' ? 'Буфер обміну відмовив — скопіюйте звіт із поля нижче:' : 'Clipboard refused — copy report from field below:'}
+					✗ {lang === 'uk'
+						? 'Буфер обміну відмовив — скопіюйте звіт із поля нижче:'
+						: 'Clipboard refused — copy report from field below:'}
 				</p>
 				<textarea
 					class="beta-report-textarea"
@@ -514,8 +552,7 @@
 					rows="12"
 					data-testid="beta-report-textarea"
 					value={reportText}
-					aria-label={lang === 'uk' ? 'Текст звіту' : 'Report text'}
-				></textarea>
+					aria-label={lang === 'uk' ? 'Текст звіту' : 'Report text'}></textarea>
 			{/if}
 		</footer>
 	</div>
@@ -534,7 +571,7 @@
 		scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 	}
 
-	:global([data-theme="light"] html:has(.beta-page)) {
+	:global([data-theme='light'] html:has(.beta-page)) {
 		scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
 	}
 
@@ -550,7 +587,7 @@
 		-webkit-user-select: text;
 	}
 
-	:global([data-theme="light"]) .beta-page {
+	:global([data-theme='light']) .beta-page {
 		background: #f8f9fa;
 		color: #111827;
 	}
@@ -583,7 +620,7 @@
 		transition: all 0.2s ease;
 	}
 
-	:global([data-theme="light"]) .beta-back-btn {
+	:global([data-theme='light']) .beta-back-btn {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 	}
@@ -612,7 +649,7 @@
 		transition: all 0.2s ease;
 	}
 
-	:global([data-theme="light"]) .beta-lang-btn {
+	:global([data-theme='light']) .beta-lang-btn {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 	}
@@ -653,7 +690,7 @@
 		margin: 0 0 1.5rem;
 	}
 
-	:global([data-theme="light"]) .beta-intro {
+	:global([data-theme='light']) .beta-intro {
 		color: #4b5563;
 	}
 
@@ -666,7 +703,7 @@
 		backdrop-filter: blur(10px);
 	}
 
-	:global([data-theme="light"]) .beta-summary-card {
+	:global([data-theme='light']) .beta-summary-card {
 		background: #ffffff;
 		border-color: rgba(0, 0, 0, 0.1);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
@@ -724,7 +761,7 @@
 		color: inherit;
 	}
 
-	:global([data-theme="light"]) .btn-clear {
+	:global([data-theme='light']) .btn-clear {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.12);
 	}
@@ -741,8 +778,12 @@
 	}
 
 	@keyframes pulseBtn {
-		from { opacity: 0.85; }
-		to { opacity: 1; }
+		from {
+			opacity: 0.85;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.report-hint {
@@ -803,7 +844,7 @@
 		transition: all 0.2s ease;
 	}
 
-	:global([data-theme="light"]) .beta-tab-btn {
+	:global([data-theme='light']) .beta-tab-btn {
 		background: rgba(0, 0, 0, 0.04);
 		border-color: rgba(0, 0, 0, 0.1);
 	}
@@ -854,7 +895,7 @@
 		transition: background 0.2s;
 	}
 
-	:global([data-theme="light"]) .screen-link-badge {
+	:global([data-theme='light']) .screen-link-badge {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 	}
@@ -897,10 +938,12 @@
 		border: 2px solid rgba(255, 255, 255, 0.08);
 		border-radius: 14px;
 		padding: 1.1rem 1.25rem;
-		transition: border-color 0.2s ease, background 0.2s ease;
+		transition:
+			border-color 0.2s ease,
+			background 0.2s ease;
 	}
 
-	:global([data-theme="light"]) .check-card {
+	:global([data-theme='light']) .check-card {
 		background: #ffffff;
 		border-color: rgba(0, 0, 0, 0.08);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
@@ -943,7 +986,7 @@
 		font-weight: 500;
 	}
 
-	:global([data-theme="light"]) .check-category {
+	:global([data-theme='light']) .check-category {
 		background: rgba(0, 0, 0, 0.06);
 		color: #4b5563;
 	}
@@ -1009,7 +1052,7 @@
 		border: 1px solid rgba(255, 255, 255, 0.12);
 	}
 
-	:global([data-theme="light"]) .vote-btn {
+	:global([data-theme='light']) .vote-btn {
 		background: rgba(0, 0, 0, 0.03);
 		border-color: rgba(0, 0, 0, 0.1);
 	}

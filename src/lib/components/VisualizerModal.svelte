@@ -1,6 +1,6 @@
-<script>
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { ICONS } from './icons.js';
+﻿<script>
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -43,7 +43,8 @@
 			});
 			micStream = stream;
 
-			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+			const AudioContextClass =
+				window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 			analyser = audioCtx.createAnalyser();
 			analyser.fftSize = 1024;
@@ -57,9 +58,10 @@
 		} catch (err) {
 			console.warn('Microphone error:', err);
 			micStatus = 'denied';
-			micError = err.name === 'NotAllowedError'
-				? 'Доступ до мікрофону було заблоковано.'
-				: (err.message || 'Помилка захоплення звуку.');
+			micError =
+				err.name === 'NotAllowedError'
+					? 'Доступ до мікрофону було заблоковано.'
+					: err.message || 'Помилка захоплення звуку.';
 			// Fallback to test mode so visualizer is still visually engaging
 			startTestMode();
 		}
@@ -208,7 +210,7 @@
 		const i1 = Math.min(maxBin, i0 + 1);
 		const frac = binFloat - i0;
 
-		const val0 = (i0 === 0) ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
+		const val0 = i0 === 0 ? Math.min(freqData[0], freqData[1] * 1.1) : freqData[i0];
 		const val1 = freqData[i1];
 		const rawVal = val0 * (1 - frac) + val1 * frac;
 		const trebleTilt = 1.0 + mappedT * 0.55;
@@ -277,7 +279,8 @@
 		ctx.beginPath();
 		let prevX = 0;
 		const firstFreq = freqData ? getSampledFreq(0, freqData, bufferLength, 1.0) / 255 : 0.5;
-		let prevY = (height / 2) + ((timeData[0] - 128) / 128.0) * (height * 0.35 * (0.4 + 0.8 * firstFreq));
+		let prevY =
+			height / 2 + ((timeData[0] - 128) / 128.0) * (height * 0.35 * (0.4 + 0.8 * firstFreq));
 		ctx.moveTo(prevX, prevY);
 
 		for (let i = 1; i < pointsCount; i++) {
@@ -288,7 +291,7 @@
 			const localAmp = height * 0.35 * (0.4 + 0.8 * freqVal) * sensitivity;
 
 			const curX = i * sliceWidth;
-			const curY = (height / 2) + v * localAmp;
+			const curY = height / 2 + v * localAmp;
 			const midX = (prevX + curX) / 2;
 			const midY = (prevY + curY) / 2;
 
@@ -322,7 +325,7 @@
 		// Rotated -90 degrees (counter-clockwise) so bass points straight UP
 		for (let i = 0; i < totalRays; i++) {
 			const angle = (i / totalRays) * Math.PI * 2 - Math.PI / 2;
-			const t = i < totalRays / 2 ? (i / (totalRays / 2)) : (1 - (i - totalRays / 2) / (totalRays / 2));
+			const t = i < totalRays / 2 ? i / (totalRays / 2) : 1 - (i - totalRays / 2) / (totalRays / 2);
 			const val = getSampledFreq(t, freqData, bufferLength, sensitivity);
 			const barLength = (val / 255) * (Math.min(width, height) * 0.28);
 
@@ -405,9 +408,7 @@
 						{/if}
 					</span>
 					<h2 class="vis-title">Аудіовізуалізатор</h2>
-					<p class="vis-desc">
-						Аналіз спектру частот звуку в реальному часі
-					</p>
+					<p class="vis-desc">Аналіз спектру частот звуку в реальному часі</p>
 				</div>
 
 				<button
@@ -469,11 +470,7 @@
 
 				<div class="vis-actions">
 					{#if micStatus !== 'listening'}
-						<button
-							type="button"
-							class="action-btn mic-btn"
-							onclick={startMicrophone}
-						>
+						<button type="button" class="action-btn mic-btn" onclick={startMicrophone}>
 							{#if getIcon('mic')}
 								{@const icon = getIcon('mic')}
 								<svg viewBox={icon.viewBox} class="inline-icon" aria-hidden="true">
@@ -483,11 +480,7 @@
 							<span>Увімкнути мікрофон</span>
 						</button>
 					{:else}
-						<button
-							type="button"
-							class="action-btn test-btn"
-							onclick={startTestMode}
-						>
+						<button type="button" class="action-btn test-btn" onclick={startTestMode}>
 							<span>Тестовий звук</span>
 						</button>
 					{/if}
@@ -531,8 +524,9 @@
 		border-radius: 28px;
 		display: flex;
 		flex-direction: column;
-		box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8),
-		            0 0 50px rgba(255, 95, 31, 0.08);
+		box-shadow:
+			0 30px 80px -20px rgba(0, 0, 0, 0.8),
+			0 0 50px rgba(255, 95, 31, 0.08);
 		overflow: hidden;
 		animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 	}
@@ -548,11 +542,12 @@
 		}
 	}
 
-	:global([data-theme="light"]) .visualizer-card {
+	:global([data-theme='light']) .visualizer-card {
 		background: rgba(255, 255, 255, 0.94);
 		border-color: rgba(0, 0, 0, 0.1);
-		box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.18),
-		            0 0 40px rgba(255, 95, 31, 0.05);
+		box-shadow:
+			0 30px 80px -20px rgba(0, 0, 0, 0.18),
+			0 0 40px rgba(255, 95, 31, 0.05);
 	}
 
 	.vis-header {
@@ -563,7 +558,7 @@
 		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
-	:global([data-theme="light"]) .vis-header {
+	:global([data-theme='light']) .vis-header {
 		border-bottom-color: rgba(0, 0, 0, 0.06);
 	}
 
@@ -598,7 +593,8 @@
 	}
 
 	@keyframes livePulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 1;
 			transform: scale(1);
 		}
@@ -642,13 +638,13 @@
 		transform: scale(1.08);
 	}
 
-	:global([data-theme="light"]) .vis-close-btn {
+	:global([data-theme='light']) .vis-close-btn {
 		background: rgba(0, 0, 0, 0.04);
 		border-color: rgba(0, 0, 0, 0.08);
 		color: #4b5563;
 	}
 
-	:global([data-theme="light"]) .vis-close-btn:hover {
+	:global([data-theme='light']) .vis-close-btn:hover {
 		color: #111827;
 		background: rgba(0, 0, 0, 0.08);
 	}
@@ -662,15 +658,23 @@
 		position: relative;
 		width: 100%;
 		height: 380px;
-		background: radial-gradient(circle at center, rgba(30, 20, 28, 0.4) 0%, rgba(10, 10, 14, 0.9) 100%);
+		background: radial-gradient(
+			circle at center,
+			rgba(30, 20, 28, 0.4) 0%,
+			rgba(10, 10, 14, 0.9) 100%
+		);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
 	}
 
-	:global([data-theme="light"]) .canvas-wrapper {
-		background: radial-gradient(circle at center, rgba(245, 240, 235, 0.6) 0%, rgba(230, 230, 235, 0.95) 100%);
+	:global([data-theme='light']) .canvas-wrapper {
+		background: radial-gradient(
+			circle at center,
+			rgba(245, 240, 235, 0.6) 0%,
+			rgba(230, 230, 235, 0.95) 100%
+		);
 	}
 
 	.vis-canvas {
@@ -704,7 +708,7 @@
 		flex-wrap: wrap;
 	}
 
-	:global([data-theme="light"]) .vis-controls {
+	:global([data-theme='light']) .vis-controls {
 		background: rgba(245, 245, 248, 0.8);
 		border-top-color: rgba(0, 0, 0, 0.06);
 	}
@@ -718,7 +722,7 @@
 		border: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
-	:global([data-theme="light"]) .mode-toggles {
+	:global([data-theme='light']) .mode-toggles {
 		background: rgba(0, 0, 0, 0.04);
 		border-color: rgba(0, 0, 0, 0.06);
 	}
@@ -739,7 +743,7 @@
 		color: #ffffff;
 	}
 
-	:global([data-theme="light"]) .mode-btn:hover {
+	:global([data-theme='light']) .mode-btn:hover {
 		color: #111827;
 	}
 
@@ -750,7 +754,7 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	}
 
-	:global([data-theme="light"]) .mode-btn.active {
+	:global([data-theme='light']) .mode-btn.active {
 		background: #ffffff;
 		color: #111827;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -798,7 +802,7 @@
 		color: #ffffff;
 	}
 
-	:global([data-theme="light"]) .test-btn {
+	:global([data-theme='light']) .test-btn {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 		color: #111827;

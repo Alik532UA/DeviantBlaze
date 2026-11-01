@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import '../app.css';
-	import { asset } from '$app/paths';
 	import { page } from '$app/state';
 	import JsonLd from '#lib/components/JsonLd.svelte';
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
@@ -13,8 +12,7 @@
 	migrateLegacyKeys();
 
 	onMount(() => {
-		const onRejection = (e) =>
-			logService.error('app', `Unhandled rejection: ${String(e.reason)}`);
+		const onRejection = (e) => logService.error('app', `Unhandled rejection: ${String(e.reason)}`);
 		const onWindowError = (e) =>
 			logService.error('app', `${e.message} at ${e.filename}:${e.lineno}`);
 		window.addEventListener('unhandledrejection', onRejection);
@@ -51,10 +49,7 @@
 				image: `${SITE_ORIGIN}/DeviantBlaze/og-image.png`,
 				description: 'Рок-гурт Deviant Blaze',
 				genre: ['Rock', 'Symphonic Rock', 'Gothic Rock', 'Alternative Rock'],
-				sameAs: [
-					'https://t.me/Moyo_imya_polzovatelya',
-					'https://github.com/Alik532UA/DeviantBlaze'
-				]
+				sameAs: ['https://t.me/Moyo_imya_polzovatelya', 'https://github.com/Alik532UA/DeviantBlaze']
 			}
 		]
 	};

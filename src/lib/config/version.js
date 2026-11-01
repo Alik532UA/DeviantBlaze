@@ -5,6 +5,4 @@
  */
 
 export const APP_VERSION =
-  typeof globalThis.__APP_VERSION__ !== "undefined"
-    ? globalThis.__APP_VERSION__
-    : "0.0.1";
+	typeof globalThis.__APP_VERSION__ !== 'undefined' ? globalThis.__APP_VERSION__ : '0.0.1';

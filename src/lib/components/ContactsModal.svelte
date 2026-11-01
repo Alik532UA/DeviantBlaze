@@ -1,7 +1,7 @@
-<script>
+﻿<script>
 	import { fade, scale } from 'svelte/transition';
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { ICONS } from './icons.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -37,7 +37,12 @@
 		></button>
 
 		<div class="contacts-card" transition:scale={{ start: 0.95, duration: 220 }}>
-			<button class="close-btn" class:is-gothic={style === 'gothic'} onclick={() => (isOpen = false)} aria-label="Закрити контакти">
+			<button
+				class="close-btn"
+				class:is-gothic={style === 'gothic'}
+				onclick={() => (isOpen = false)}
+				aria-label="Закрити контакти"
+			>
 				<svg
 					viewBox={getIcon('gallery_close').viewBox}
 					width="20"
@@ -69,11 +74,23 @@
 				<div class="contact-item">
 					<span class="label">Music Streaming</span>
 					<div class="stream-links">
-						<a href="https://music.youtube.com/watch?v=tlZPReIOTuQ&si=D8i77XIoe5O871U4" target="_blank" rel="noopener noreferrer">YouTube Music</a>
+						<a
+							href="https://music.youtube.com/watch?v=tlZPReIOTuQ&si=D8i77XIoe5O871U4"
+							target="_blank"
+							rel="noopener noreferrer">YouTube Music</a
+						>
 						<span>·</span>
-						<a href="https://open.spotify.com/album/6J3G38WFCEGf97AqrCp8Dq" target="_blank" rel="noopener noreferrer">Spotify</a>
+						<a
+							href="https://open.spotify.com/album/6J3G38WFCEGf97AqrCp8Dq"
+							target="_blank"
+							rel="noopener noreferrer">Spotify</a
+						>
 						<span>·</span>
-						<a href="https://music.apple.com/ua/album/%D0%BD%D1%83%D0%BB%D1%8C/6805608429?i=6805608430" target="_blank" rel="noopener noreferrer">Apple Music</a>
+						<a
+							href="https://music.apple.com/ua/album/%D0%BD%D1%83%D0%BB%D1%8C/6805608429?i=6805608430"
+							target="_blank"
+							rel="noopener noreferrer">Apple Music</a
+						>
 					</div>
 				</div>
 			</div>
@@ -128,7 +145,9 @@
 		align-items: center;
 		justify-content: center;
 		padding: 4px;
-		transition: color 0.2s, transform 0.2s;
+		transition:
+			color 0.2s,
+			transform 0.2s;
 	}
 
 	.close-btn:hover {

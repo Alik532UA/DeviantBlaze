@@ -1,9 +1,9 @@
-<script>
+﻿<script>
 	import { onMount } from 'svelte';
-	import { themeStore } from './theme.svelte.js';
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { langStore } from './lang.svelte.js';
-	import { ICONS } from './icons.js';
+	import { themeStore } from '#lib/theme.svelte.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { langStore } from '#lib/lang.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	let { onOpenGallery, onGalleryHover, onThemeHover, isExpanded = false } = $props();
 
@@ -163,9 +163,13 @@
 		onclick={handleThemeClick}
 		onmouseenter={() => handleThemeHover(true)}
 		onmouseleave={() => handleThemeHover(false)}
-		onfocus={() => { if (!isMobile) handleThemeHover(true); }}
+		onfocus={() => {
+			if (!isMobile) handleThemeHover(true);
+		}}
 		onblur={() => handleThemeHover(false)}
-		aria-label={isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}
+		aria-label={isDark
+			? langStore.t('theme_toggle_tip_dark')
+			: langStore.t('theme_toggle_tip_light')}
 	>
 		<div class="theme-icon-wrap" class:is-light={!isDark}>
 			{#key style}
@@ -178,8 +182,12 @@
 				</svg>
 			{/key}
 		</div>
-		<span class="nav-sublabel">{isDark ? langStore.t('theme_dark') : langStore.t('theme_light')}</span>
-		<span class="nav-tooltip">{isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}</span>
+		<span class="nav-sublabel"
+			>{isDark ? langStore.t('theme_dark') : langStore.t('theme_light')}</span
+		>
+		<span class="nav-tooltip"
+			>{isDark ? langStore.t('theme_toggle_tip_dark') : langStore.t('theme_toggle_tip_light')}</span
+		>
 	</button>
 </nav>
 
@@ -195,7 +203,10 @@
 		justify-content: center;
 		gap: 1.75rem;
 		padding: 0.5rem 1rem;
-		transition: opacity 0.25s ease-out, gap 0.55s cubic-bezier(0.16, 1, 0.3, 1), top 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			opacity 0.25s ease-out,
+			gap 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+			top 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.top-center-nav.is-expanded {
@@ -221,7 +232,9 @@
 		justify-content: center;
 		text-decoration: none;
 		outline: none;
-		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-speed) var(--transition-easing);
+		transition:
+			transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+			color var(--transition-speed) var(--transition-easing);
 	}
 
 	.theme-icon-wrap {
@@ -239,9 +252,10 @@
 		width: 28px;
 		height: 28px;
 		display: block;
-		transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-		            height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-		            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
 	}
 
@@ -261,7 +275,10 @@
 		max-height: 0;
 		overflow: hidden;
 		transform: translateY(-6px);
-		transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+		transition:
+			opacity 0.4s ease,
+			transform 0.4s ease,
+			max-height 0.4s ease;
 		pointer-events: none;
 		white-space: nowrap;
 		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -284,19 +301,21 @@
 
 	/* Instagram Brand Gradient Hover */
 	.instagram-svg :global(*) {
-		transition: stroke 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		            fill 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			stroke 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+			fill 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.instagram-btn:hover .instagram-svg {
-		filter: drop-shadow(0 0 14px rgba(220, 39, 67, 0.75)) drop-shadow(0 0 24px rgba(188, 24, 136, 0.45));
+		filter: drop-shadow(0 0 14px rgba(220, 39, 67, 0.75))
+			drop-shadow(0 0 24px rgba(188, 24, 136, 0.45));
 	}
 
-	.instagram-btn:hover .instagram-svg :global([stroke="currentColor"]) {
+	.instagram-btn:hover .instagram-svg :global([stroke='currentColor']) {
 		stroke: url(#ig-gradient);
 	}
 
-	.instagram-btn:hover .instagram-svg :global([fill="currentColor"]) {
+	.instagram-btn:hover .instagram-svg :global([fill='currentColor']) {
 		fill: url(#ig-gradient);
 	}
 

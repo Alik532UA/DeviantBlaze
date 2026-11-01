@@ -1,13 +1,13 @@
 <script>
-	import DeviantBlazeLogo from '#lib/DeviantBlazeLogo.svelte';
-	import MusicLinks from '#lib/MusicLinks.svelte';
-	import TopNav from '#lib/TopNav.svelte';
-	import GalleryModal from '#lib/GalleryModal.svelte';
-	import PianoModal from '#lib/PianoModal.svelte';
-	import HiddenPanel from '#lib/HiddenPanel.svelte';
-	import BackgroundVisualizer from '#lib/BackgroundVisualizer.svelte';
-	import VisualizerBar from '#lib/VisualizerBar.svelte';
-	import ParallaxBackground from '#lib/ParallaxBackground.svelte';
+	import DeviantBlazeLogo from '#lib/components/DeviantBlazeLogo.svelte';
+	import MusicLinks from '#lib/components/MusicLinks.svelte';
+	import TopNav from '#lib/components/TopNav.svelte';
+	import GalleryModal from '#lib/components/GalleryModal.svelte';
+	import PianoModal from '#lib/components/PianoModal.svelte';
+	import HiddenPanel from '#lib/components/HiddenPanel.svelte';
+	import BackgroundVisualizer from '#lib/components/BackgroundVisualizer.svelte';
+	import VisualizerBar from '#lib/components/VisualizerBar.svelte';
+	import ParallaxBackground from '#lib/components/ParallaxBackground.svelte';
 	import { themeStore } from '#lib/theme.svelte.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { langStore } from '#lib/lang.svelte.js';
@@ -18,9 +18,7 @@
 	let isGalleryOpen = $state(false);
 	let isPianoOpen = $state(false);
 
-	let anyModalOpen = $derived(
-		isGalleryOpen || isPianoOpen
-	);
+	let anyModalOpen = $derived(isGalleryOpen || isPianoOpen);
 
 	// Hover effects
 	let isGalleryHovered = $state(false);
@@ -52,7 +50,6 @@
 	let isVJIdle = $state(false);
 	let vjIdleTimer = null;
 	let isVJCollapsed = $state(false);
-	let lastManualHideTime = 0;
 
 	function resetVJInactivity() {
 		if (isVJCollapsed) return;
@@ -74,7 +71,6 @@
 		} else {
 			isVJCollapsed = true;
 			isVJIdle = true;
-			lastManualHideTime = Date.now();
 			if (vjIdleTimer) clearTimeout(vjIdleTimer);
 		}
 	}
@@ -362,20 +358,12 @@
 		class:is-active={isGalleryHovered && !isGalleryOpen}
 		aria-hidden="true"
 	>
-		<img
-			src={asset('gallery-hover-bg.webp')}
-			alt=""
-			class="gallery-hover-img"
-		/>
+		<img src={asset('gallery-hover-bg.webp')} alt="" class="gallery-hover-img" />
 		<div class="gallery-hover-overlay"></div>
 	</div>
 
 	<!-- Opposite Color Vignette on Theme Hover -->
-	<div
-		class="theme-contrast-vignette"
-		class:is-active={isThemeHovered}
-		aria-hidden="true"
-	></div>
+	<div class="theme-contrast-vignette" class:is-active={isThemeHovered} aria-hidden="true"></div>
 
 	<!-- Ambient mouse-tracking light and vignette -->
 	<div class="ambient-backdrop"></div>
@@ -406,10 +394,7 @@
 	</section>
 
 	<!-- Bottom Center Music Platforms: YouTube Music, Spotify, Apple Music -->
-	<MusicLinks
-		isExpanded={scrollState === 3}
-		isShiftedUp={scrollState === 4}
-	/>
+	<MusicLinks isExpanded={scrollState === 3} isShiftedUp={scrollState === 4} />
 
 	<!-- Hidden Actions Panel in State 4 -->
 	<HiddenPanel
@@ -425,7 +410,9 @@
 	<aside
 		bind:this={indicatorEl}
 		class="scroll-indicator"
-		style="opacity: {effectiveIndicatorOpacity.toFixed(3)}; pointer-events: {effectiveIndicatorOpacity > 0.05 ? 'auto' : 'none'};"
+		style="opacity: {effectiveIndicatorOpacity.toFixed(
+			3
+		)}; pointer-events: {effectiveIndicatorOpacity > 0.05 ? 'auto' : 'none'};"
 		aria-label="Індикатор стану скролу"
 	>
 		<button
@@ -528,7 +515,9 @@
 		object-fit: cover;
 		object-position: center;
 		transform: scale(1.04);
-		transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter var(--transition-speed) var(--transition-easing);
+		transition:
+			transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+			filter var(--transition-speed) var(--transition-easing);
 		will-change: transform, filter;
 	}
 
@@ -536,7 +525,7 @@
 		transform: scale(1);
 	}
 
-	:global([data-theme="light"]) .gallery-hover-img {
+	:global([data-theme='light']) .gallery-hover-img {
 		filter: invert(1);
 	}
 
@@ -547,8 +536,12 @@
 		transition: background var(--transition-speed) var(--transition-easing);
 	}
 
-	:global([data-theme="light"]) .gallery-hover-overlay {
-		background: radial-gradient(circle at center, rgba(248, 248, 250, 0.25) 0%, rgba(248, 248, 250, 0.65) 100%);
+	:global([data-theme='light']) .gallery-hover-overlay {
+		background: radial-gradient(
+			circle at center,
+			rgba(248, 248, 250, 0.25) 0%,
+			rgba(248, 248, 250, 0.65) 100%
+		);
 	}
 
 	/* Opposite Color Vignette on Theme Hover */
@@ -558,22 +551,35 @@
 		z-index: 5;
 		pointer-events: none;
 		opacity: 0;
-		transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-		            box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-		            background 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-		box-shadow: inset 0 0 140px 30px rgba(255, 255, 255, 0.28),
-		            inset 0 0 60px 10px rgba(255, 255, 255, 0.45);
-		background: radial-gradient(circle at center, transparent 40%, rgba(255, 255, 255, 0.06) 70%, rgba(255, 255, 255, 0.28) 100%);
+		transition:
+			opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+			box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+			background 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+		box-shadow:
+			inset 0 0 140px 30px rgba(255, 255, 255, 0.28),
+			inset 0 0 60px 10px rgba(255, 255, 255, 0.45);
+		background: radial-gradient(
+			circle at center,
+			transparent 40%,
+			rgba(255, 255, 255, 0.06) 70%,
+			rgba(255, 255, 255, 0.28) 100%
+		);
 	}
 
 	.theme-contrast-vignette.is-active {
 		opacity: 1;
 	}
 
-	:global([data-theme="light"]) .theme-contrast-vignette {
-		box-shadow: inset 0 0 140px 30px rgba(0, 0, 0, 0.38),
-		            inset 0 0 60px 10px rgba(0, 0, 0, 0.6);
-		background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.1) 70%, rgba(7, 7, 9, 0.38) 100%);
+	:global([data-theme='light']) .theme-contrast-vignette {
+		box-shadow:
+			inset 0 0 140px 30px rgba(0, 0, 0, 0.38),
+			inset 0 0 60px 10px rgba(0, 0, 0, 0.6);
+		background: radial-gradient(
+			circle at center,
+			transparent 40%,
+			rgba(0, 0, 0, 0.1) 70%,
+			rgba(7, 7, 9, 0.38) 100%
+		);
 	}
 
 	/* Central Hero Logo Position based on Scroll States */
@@ -637,7 +643,7 @@
 		will-change: opacity;
 	}
 
-	:global([data-theme="light"]) .scroll-indicator {
+	:global([data-theme='light']) .scroll-indicator {
 		background: rgba(255, 255, 255, 0.5);
 		border-color: rgba(0, 0, 0, 0.08);
 	}

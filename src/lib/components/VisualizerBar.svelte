@@ -1,14 +1,14 @@
 <script>
-	import { langStore } from './lang.svelte.js';
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { themeStore } from './theme.svelte.js';
-	import { ICONS } from './icons.js';
+	import { langStore } from '#lib/lang.svelte.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { themeStore } from '#lib/theme.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	let {
 		isActive = false,
 		currentMode = 'bars',
 		audioSource = 'mic', // 'mic' | 'speakers'
-		micStatus = 'mic',
+		micStatus: _micStatus = 'mic',
 		palette = 'blaze',
 		sensitivity = 1.0,
 		spectrumHeight = 1.0,
@@ -130,8 +130,12 @@
 			class="vj-collapsed-eye-btn"
 			class:is-invisible={effectiveEyeOpacity <= 0.01}
 			style="--eye-opacity: {effectiveEyeOpacity}; opacity: var(--eye-opacity);"
-			onmouseenter={() => { isEyeHovered = true; }}
-			onmouseleave={() => { isEyeHovered = false; }}
+			onmouseenter={() => {
+				isEyeHovered = true;
+			}}
+			onmouseleave={() => {
+				isEyeHovered = false;
+			}}
 			onclick={() => onToggleCollapse?.()}
 			title="{langStore.t('vj_expand')} (V)"
 			aria-label={langStore.t('vj_expand')}
@@ -145,10 +149,7 @@
 		</button>
 	{:else}
 		<!-- Розгорнута панель керування візуалізацією -->
-		<aside
-			class="vj-control-bar"
-			aria-label="Панель керування візуалізацією"
-		>
+		<aside class="vj-control-bar" aria-label="Панель керування візуалізацією">
 			<!-- 1. Верхній рядок: Статус + Швидкі інструменти -->
 			<div class="vj-row vj-header-row">
 				<div class="vj-status-chip">
@@ -314,7 +315,7 @@
 						<span class="setting-title">{langStore.t('vj_color_theme')}</span>
 					</div>
 					<div class="palettes-picker">
-						{#each palettesList as p}
+						{#each palettesList as p (p.id)}
 							<button
 								type="button"
 								class="palette-chip"
@@ -353,14 +354,16 @@
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border: 1px solid rgba(255, 255, 255, 0.16);
 		color: var(--text-primary);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-		            0 0 16px rgba(235, 30, 60, 0.2);
+		box-shadow:
+			0 10px 30px rgba(0, 0, 0, 0.5),
+			0 0 16px rgba(235, 30, 60, 0.2);
 		cursor: pointer;
 		opacity: var(--eye-opacity, 0);
-		transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-		            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-		            border-color 0.25s,
-		            box-shadow 0.25s;
+		transition:
+			opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+			border-color 0.25s,
+			box-shadow 0.25s;
 	}
 
 	.vj-collapsed-eye-btn.is-invisible {
@@ -371,22 +374,25 @@
 		opacity: 1 !important;
 		transform: translateY(-50%) scale(1.12);
 		border-color: #ff5f1f;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
-		            0 0 25px rgba(255, 95, 31, 0.45);
+		box-shadow:
+			0 10px 30px rgba(0, 0, 0, 0.6),
+			0 0 25px rgba(255, 95, 31, 0.45);
 	}
 
-	:global([data-theme="light"]) .vj-collapsed-eye-btn {
+	:global([data-theme='light']) .vj-collapsed-eye-btn {
 		background: rgba(255, 255, 255, 0.9);
 		border-color: rgba(0, 0, 0, 0.14);
 		color: #0a0a0d;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12),
-		            0 0 15px rgba(0, 0, 0, 0.05);
+		box-shadow:
+			0 10px 30px rgba(0, 0, 0, 0.12),
+			0 0 15px rgba(0, 0, 0, 0.05);
 	}
 
-	:global([data-theme="light"]) .vj-collapsed-eye-btn:hover {
+	:global([data-theme='light']) .vj-collapsed-eye-btn:hover {
 		border-color: #eb1e3c;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18),
-		            0 0 20px rgba(235, 30, 60, 0.25);
+		box-shadow:
+			0 10px 30px rgba(0, 0, 0, 0.18),
+			0 0 20px rgba(235, 30, 60, 0.25);
 	}
 
 	.vj-eye-svg {
@@ -413,13 +419,15 @@
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border: 1px solid rgba(255, 255, 255, 0.14);
 		border-radius: 20px;
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55),
-		            0 0 20px rgba(235, 30, 60, 0.15);
+		box-shadow:
+			0 16px 40px rgba(0, 0, 0, 0.55),
+			0 0 20px rgba(235, 30, 60, 0.15);
 		animation: barSlideInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-		            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-		            background-color var(--transition-speed) var(--transition-easing),
-		            border-color var(--transition-speed) var(--transition-easing);
+		transition:
+			opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+			background-color var(--transition-speed) var(--transition-easing),
+			border-color var(--transition-speed) var(--transition-easing);
 	}
 
 	@keyframes barSlideInLeft {
@@ -433,11 +441,12 @@
 		}
 	}
 
-	:global([data-theme="light"]) .vj-control-bar {
+	:global([data-theme='light']) .vj-control-bar {
 		background: rgba(255, 255, 255, 0.95);
 		border-color: rgba(0, 0, 0, 0.12);
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12),
-		            0 0 15px rgba(0, 0, 0, 0.05);
+		box-shadow:
+			0 16px 40px rgba(0, 0, 0, 0.12),
+			0 0 15px rgba(0, 0, 0, 0.05);
 	}
 
 	.vj-row {
@@ -453,7 +462,7 @@
 		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
-	:global([data-theme="light"]) .vj-header-row {
+	:global([data-theme='light']) .vj-header-row {
 		border-bottom-color: rgba(0, 0, 0, 0.08);
 	}
 
@@ -489,7 +498,8 @@
 	}
 
 	@keyframes pulse {
-		0%, 100% {
+		0%,
+		100% {
 			transform: scale(1);
 			opacity: 1;
 		}
@@ -507,7 +517,7 @@
 		white-space: nowrap;
 	}
 
-	:global([data-theme="light"]) .vj-status-text {
+	:global([data-theme='light']) .vj-status-text {
 		color: #0a0a0d;
 	}
 
@@ -520,7 +530,7 @@
 		border-radius: 9999px;
 	}
 
-	:global([data-theme="light"]) .vj-toggle-group {
+	:global([data-theme='light']) .vj-toggle-group {
 		background: rgba(0, 0, 0, 0.06);
 	}
 
@@ -564,11 +574,11 @@
 		color: var(--text-primary);
 	}
 
-	:global([data-theme="light"]) .vj-toggle-btn {
+	:global([data-theme='light']) .vj-toggle-btn {
 		color: #4b5563;
 	}
 
-	:global([data-theme="light"]) .vj-toggle-btn:hover {
+	:global([data-theme='light']) .vj-toggle-btn:hover {
 		color: #000000;
 	}
 
@@ -608,13 +618,13 @@
 		border-color: #ff5f1f;
 	}
 
-	:global([data-theme="light"]) .vj-icon-btn {
+	:global([data-theme='light']) .vj-icon-btn {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.12);
 		color: #0a0a0d;
 	}
 
-	:global([data-theme="light"]) .vj-icon-btn:hover {
+	:global([data-theme='light']) .vj-icon-btn:hover {
 		background: rgba(0, 0, 0, 0.1);
 		color: #eb1e3c;
 		border-color: #eb1e3c;
@@ -640,11 +650,11 @@
 		background: rgba(255, 255, 255, 0.1);
 	}
 
-	:global([data-theme="light"]) .vj-exit-btn {
+	:global([data-theme='light']) .vj-exit-btn {
 		color: #656573;
 	}
 
-	:global([data-theme="light"]) .vj-exit-btn:hover {
+	:global([data-theme='light']) .vj-exit-btn:hover {
 		color: #0a0a0d;
 		background: rgba(0, 0, 0, 0.08);
 	}
@@ -658,7 +668,7 @@
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
-	:global([data-theme="light"]) .vj-settings-section {
+	:global([data-theme='light']) .vj-settings-section {
 		border-top-color: rgba(0, 0, 0, 0.08);
 	}
 
@@ -680,7 +690,7 @@
 		color: var(--text-primary);
 	}
 
-	:global([data-theme="light"]) .setting-title {
+	:global([data-theme='light']) .setting-title {
 		color: #0a0a0d;
 		font-weight: 700;
 	}
@@ -700,7 +710,7 @@
 		outline: none;
 	}
 
-	:global([data-theme="light"]) .vj-slider {
+	:global([data-theme='light']) .vj-slider {
 		background: rgba(0, 0, 0, 0.16);
 	}
 
@@ -736,7 +746,7 @@
 		transition: all 0.2s ease;
 	}
 
-	:global([data-theme="light"]) .palette-chip {
+	:global([data-theme='light']) .palette-chip {
 		background: rgba(0, 0, 0, 0.04);
 		border-color: rgba(0, 0, 0, 0.12);
 		color: #4b5563;
@@ -747,7 +757,7 @@
 		border-color: var(--chip-color);
 	}
 
-	:global([data-theme="light"]) .palette-chip:hover {
+	:global([data-theme='light']) .palette-chip:hover {
 		color: #0a0a0d;
 	}
 
@@ -758,12 +768,14 @@
 		box-shadow: 0 0 10px var(--chip-color);
 	}
 
-	:global([data-theme="light"]) .palette-chip.is-active {
+	:global([data-theme='light']) .palette-chip.is-active {
 		background: rgba(0, 0, 0, 0.08);
 		border-color: var(--chip-color);
 		color: #0a0a0d;
 		font-weight: 700;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.12), 0 0 8px var(--chip-color);
+		box-shadow:
+			0 0 10px rgba(0, 0, 0, 0.12),
+			0 0 8px var(--chip-color);
 	}
 
 	.palette-dot {
@@ -807,6 +819,5 @@
 				transform: translateX(-50%) translateY(0) scale(1);
 			}
 		}
-
 	}
 </style>

@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import logoData from './logo-data.json';
+	import logoData from '#lib/logo-data.json';
 
 	let svgElement = $state(null);
 	let containerElement = $state(null);
@@ -73,7 +73,8 @@
 		}
 
 		// Connect orientation listener if supported
-		const DeviceOrientation = typeof window !== 'undefined' ? /** @type {any} */ (window).DeviceOrientationEvent : null;
+		const DeviceOrientation =
+			typeof window !== 'undefined' ? /** @type {any} */ (window).DeviceOrientationEvent : null;
 		if (DeviceOrientation) {
 			if (typeof DeviceOrientation.requestPermission !== 'function') {
 				window.addEventListener('deviceorientation', handleOrientation, { passive: true });
@@ -137,13 +138,13 @@
 
 		// Animation loop
 		function loop(time) {
-			const dt = Math.min(time - lastTime, 50);
+			const _dt = Math.min(time - lastTime, 50);
 			lastTime = time;
 
 			const idleT = time * 0.001;
 
-			let targetTiltX = 0;
-			let targetTiltY = 0;
+			let targetTiltX;
+			let targetTiltY;
 
 			if (isMobile) {
 				// MOBILE MODE:
@@ -152,8 +153,14 @@
 				glowX = 50 + Math.sin(idleT * 0.7) * 24;
 				glowY = 50 + Math.cos(idleT * 0.5) * 18;
 
-				document.documentElement.style.setProperty('--mouse-x', `${50 + Math.sin(idleT * 0.5) * 15}%`);
-				document.documentElement.style.setProperty('--mouse-y', `${50 + Math.cos(idleT * 0.4) * 12}%`);
+				document.documentElement.style.setProperty(
+					'--mouse-x',
+					`${50 + Math.sin(idleT * 0.5) * 15}%`
+				);
+				document.documentElement.style.setProperty(
+					'--mouse-y',
+					`${50 + Math.cos(idleT * 0.4) * 12}%`
+				);
 
 				// Passive autonomous breathing tilt
 				const breathTiltX = Math.sin(idleT * 0.75) * 3.5;
@@ -182,7 +189,12 @@
 					// Moderate 3D parallax depth when phone is tilted
 					const parallaxX = hasOrientation ? (isWing ? -tiltNormX * 6 : tiltNormX * 2.5) : 0;
 					const parallaxY = hasOrientation ? (isWing ? -tiltNormY * 4.5 : tiltNormY * 2) : 0;
-					const gyroRot = hasOrientation && isWing ? (el.name === 'wing_left' ? -tiltNormY * 2 : tiltNormY * 2) : 0;
+					const gyroRot =
+						hasOrientation && isWing
+							? el.name === 'wing_left'
+								? -tiltNormY * 2
+								: tiltNormY * 2
+							: 0;
 
 					el.targetX = parallaxX;
 					el.targetY = idleWave + parallaxY;
@@ -295,7 +307,9 @@
 <div
 	class="logo-stage"
 	bind:this={containerElement}
-	style="transform: perspective(1200px) rotateX({smoothTiltX.toFixed(2)}deg) rotateY({smoothTiltY.toFixed(2)}deg);"
+	style="transform: perspective(1200px) rotateX({smoothTiltX.toFixed(
+		2
+	)}deg) rotateY({smoothTiltY.toFixed(2)}deg);"
 >
 	<svg
 		bind:this={svgElement}
@@ -337,11 +351,15 @@
 			<g
 				id="group-{el.name}"
 				class="logo-group group-{el.word}"
-				style="transform: translate({el.currX.toFixed(2)}px, {el.currY.toFixed(2)}px) rotate({el.currRot.toFixed(2)}deg) scale({el.currScale.toFixed(3)}); transform-origin: {el.cx}px {el.cy}px;"
+				style="transform: translate({el.currX.toFixed(2)}px, {el.currY.toFixed(
+					2
+				)}px) rotate({el.currRot.toFixed(2)}deg) scale({el.currScale.toFixed(
+					3
+				)}); transform-origin: {el.cx}px {el.cy}px;"
 			>
 				<!-- Foreground shapes filled with dynamic specular shimmer -->
 				<g class="glyph-fg" fill="url(#cursor-shimmer)">
-					{#each el.fg as d}
+					{#each el.fg as d, idx (idx)}
 						<path {d} />
 					{/each}
 				</g>
@@ -349,10 +367,10 @@
 				<!-- Negative space cutouts filled with the background color -->
 				{#if el.cutouts.length > 0 || el.polygons.length > 0}
 					<g class="glyph-cutout" fill="var(--cutout-fill)">
-						{#each el.cutouts as d}
+						{#each el.cutouts as d, idx (idx)}
 							<path {d} />
 						{/each}
-						{#each el.polygons as points}
+						{#each el.polygons as points, idx (idx)}
 							<polygon {points} />
 						{/each}
 					</g>

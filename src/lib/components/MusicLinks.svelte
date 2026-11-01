@@ -1,7 +1,7 @@
 <script>
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { langStore } from './lang.svelte.js';
-	import { ICONS } from './icons.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { langStore } from '#lib/lang.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	const platforms = [
 		{
@@ -32,44 +32,37 @@
 	let style = $derived(iconStyleStore.current);
 </script>
 
-<div
-	class="music-container"
-	class:is-expanded={isExpanded}
-	class:is-shifted-up={isShiftedUp}
->
+<div class="music-container" class:is-expanded={isExpanded} class:is-shifted-up={isShiftedUp}>
 	<h2 class="music-heading">
 		{langStore.t('music_single_heading')}
 	</h2>
-	<nav
-		class="music-links"
-		aria-label="Music Platforms"
-	>
-	{#each platforms as item}
-		{@const iconData = ICONS[style]?.[item.id] || ICONS.gothic[item.id]}
-		<a
-			href={item.url}
-			target="_blank"
-			rel="noopener noreferrer"
-			class="link-item platform-{item.id}"
-			style="--brand-color: {item.brandColor}; --brand-glow: {item.brandGlow};"
-			aria-label={item.name}
-		>
-			<div class="icon-wrap">
-				{#key style}
-					<svg
-						class="music-icon"
-						class:apple-classic={item.id === 'apple' && style === 'classic'}
-						viewBox={iconData.viewBox}
-						aria-hidden="true"
-					>
-						{@html iconData.svg}
-					</svg>
-				{/key}
-			</div>
-			<span class="link-sublabel">{item.name}</span>
-			<span class="tooltip">{item.name}</span>
-		</a>
-	{/each}
+	<nav class="music-links" aria-label="Music Platforms">
+		{#each platforms as item (item.id)}
+			{@const iconData = ICONS[style]?.[item.id] || ICONS.gothic[item.id]}
+			<a
+				href={item.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="link-item platform-{item.id}"
+				style="--brand-color: {item.brandColor}; --brand-glow: {item.brandGlow};"
+				aria-label={item.name}
+			>
+				<div class="icon-wrap">
+					{#key style}
+						<svg
+							class="music-icon"
+							class:apple-classic={item.id === 'apple' && style === 'classic'}
+							viewBox={iconData.viewBox}
+							aria-hidden="true"
+						>
+							{@html iconData.svg}
+						</svg>
+					{/key}
+				</div>
+				<span class="link-sublabel">{item.name}</span>
+				<span class="tooltip">{item.name}</span>
+			</a>
+		{/each}
 	</nav>
 </div>
 
@@ -85,9 +78,10 @@
 		align-items: center;
 		justify-content: center;
 		pointer-events: none;
-		transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-		            bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-		            opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+			bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+			opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.music-container.is-expanded {
@@ -113,12 +107,13 @@
 		-webkit-user-select: none;
 		opacity: 0.72;
 		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-		transition: font-size 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-		            opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-		            margin-bottom 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-		            color 0.35s ease,
-		            text-shadow 0.35s ease,
-		            transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			font-size 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+			opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+			margin-bottom 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+			color 0.35s ease,
+			text-shadow 0.35s ease,
+			transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.music-container.is-expanded .music-heading {
@@ -129,10 +124,12 @@
 		opacity: 1;
 		margin-bottom: 0.85rem;
 		transform: translateY(-2px);
-		text-shadow: 0 0 20px rgba(255, 255, 255, 0.35), 0 2px 10px rgba(0, 0, 0, 0.5);
+		text-shadow:
+			0 0 20px rgba(255, 255, 255, 0.35),
+			0 2px 10px rgba(0, 0, 0, 0.5);
 	}
 
-	:global([data-theme="light"]) .music-container.is-expanded .music-heading {
+	:global([data-theme='light']) .music-container.is-expanded .music-heading {
 		text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
 	}
 
@@ -165,8 +162,9 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--fg-secondary);
-		transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		            color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+			color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Normal icon: 44px; Expanded: 88px */
@@ -174,10 +172,11 @@
 		width: 44px;
 		height: 44px;
 		display: block;
-		transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-		            height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-		            transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		            filter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+			filter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 		filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 	}
 
@@ -207,7 +206,10 @@
 		max-height: 0;
 		overflow: hidden;
 		transform: translateY(6px);
-		transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+		transition:
+			opacity 0.4s ease,
+			transform 0.4s ease,
+			max-height 0.4s ease;
 		pointer-events: none;
 		white-space: nowrap;
 		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);

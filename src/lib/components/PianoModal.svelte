@@ -1,7 +1,7 @@
 <script>
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { langStore } from './lang.svelte.js';
-	import { ICONS } from './icons.js';
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { langStore } from '#lib/lang.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -13,13 +13,36 @@
 	}
 
 	// --- CONFIGURATION ---
-	const START_NOTE = "A3";
-	const END_NOTE = "D5";
-	const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-	const WHITE_KEY_CODES = ["KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote"];
-	const BLACK_KEY_CODES = ["KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft"];
-	const HINTS_WHITE = ["A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'"];
-	const HINTS_BLACK = ["W", "E", "R", "T", "Y", "U", "I", "O", "P", "["];
+	const START_NOTE = 'A3';
+	const END_NOTE = 'D5';
+	const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+	const WHITE_KEY_CODES = [
+		'KeyA',
+		'KeyS',
+		'KeyD',
+		'KeyF',
+		'KeyG',
+		'KeyH',
+		'KeyJ',
+		'KeyK',
+		'KeyL',
+		'Semicolon',
+		'Quote'
+	];
+	const BLACK_KEY_CODES = [
+		'KeyW',
+		'KeyE',
+		'KeyR',
+		'KeyT',
+		'KeyY',
+		'KeyU',
+		'KeyI',
+		'KeyO',
+		'KeyP',
+		'BracketLeft'
+	];
+	const HINTS_WHITE = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'"];
+	const HINTS_BLACK = ['W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '['];
 
 	function getMidi(noteName) {
 		const match = noteName.match(/^([A-G]#?)(\d)$/);
@@ -42,7 +65,7 @@
 		for (let midi = startMidi; midi <= endMidi; midi++) {
 			const noteName = NOTE_NAMES[midi % 12];
 			const octave = Math.floor(midi / 12) - 1;
-			const isSharp = noteName.includes("#");
+			const isSharp = noteName.includes('#');
 
 			if (!isSharp) {
 				keys.push({
@@ -72,28 +95,30 @@
 	}
 
 	const keysData = generateKeys();
-	const totalWhiteKeys = keysData.filter(k => !k.sharp).length;
+	const totalWhiteKeys = keysData.filter((k) => !k.sharp).length;
 	const whiteKeyWidth = 100 / totalWhiteKeys;
 	const blackKeyWidth = whiteKeyWidth * 0.62;
 
 	const chordsConfig = [
-		{ name: "C",  type: "major", notes: ["C4", "E4", "G4"] },
-		{ name: "G",  type: "major", notes: ["B3", "D4", "G4"] },
-		{ name: "D",  type: "major", notes: ["D4", "F#4", "A4"] },
-		{ name: "A",  type: "major", notes: ["A3", "C#4", "E4"] },
-		{ name: "F",  type: "major", notes: ["F4", "A4", "C5"] },
-		{ name: "Am", type: "minor", notes: ["A3", "C4", "E4"] },
-		{ name: "Em", type: "minor", notes: ["E4", "G4", "B4"] },
-		{ name: "Dm", type: "minor", notes: ["D4", "F4", "A4"] },
+		{ name: 'C', type: 'major', notes: ['C4', 'E4', 'G4'] },
+		{ name: 'G', type: 'major', notes: ['B3', 'D4', 'G4'] },
+		{ name: 'D', type: 'major', notes: ['D4', 'F#4', 'A4'] },
+		{ name: 'A', type: 'major', notes: ['A3', 'C#4', 'E4'] },
+		{ name: 'F', type: 'major', notes: ['F4', 'A4', 'C5'] },
+		{ name: 'Am', type: 'minor', notes: ['A3', 'C4', 'E4'] },
+		{ name: 'Em', type: 'minor', notes: ['E4', 'G4', 'B4'] },
+		{ name: 'Dm', type: 'minor', notes: ['D4', 'F4', 'A4'] }
 	];
 
-	const chordsData = chordsConfig.map(chord => ({
+	const chordsData = chordsConfig.map((chord) => ({
 		...chord,
-		codes: chord.notes.map(note => keysData.find(k => k.fullNote === note)?.code).filter(Boolean)
+		codes: chord.notes
+			.map((note) => keysData.find((k) => k.fullNote === note)?.code)
+			.filter(Boolean)
 	}));
 
 	// --- STATE ---
-	let nowPlaying = $state("");
+	let nowPlaying = $state('');
 	let activeCodes = $state(new Set());
 	let activeChord = $state(null);
 	let viewMode = $state('keyboard'); // 'keyboard' | 'chords'
@@ -105,7 +130,8 @@
 	function getAudioContext() {
 		if (typeof window === 'undefined') return null;
 		if (!audioCtx) {
-			const AudioContextClass = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+			const AudioContextClass =
+				window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
 			audioCtx = new AudioContextClass();
 		}
 		if (audioCtx.state === 'suspended') {
@@ -181,7 +207,7 @@
 	}
 
 	function startNote(code, isPartOfChord = false) {
-		const keyInfo = keysData.find(k => k.code === code);
+		const keyInfo = keysData.find((k) => k.code === code);
 		if (!keyInfo) return;
 
 		if (!isPartOfChord) {
@@ -218,12 +244,12 @@
 		activeChord = chord.name;
 		nowPlaying = `${chord.name} ${chord.type === 'minor' ? 'min' : 'maj'}`;
 
-		chord.codes.forEach(code => {
+		chord.codes.forEach((code) => {
 			startNote(code, true);
 		});
 
 		setTimeout(() => {
-			chord.codes.forEach(code => {
+			chord.codes.forEach((code) => {
 				stopNote(code);
 			});
 			if (activeChord === chord.name) {
@@ -241,7 +267,7 @@
 			return;
 		}
 
-		const keyInfo = keysData.find(k => k.code === e.code);
+		const keyInfo = keysData.find((k) => k.code === e.code);
 		if (keyInfo) {
 			e.preventDefault();
 			startNote(keyInfo.code);
@@ -250,7 +276,7 @@
 
 	function handleKeyUp(e) {
 		if (!isOpen) return;
-		const keyInfo = keysData.find(k => k.code === e.code);
+		const keyInfo = keysData.find((k) => k.code === e.code);
 		if (keyInfo) {
 			e.preventDefault();
 			stopNote(keyInfo.code);
@@ -267,7 +293,7 @@
 				window.removeEventListener('keydown', handleKeyDown);
 				window.removeEventListener('keyup', handleKeyUp);
 				document.body.style.overflow = '';
-				activeVoices.forEach(v => v.stop());
+				activeVoices.forEach((v) => v.stop());
 				activeVoices.clear();
 			};
 		}
@@ -286,12 +312,7 @@
 		aria-label="Музичне фортепіано"
 	>
 		<!-- Close Button Top-Right (teatralo4ka style) -->
-		<button
-			type="button"
-			class="piano-close-btn"
-			onclick={close}
-			aria-label="Закрити фортепіано"
-		>
+		<button type="button" class="piano-close-btn" onclick={close} aria-label="Закрити фортепіано">
 			<svg
 				class="close-icon"
 				viewBox={getIcon('gallery_close').viewBox}
@@ -341,7 +362,7 @@
 				{#if viewMode === 'keyboard'}
 					<div class="keys-wrapper">
 						<div class="keys">
-							{#each keysData as key}
+							{#each keysData as key (key.code)}
 								{#if !key.sharp}
 									<!-- White Key -->
 									<button
@@ -352,8 +373,14 @@
 										onmousedown={() => startNote(key.code)}
 										onmouseup={() => stopNote(key.code)}
 										onmouseleave={() => stopNote(key.code)}
-										ontouchstart={(e) => { e.preventDefault(); startNote(key.code); }}
-										ontouchend={(e) => { e.preventDefault(); stopNote(key.code); }}
+										ontouchstart={(e) => {
+											e.preventDefault();
+											startNote(key.code);
+										}}
+										ontouchend={(e) => {
+											e.preventDefault();
+											stopNote(key.code);
+										}}
 										aria-label="Клавіша {key.fullNote}"
 									>
 										<span class="hints">{key.hint}</span>
@@ -365,12 +392,19 @@
 										type="button"
 										class="key sharp"
 										class:active={activeCodes.has(key.code)}
-										style="left: {(key.whiteIndex + 1) * whiteKeyWidth - (blackKeyWidth / 2)}%; width: {blackKeyWidth}%;"
+										style="left: {(key.whiteIndex + 1) * whiteKeyWidth -
+											blackKeyWidth / 2}%; width: {blackKeyWidth}%;"
 										onmousedown={() => startNote(key.code)}
 										onmouseup={() => stopNote(key.code)}
 										onmouseleave={() => stopNote(key.code)}
-										ontouchstart={(e) => { e.preventDefault(); startNote(key.code); }}
-										ontouchend={(e) => { e.preventDefault(); stopNote(key.code); }}
+										ontouchstart={(e) => {
+											e.preventDefault();
+											startNote(key.code);
+										}}
+										ontouchend={(e) => {
+											e.preventDefault();
+											stopNote(key.code);
+										}}
 										aria-label="Клавіша {key.fullNote}"
 									>
 										<span class="hints">{key.hint}</span>
@@ -386,7 +420,7 @@
 				{:else}
 					<!-- Chords Grid -->
 					<div class="chords-grid">
-						{#each chordsData as chord}
+						{#each chordsData as chord (chord.name)}
 							<button
 								type="button"
 								class="chord-btn"
@@ -395,7 +429,11 @@
 								onclick={() => playChord(chord)}
 							>
 								<span class="chord-name">{chord.name}</span>
-								<span class="chord-sub">{chord.type === 'minor' ? langStore.t('chord_minor') : langStore.t('chord_major')}</span>
+								<span class="chord-sub"
+									>{chord.type === 'minor'
+										? langStore.t('chord_minor')
+										: langStore.t('chord_major')}</span
+								>
 								<span class="chord-notes">{chord.notes.join(' • ')}</span>
 							</button>
 						{/each}
@@ -423,13 +461,17 @@
 		animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	:global([data-theme="light"]) .piano-fullscreen-modal {
+	:global([data-theme='light']) .piano-fullscreen-modal {
 		background: rgba(240, 240, 245, 0.88);
 	}
 
 	@keyframes modalFadeIn {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.piano-close-btn {
@@ -455,13 +497,13 @@
 		transform: scale(1.1);
 	}
 
-	:global([data-theme="light"]) .piano-close-btn {
+	:global([data-theme='light']) .piano-close-btn {
 		background: rgba(0, 0, 0, 0.06);
 		border-color: rgba(0, 0, 0, 0.12);
 		color: #111827;
 	}
 
-	:global([data-theme="light"]) .piano-close-btn:hover {
+	:global([data-theme='light']) .piano-close-btn:hover {
 		background: rgba(0, 0, 0, 0.12);
 	}
 
@@ -513,7 +555,7 @@
 		gap: 4px;
 	}
 
-	:global([data-theme="light"]) .view-toggle {
+	:global([data-theme='light']) .view-toggle {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 	}
@@ -534,11 +576,11 @@
 		color: #ffffff;
 	}
 
-	:global([data-theme="light"]) .toggle-btn {
+	:global([data-theme='light']) .toggle-btn {
 		color: #4b5563;
 	}
 
-	:global([data-theme="light"]) .toggle-btn:hover {
+	:global([data-theme='light']) .toggle-btn:hover {
 		color: #111827;
 	}
 
@@ -567,8 +609,14 @@
 	}
 
 	@keyframes pillPulse {
-		from { transform: scale(0.92); opacity: 0.8; }
-		to { transform: scale(1); opacity: 1; }
+		from {
+			transform: scale(0.92);
+			opacity: 0.8;
+		}
+		to {
+			transform: scale(1);
+			opacity: 1;
+		}
 	}
 
 	.note-hint {
@@ -576,7 +624,7 @@
 		color: rgba(255, 255, 255, 0.45);
 	}
 
-	:global([data-theme="light"]) .note-hint {
+	:global([data-theme='light']) .note-hint {
 		color: rgba(0, 0, 0, 0.45);
 	}
 
@@ -594,8 +642,9 @@
 		background: #08080a;
 		border-radius: 20px;
 		border: 3px solid #1f1f26;
-		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
-		            inset 0 6px 20px rgba(0, 0, 0, 0.9);
+		box-shadow:
+			0 24px 60px rgba(0, 0, 0, 0.8),
+			inset 0 6px 20px rgba(0, 0, 0, 0.9);
 	}
 
 	.keys {
@@ -618,7 +667,10 @@
 		padding-bottom: 16px;
 		border-radius: 0 0 8px 8px;
 		box-sizing: border-box;
-		transition: background 0.1s, transform 0.08s, box-shadow 0.1s;
+		transition:
+			background 0.1s,
+			transform 0.08s,
+			box-shadow 0.1s;
 		user-select: none;
 		-webkit-user-select: none;
 	}
@@ -629,8 +681,9 @@
 		border: 1px solid #b8b8c2;
 		border-top: none;
 		z-index: 1;
-		box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.15),
-		            0 4px 8px rgba(0, 0, 0, 0.25);
+		box-shadow:
+			inset 0 -6px 8px rgba(0, 0, 0, 0.15),
+			0 4px 8px rgba(0, 0, 0, 0.25);
 		color: #23232b;
 	}
 
@@ -647,8 +700,9 @@
 		border: 1px solid #000000;
 		border-top: none;
 		z-index: 2;
-		box-shadow: inset 0 -3px 5px rgba(255, 255, 255, 0.2),
-		            0 8px 16px rgba(0, 0, 0, 0.8);
+		box-shadow:
+			inset 0 -3px 5px rgba(255, 255, 255, 0.2),
+			0 8px 16px rgba(0, 0, 0, 0.8);
 		color: #ffffff;
 		padding-bottom: 12px;
 	}
@@ -682,11 +736,9 @@
 		color: rgba(255, 255, 255, 0.6);
 	}
 
-	:global([data-theme="light"]) .piano-footer {
+	:global([data-theme='light']) .piano-footer {
 		color: rgba(0, 0, 0, 0.6);
 	}
-
-
 
 	/* Chords Grid (Matching teatralo4ka) */
 	.chords-grid {
@@ -714,7 +766,7 @@
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 	}
 
-	:global([data-theme="light"]) .chord-btn {
+	:global([data-theme='light']) .chord-btn {
 		background: rgba(255, 255, 255, 0.7);
 		border-color: rgba(0, 0, 0, 0.12);
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
@@ -744,7 +796,7 @@
 		line-height: 1;
 	}
 
-	:global([data-theme="light"]) .chord-name {
+	:global([data-theme='light']) .chord-name {
 		color: #111827;
 	}
 
@@ -763,7 +815,7 @@
 		margin-top: 6px;
 	}
 
-	:global([data-theme="light"]) .chord-sub {
+	:global([data-theme='light']) .chord-sub {
 		color: rgba(0, 0, 0, 0.6);
 	}
 

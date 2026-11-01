@@ -1,4 +1,4 @@
-<script>
+﻿<script>
 	import { onDestroy } from 'svelte';
 	import { debugMode } from '#lib/services/debugMode.svelte.js';
 	import { createKeySequence } from '#lib/services/keySequence.js';
@@ -24,7 +24,11 @@
 	const appVersion = $derived(logService.appVersion);
 	const errorCount = $derived(logService.errorCount);
 
-	const urlDebug = $derived(browser && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1');
+	const urlDebug = $derived(
+		browser &&
+			typeof window !== 'undefined' &&
+			new URLSearchParams(window.location.search).get('debug') === '1'
+	);
 	const isVisible = $derived(urlDebug || debugMode.enabled);
 
 	onDestroy(() => {
@@ -54,8 +58,7 @@
 		readonly
 		value={fallbackReport}
 		aria-label="Debug report fallback"
-		data-testid="service-badge-report-textarea"
-	></textarea>
+		data-testid="service-badge-report-textarea"></textarea>
 {/if}
 
 {#if isVisible}
@@ -69,15 +72,33 @@
 		data-testid="app-version-value"
 	>
 		{#if copied}
-			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-				<polyline points="20 6 9 17 4 12"/>
+			<svg
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2.5"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<polyline points="20 6 9 17 4 12" />
 			</svg>
 		{:else if errorCount > 0}
 			<span class="count">{errorCount > 99 ? '99+' : errorCount}</span>
 		{:else}
-			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-				<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+			<svg
+				width="12"
+				height="12"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+				<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
 			</svg>
 		{/if}
 		<span class="version">{appVersion}</span>

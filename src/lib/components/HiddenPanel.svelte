@@ -1,7 +1,7 @@
-<script>
-	import { iconStyleStore } from './iconStyle.svelte.js';
-	import { langStore } from './lang.svelte.js';
-	import { ICONS } from './icons.js';
+﻿<script>
+	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
+	import { langStore } from '#lib/lang.svelte.js';
+	import { ICONS } from '#lib/icons.js';
 	import { canFullscreen, toggleFullscreen, isFullscreenActive } from '#lib/services/fullscreen.js';
 
 	let {
@@ -122,7 +122,9 @@
 			type="button"
 			class="action-item style-toggle-item"
 			onclick={() => iconStyleStore.toggle()}
-			aria-label="{langStore.t('style_btn')} ({style === 'gothic' ? langStore.t('style_gothic') : langStore.t('style_classic')})"
+			aria-label="{langStore.t('style_btn')} ({style === 'gothic'
+				? langStore.t('style_gothic')
+				: langStore.t('style_classic')})"
 			title="{langStore.t('style_btn')} (G)"
 		>
 			<span class="action-icon-box">
@@ -176,7 +178,9 @@
 					{#key style}
 						<svg
 							class="action-icon"
-							viewBox={isFullscreen ? getIcon('fullscreen_exit').viewBox : getIcon('fullscreen').viewBox}
+							viewBox={isFullscreen
+								? getIcon('fullscreen_exit').viewBox
+								: getIcon('fullscreen').viewBox}
 							fill="currentColor"
 							aria-hidden="true"
 						>
@@ -184,7 +188,9 @@
 						</svg>
 					{/key}
 				</span>
-				<span class="action-title">{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span>
+				<span class="action-title"
+					>{isFullscreen ? langStore.t('fullscreen_exit') : langStore.t('fullscreen')}</span
+				>
 			</button>
 		{/if}
 	</div>
@@ -202,8 +208,9 @@
 		pointer-events: none;
 		opacity: 0;
 		transform: translateY(40px) scale(0.96);
-		transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-		            opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+		transition:
+			transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+			opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.hidden-panel-wrapper.is-visible {
@@ -223,15 +230,17 @@
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		border-radius: 9999px;
-		box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6),
-		            0 0 25px rgba(255, 255, 255, 0.04);
+		box-shadow:
+			0 16px 40px -10px rgba(0, 0, 0, 0.6),
+			0 0 25px rgba(255, 255, 255, 0.04);
 	}
 
-	:global([data-theme="light"]) .hidden-panel-content {
+	:global([data-theme='light']) .hidden-panel-content {
 		background: rgba(255, 255, 255, 0.72);
 		border: 1px solid rgba(0, 0, 0, 0.1);
-		box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.12),
-		            0 0 25px rgba(0, 0, 0, 0.03);
+		box-shadow:
+			0 16px 40px -10px rgba(0, 0, 0, 0.12),
+			0 0 25px rgba(0, 0, 0, 0.03);
 	}
 
 	.action-item {
@@ -266,11 +275,11 @@
 		box-shadow: 0 0 15px rgba(255, 95, 31, 0.35);
 	}
 
-	:global([data-theme="light"]) .action-item {
+	:global([data-theme='light']) .action-item {
 		color: var(--text-secondary);
 	}
 
-	:global([data-theme="light"]) .action-item:hover {
+	:global([data-theme='light']) .action-item:hover {
 		background: rgba(0, 0, 0, 0.05);
 		border-color: rgba(0, 0, 0, 0.1);
 		color: var(--text-primary);

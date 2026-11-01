@@ -2,63 +2,95 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check
+      - name: Audit dependencies
+        run: npm run audit:ci
+
+      - name: Check types & code
+        if: ${{ !cancelled() }}
         run: npm run check
 
-      - name: Linting
+      - name: Lint formatting and code
+        if: ${{ !cancelled() }}
         run: npm run lint
 
-      - name: Tests
-        run: npm run test
+      - name: Run unit tests
+        if: ${{ !cancelled() }}
+        run: npm run test:unit
 
-      - name: Build
+      - name: Resolve base path and origin
+        id: site
+        run: |
+          if [ -f static/CNAME ]; then
+            cname=$(head -n 1 static/CNAME | tr -d '\r\n')
+            echo "base=" >> "$GITHUB_OUTPUT"
+            echo "origin=https://$cname" >> "$GITHUB_OUTPUT"
+          else
+            owner=$(printf '%s' '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
+            repo='${{ github.event.repository.name }}'
+            if [ "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" = "$owner.github.io" ]; then
+              echo "base=" >> "$GITHUB_OUTPUT"
+            else
+              echo "base=/$repo" >> "$GITHUB_OUTPUT"
+            fi
+            echo "origin=https://$owner.github.io" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build site
+        id: build
         run: npm run build
         env:
+          BASE_PATH: ${{ steps.site.outputs.base }}
+          SITE_ORIGIN: ${{ steps.site.outputs.origin }}
           NODE_ENV: production
 
       - name: Verify build quality (SEO-v10)
         run: npm run check:build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "build"
+          path: build
 
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

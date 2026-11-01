@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 10
+    groups:
+      svelte-core:
+        patterns:
+          - 'svelte'
+          - '@sveltejs/*'
+      tooling:
+        patterns:
+          - 'eslint*'
+          - 'prettier*'
+          - 'typescript*'
+          - 'vitest*'
+

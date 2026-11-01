@@ -18,5 +18,5 @@
 
 <svelte:head>
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-	{@html `<script type="application/ld+json">${jsonLdScript(schema)}<\/script>`}
+	{@html `<script type="application/ld+json">${jsonLdScript(schema)}<` + `/script>`}
 </svelte:head>
