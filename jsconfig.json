@@ -1,6 +1,7 @@
 {
 	"extends": "$app/tsconfig",
 	"compilerOptions": {
+		"checkJs": true,
 		"strict": false,
 		"noImplicitAny": false,
 		"types": ["$app/types", "@types/node"],

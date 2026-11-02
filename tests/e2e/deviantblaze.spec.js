@@ -45,4 +45,3 @@ test.describe('Deviant Blaze — Smoke and Accessibility', () => {
 		).toEqual([]);
 	});
 });
-

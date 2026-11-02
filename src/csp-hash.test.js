@@ -57,4 +57,3 @@ describe('CSP: хеш інлайн-скрипта збігається з тим
 		expect(inlineScriptHash()).toBe(expectedHash);
 	});
 });
-

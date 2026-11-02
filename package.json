@@ -7,6 +7,7 @@
 		"dev": "vite dev",
 		"audit:ci": "node scripts/check-audit.mjs",
 		"build": "vite build && node scripts/generate-sitemap.mjs",
+		"bump": "node scripts/bump-version.mjs",
 		"check:build": "node scripts/check-build.mjs",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
@@ -17,7 +18,7 @@
 		"test:unit": "vitest run",
 		"test:e2e": "playwright test",
 		"test": "vitest run",
-		"prepare": "svelte-kit sync || echo ''"
+		"prepare": "svelte-kit sync && husky || echo ''"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",
@@ -33,6 +34,7 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.23.1",
 		"globals": "^17.14.0",
+		"husky": "^9.1.7",
 		"prettier": "^3.9.10",
 		"prettier-plugin-svelte": "^4.1.1",
 		"svelte": "^5.57.1",
