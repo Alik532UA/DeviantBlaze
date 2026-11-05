@@ -32,7 +32,7 @@ const MODES = {
 		nameUk: 'Спектральні стовпчики',
 		nameEn: 'Frequency Bars',
 		description: 'Класичний графічний еквалайзер із піковими детекторами.',
-		render: ({ ctx, width, height, _frequencyData }) => {
+		render: ({ ctx, width, height, frequencyData }) => {
 			const barCount = 32;
 			const barWidth = width / barCount;
 			for (let i = 0; i < barCount; i++) {
@@ -47,7 +47,7 @@ const MODES = {
 		nameUk: 'Осцилограма хвилі',
 		nameEn: 'Oscilloscope Wave',
 		description: 'Неперервна аналогова хвиля з динамічним фазовим зсувом.',
-		render: ({ ctx, width, height, _frequencyData }) => {
+		render: ({ ctx, width, height, frequencyData }) => {
 			ctx.beginPath();
 			const slice = width / frequencyData.length;
 			for (let i = 0; i < frequencyData.length; i++) {
@@ -64,7 +64,7 @@ const MODES = {
 		nameUk: 'Радіальне кільце',
 		nameEn: 'Radial Pulse',
 		description: 'Кільцевий спектральний спалах із центробіжними променями.',
-		render: ({ ctx, width, height, _frequencyData }) => {
+		render: ({ ctx, width, height }) => {
 			const cx = width / 2;
 			const cy = height / 2;
 			const radius = Math.min(cx, cy) * 0.4;
@@ -78,7 +78,7 @@ const MODES = {
 		nameUk: 'Квантові частинки',
 		nameEn: 'Quantum Particles',
 		description: 'Хмара енергетичних частинок, що реагують на басові удари.',
-		render: ({ ctx, width, height, _frequencyData }) => {
+		render: ({ ctx, width, height, frequencyData }) => {
 			const bass = frequencyData[0] ?? 0;
 			const radius = (bass / 255) * 40 + 10;
 			ctx.beginPath();
