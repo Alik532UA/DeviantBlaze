@@ -45,10 +45,10 @@ export class AudioAccessibilityManager {
 	 * @param {string} modeName
 	 */
 	announceVisualMode(modeName) {
-		const prefix = this.lang === 'uk' ? 'Режим візуалізатора змінено на' : 'Visualizer mode changed to';
+		const prefix =
+			this.lang === 'uk' ? 'Режим візуалізатора змінено на' : 'Visualizer mode changed to';
 		this.announce(`${prefix}: ${modeName}`);
 	}
 }
 
 export const a11yAudio = new AudioAccessibilityManager();
-

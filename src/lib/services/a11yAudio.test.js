@@ -22,4 +22,3 @@ describe('Audio Accessibility Manager (a11y & Feedback)', () => {
 		expect(a11y.getAnnouncement()).toContain('Visualizer mode changed to: Frequency Bars');
 	});
 });
-

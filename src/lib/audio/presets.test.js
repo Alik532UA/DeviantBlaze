@@ -23,4 +23,3 @@ describe('Synthesizer Sound Presets (Audio Engine & Architecture)', () => {
 		expect(fallback.id).toBe('grand_piano');
 	});
 });
-

@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-	getAllVisualizerModes,
-	getVisualizerMode,
-	registerVisualizerMode
-} from './registry.js';
+import { getAllVisualizerModes, getVisualizerMode, registerVisualizerMode } from './registry.js';
 
 describe('Visualizer Modes Registry (Scalability & Dynamic Extension)', () => {
 	it('contains at least 4 default core visualizer modes', () => {
@@ -41,6 +37,8 @@ describe('Visualizer Modes Registry (Scalability & Dynamic Extension)', () => {
 
 	it('throws TypeError when attempting to register an invalid mode', () => {
 		expect(() => registerVisualizerMode(/** @type {any} */ (null))).toThrow(TypeError);
-		expect(() => registerVisualizerMode(/** @type {any} */ ({ id: 'missing_render' }))).toThrow(TypeError);
+		expect(() => registerVisualizerMode(/** @type {any} */ ({ id: 'missing_render' }))).toThrow(
+			TypeError
+		);
 	});
 });

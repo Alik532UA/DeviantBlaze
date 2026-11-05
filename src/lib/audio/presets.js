@@ -80,4 +80,3 @@ export function getSynthPreset(id) {
 	}
 	return preset;
 }
-
