@@ -10,7 +10,7 @@
 		"bump": "node scripts/bump-version.mjs",
 		"check:build": "node scripts/check-build.mjs",
 		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"lint": "npm run lint:format && npm run lint:code",
 		"lint:format": "prettier --check .",
 		"lint:code": "eslint .",

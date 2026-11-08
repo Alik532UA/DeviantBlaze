@@ -2,14 +2,25 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import { page } from '$app/state';
+	import { beforeNavigate } from '$app/navigation';
+	import { updated } from '$app/state';
 	import JsonLd from '#lib/components/JsonLd.svelte';
 	import { SITE_ORIGIN, siteUrl } from '#lib/config/site.js';
 	import { migrateLegacyKeys } from '#lib/services/storage.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { logService } from '#lib/services/logService.svelte.js';
+	import { freshLoad } from '#lib/utils/staleBuild.js';
 	import ServiceBadge from '#lib/components/ServiceBadge.svelte';
+	import ErrorFallback from '#lib/components/ErrorFallback.svelte';
 
 	migrateLegacyKeys();
+
+	beforeNavigate((navigation) => {
+		if (!updated.current || navigation.willUnload || !navigation.to?.url) return;
+		logService.info('app', 'new build - full navigation', { to: navigation.to.url.pathname });
+		navigation.cancel();
+		void freshLoad(navigation.to.url.href);
+	});
 
 	onMount(() => {
 		const onRejection = (e) => logService.error('app', `Unhandled rejection: ${String(e.reason)}`);
@@ -66,5 +77,15 @@
 	<JsonLd schema={structuredData} />
 {/if}
 
-{@render children()}
+<svelte:boundary
+	onerror={(error) =>
+		logService.error('app', 'Render boundary caught error', { error: String(error) })}
+>
+	{@render children()}
+
+	{#snippet failed(_, reset)}
+		<ErrorFallback onretry={reset} />
+	{/snippet}
+</svelte:boundary>
+
 <ServiceBadge />

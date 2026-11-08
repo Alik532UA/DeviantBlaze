@@ -1,4 +1,4 @@
-﻿<script>
+<script>
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
 	import { ICONS } from '#lib/icons.js';
 
@@ -58,10 +58,11 @@
 		} catch (err) {
 			console.warn('Microphone error:', err);
 			micStatus = 'denied';
+			const error = /** @type {any} */ (err);
 			micError =
-				err.name === 'NotAllowedError'
+				error?.name === 'NotAllowedError'
 					? 'Доступ до мікрофону було заблоковано.'
-					: err.message || 'Помилка захоплення звуку.';
+					: error?.message || 'Помилка захоплення звуку.';
 			// Fallback to test mode so visualizer is still visually engaging
 			startTestMode();
 		}
