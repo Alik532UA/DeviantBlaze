@@ -66,8 +66,8 @@ test.describe('Сторінка бета-чеклиста DeviantBlaze (§ 5.7)'
 		const reportBtn = page.getByTestId('beta-report-btn').first();
 		await reportBtn.click();
 
-		await expect(page.getByTestId('beta-report-failed-hint')).toBeVisible();
-		const textarea = page.getByTestId('beta-report-textarea');
+		await expect(page.getByTestId('beta-report-failed-hint').first()).toBeVisible();
+		const textarea = page.getByTestId('beta-report-textarea').first();
 		await expect(textarea).toBeVisible();
 		await expect(textarea).toHaveValue(new RegExp(firstCheck.id));
 	});
