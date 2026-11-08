@@ -19,14 +19,14 @@ test.describe('Deviant Blaze — Smoke and Accessibility', () => {
 		await expect(musicLinks).toBeVisible();
 	});
 
-	test('renders top navigation and visualizer bar', async ({ page }) => {
+	test('renders top navigation and action controls', async ({ page }) => {
 		await page.goto(`${BASE}/`);
 
 		const topNav = page.locator('.top-center-nav, .top-nav');
 		await expect(topNav.first()).toBeVisible();
 
-		const visualizerBar = page.locator('.vj-control-bar, .vj-collapsed-eye-btn, .visualizer-bar');
-		await expect(visualizerBar.first()).toBeVisible();
+		const navButtons = page.locator('.top-center-nav button, .nav-btn');
+		await expect(navButtons.first()).toBeVisible();
 	});
 
 	test('meets WCAG 2.1 AA accessibility standards on initial load', async ({ page }) => {

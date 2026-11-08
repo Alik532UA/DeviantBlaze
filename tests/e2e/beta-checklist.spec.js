@@ -63,7 +63,7 @@ test.describe('Сторінка бета-чеклиста DeviantBlaze (§ 5.7)'
 		const voteBtn = page.getByTestId(`beta-vote-${firstTid}-ok-btn`);
 		await voteBtn.click();
 
-		const reportBtn = page.getByTestId('beta-report-btn');
+		const reportBtn = page.getByTestId('beta-report-btn').first();
 		await reportBtn.click();
 
 		await expect(page.getByTestId('beta-report-failed-hint')).toBeVisible();
