@@ -24,4 +24,3 @@ export function reloadOnce(href) {
 	void freshLoad(href);
 	return true;
 }
-

@@ -14,31 +14,14 @@
 		"strictNullChecks": false,
 		"noImplicitAny": false,
 		"noImplicitReturns": false,
-		"types": [
-			"$app/types",
-			"@types/node"
-		],
+		"types": ["$app/types", "@types/node"],
 		"paths": {
-			"#lib": [
-				"./src/lib/index.js"
-			],
-			"#lib/*": [
-				"./src/lib/*"
-			],
-			"$lib": [
-				"./src/lib/index.js"
-			],
-			"$lib/*": [
-				"./src/lib/*"
-			]
+			"#lib": ["./src/lib/index.js"],
+			"#lib/*": ["./src/lib/*"],
+			"$lib": ["./src/lib/index.js"],
+			"$lib/*": ["./src/lib/*"]
 		}
 	},
-	"include": [
-		"src",
-		"test",
-		"*"
-	],
-	"exclude": [
-		"src/service-worker"
-	]
+	"include": ["src", "test", "*"],
+	"exclude": ["src/service-worker"]
 }

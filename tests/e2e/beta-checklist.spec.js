@@ -10,7 +10,8 @@ import { BETA_TABS, tid } from '../../src/lib/beta/checklist.js';
  * 4. Запасний шлях копіювання звіту при збої буфера
  */
 
-const PAGE = '/beta-test-checklists';
+const BASE = process.env.BASE_PATH ?? '/DeviantBlaze';
+const PAGE = `${BASE}/beta-test-checklists`;
 const firstTab = BETA_TABS[0];
 const firstCheck = firstTab.checks[0];
 const firstTid = tid(firstCheck.id);
