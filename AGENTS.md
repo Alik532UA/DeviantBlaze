@@ -73,4 +73,28 @@ npm run check:build # Перевірка SEO та артефактів збір�
 - **НЕ** пиши код із небезпечною вставкою сирого HTML поза дозволеними перевіреними SVG з `icons.js`.
 - **НЕ** використовуй синтаксис Svelte 3/4 (`export let`, `$:`); використовуй тільки Svelte 5 Runes.
 - **НЕ** ламай типізацію JSDoc у сервісах та контролерах (`// @ts-check`).
+
+---
+
+## 6. Web Audio граф та типізація модулів
+
+```
+
+[MediaElement / Mic / Synth]
+│
+▼
+[AnalyserNode] (fftSize: 256/512, smoothing: 0.8)
+│
+┌──────┴──────┐
+▼ ▼
+[Visualizer Canvas] [Master GainNode]
+│
+▼
+[AudioContext.destination]
+
+```
+
+- **Керування життєвим циклом**: використовувати фасад `audioGraph` (`src/lib/audio/audioGraphManager.js`). При демонтуванні компонентів викликати `audioGraph.destroy()`, щоб запобігти витоку пам'яті AudioContext.
+- **Масштабування медіа**: валідація маніфестів треків та альбомів здійснюється через `validateTrack` та `validateAlbum` (`src/lib/audio/trackSchema.js`).
+- **Декларації типів**: типи аудіо та візуалізатора зафіксовані в `src/lib/types/audio.d.ts` та `src/lib/types/visualizer.d.ts`.
 ```

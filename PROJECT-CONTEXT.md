@@ -60,6 +60,9 @@
    - `ErrorFallback.svelte`: Захисний екран обробки системних помилок та збоїв рендерингу.
 
 2. **Сервіси та рушії (`src/lib/services/`, `src/lib/visualizer/`, `src/lib/audio/`)**:
+   - `audio/audioGraphManager.js`: Централізоване керування життєвим циклом AudioContext, AnalyserNode, GainNode та безпечне відключення вузлів без витоків пам'яті.
+   - `audio/trackSchema.js`: Схема валідації динамічних медіа-треків та альбомів для безпечного масштабування аудіотеки.
+   - `types/audio.d.ts` та `types/visualizer.d.ts`: Декларації типів для строгих перевірок та підтримки AI.
    - `visualizer/registry.js`: Модульний реєстр візуальних VJ-режимів (`bars`, `wave`, `radial`, `particles`) з уніфікованим інтерфейсом рендерингу для легкого масштабування.
    - `audio/presets.js`: Банк звукових пресетів синтезатора (`grand_piano`, `analog_lead`, `ambient_pad`, `sub_bass`) із кривими ADSR.
    - `services/a11yAudio.js`: Доступність Web Audio та клавіатури, ARIA-оголошення нот та змін режимів для скрінрідерів.
