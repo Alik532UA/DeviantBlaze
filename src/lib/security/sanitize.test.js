@@ -5,7 +5,9 @@ describe('Security: Sanitization (SECURITY-v10 § 5.2)', () => {
 	it('escapes standard HTML special characters', () => {
 		const raw = `<script>alert("XSS & 'injection'")</script>`;
 		const escaped = escapeHtml(raw);
-		expect(escaped).toBe('&lt;script&gt;alert(&quot;XSS &amp; &#39;injection&#39;&quot;)&lt;/script&gt;');
+		expect(escaped).toBe(
+			'&lt;script&gt;alert(&quot;XSS &amp; &#39;injection&#39;&quot;)&lt;/script&gt;'
+		);
 		expect(escaped).not.toContain('<');
 		expect(escaped).not.toContain('>');
 	});
@@ -37,4 +39,3 @@ describe('Security: Sanitization (SECURITY-v10 § 5.2)', () => {
 		expect(sanitizeHtml('')).toBe('');
 	});
 });
-
