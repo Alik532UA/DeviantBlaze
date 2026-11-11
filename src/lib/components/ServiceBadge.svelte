@@ -1,4 +1,4 @@
-﻿<script>
+<script>
 	import { onDestroy } from 'svelte';
 	import { debugMode } from '#lib/services/debugMode.svelte.js';
 	import { createKeySequence } from '#lib/services/keySequence.js';
@@ -6,7 +6,9 @@
 
 	const browser = typeof window !== 'undefined';
 	let copied = $state(false);
+	/** @type {string | null} */
 	let fallbackReport = $state(null);
+	/** @type {ReturnType<typeof setTimeout> | undefined} */
 	let copyTimer;
 
 	const versionSequence = createKeySequence({

@@ -113,7 +113,7 @@ function createStore(area) {
 			if (raw === null) return null;
 			try {
 				const value = JSON.parse(raw);
-				return isValid(value) ? value : null;
+				return typeof isValid === 'function' ? (isValid(value) ? value : null) : value;
 			} catch {
 				return null;
 			}
@@ -146,10 +146,10 @@ export const sessionStore = createStore('sessionStorage');
  * Convenience JSON/string getter.
  * @template T
  * @param {string} key
- * @param {T} fallback
+ * @param {T} [fallback]
  * @returns {any}
  */
-export function getItem(key, fallback = null) {
+export function getItem(key, fallback = /** @type {any} */ (null)) {
 	const raw = storage.get(key);
 	if (raw === null) return fallback;
 	try {

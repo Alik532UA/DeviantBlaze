@@ -1,3 +1,9 @@
+---
+Назва: Контекст проєкту DeviantBlaze
+Канон: selection_criteria/v10 та product_criteria/v10
+Дата оновлення: 2026-11-11
+---
+
 # Deviant Blaze — Project Context
 
 ## 1. Загальні відомості
@@ -40,7 +46,7 @@
 
 - Прямий доступ до `localStorage` поза фасадом `#lib/services/storage.js` заборонено (STORAGE-NAMESPACE § 4).
 - Метод `storage.clear()` очищує виключно власні ключі за префіксом (STORAGE-NAMESPACE § 3).
-- Разова міграція старих ключів (`deviantblaze-theme`, `deviantblaze-lang`, `deviantblaze-icon-style`) виконується функцією `migrateLegacyKeys()` (STORAGE-NAMESPACE § 5).
+- Разова міграція старих ключів виконується функцією `migrateLegacyKeys()` (STORAGE-NAMESPACE § 5).
 
 ---
 
@@ -90,11 +96,11 @@
 ## 6. Надійність та Error Boundaries (ERROR-HANDLING-v10 § 2.2)
 
 - **Клієнтський обробник помилок (`src/hooks.client.js`)**:
-  - Перехоплює неперехоплені клієнтські помилки роутингу, завантаження модулів і рендеру.
-  - Логує контекст помилки в `logService`.
-  - Відновлює актуальну сторінку при виявленні застарілих чанків (`chunkMissing` + `reloadOnce`).
+   - Перехоплює неперехоплені клієнтські помилки роутингу, завантаження модулів і рендеру.
+   - Логує контекст помилки в `logService`.
+   - Відновлює актуальну сторінку при виявленні застарілих чанків (`chunkMissing` + `reloadOnce`).
 - **Межа рендеру помилок Svelte 5 (`<svelte:boundary>`)**:
-  - Маршрути в `src/routes/+layout.svelte` захищені граничним компонентом `ErrorFallback.svelte`.
+   - Маршрути в `src/routes/+layout.svelte` захищені граничним компонентом `ErrorFallback.svelte`.
 
 ---
 
@@ -108,13 +114,11 @@
 
 ## 8. Політика перевірок, тестування та гейтів якості
 
-- `npm run check`: строга перевірка типів через `tsconfig.json` (`checkJs: true`, `alwaysStrict: true`, `strictBindCallApply: true`, `strictFunctionTypes: true`).
+- `npm run check`: перевірка типів через `tsconfig.json` (`checkJs: true`, `alwaysStrict: true`, `strictBindCallApply: true`, `strictFunctionTypes: true`).
 - `npm run lint`: повний лінтинг форматування (Prettier) та коду (ESLint 9 Flat Config).
 - `npm run test:unit`: тестові набори Vitest (безпека, CSP-хеші, сховище, аудіопресети, реєстр візуалізаторів, обробка помилок).
 - `npm run test:e2e`: E2E тести Playwright та аудит доступності через `@axe-core/playwright` (WCAG 2.1 AA) у CI.
-- `npm run check:build`: автоматичний гейт якості зібраного сайту:
-  - `SEO § 6.1`: перевірка canonical, єдиного власника мета-тегів, відсутності дублікатів, валідності JSON-LD, наявності sitemap.
-  - `SEO § 7.5`: перевірка llms.txt та відсутності недіючого robots.txt у підтеці.
+- `npm run check:build`: автоматичний гейт якості зібраного сайту.
 - `npm run audit:ci`: строгий автоматичний аудит безпеки npm-пакетів.
 - Всі перевірки вбудовані у обов'язковий пайплайн CI/CD [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
@@ -126,3 +130,26 @@
 - **Зменшення руху (`prefers-reduced-motion`)**: При активації системного режиму анімації логотипу, спектру візуалізатора та фонового паралаксу плавно заморожуються.
 - **Скрінрідери та аудіо-доступність (`src/lib/services/a11yAudio.js`)**: ARIA live regions озвучують зіграні ноти клавіатури фортепіано та активний режим візуалізатора українською та англійською мовами.
 - **Семантична навігація**: Усі кнопки та модальні діалоги мають чіткі атрибути `aria-label`, `aria-modal`, `role="dialog"` та фокус-пастки.
+
+---
+
+## 10. Свідомі відхилення від канону
+
+1. **JSDoc типізація замість монолітного TS**:
+   - *Причина*: Використання Web Audio API та динамічних Canvas 2D обчислень у рантаймі працює швидше з чистими `.js` файлами з детальними `.d.ts` деклараціями та JSDoc (`checkJs: true`), що усуває зайвий транспіляційний оверхед на складних циклах візуалізатора (60 FPS).
+2. **Інлайн-аудіо синтез замість зовнішніх MP3 семплів фортепіано**:
+   - *Причина*: Зменшення розміру початкового бандла до нуля — замість завантаження 15 МБ звукових банків звук генерується на льоту через генератори коливань (`OscillatorNode`) та огинаючі ADSR.
+
+---
+
+## 11. Опціональні критерії інженерного пакета
+
+| Критерій | Застосовано | Причина / Локація |
+| :--- | :---: | :--- |
+| **CSP-HASH** | Так | `vite.config.js`, `src/csp-hash.test.js` |
+| **STORAGE-NAMESPACE** | Так | Префікс `deviantblaze_`, `src/lib/services/storage.js` |
+| **ERROR-HANDLING** | Так | `<svelte:boundary>`, `src/error-handling.test.js` |
+| **VERSIONING** | Так | `__APP_VERSION__`, `scripts/bump-version.mjs` |
+| **ACCESSIBILITY** | Так | `src/lib/services/a11yAudio.js`, `@axe-core/playwright` |
+| **DEPENDENCIES** | Так | `scripts/check-audit.mjs`, Dependabot |
+| **BETA-CHECKLIST** | Так | `src/routes/beta-test-checklists/`, `src/beta-checklist.test.js` |

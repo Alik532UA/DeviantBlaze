@@ -11,6 +11,7 @@
 		return set[name] || ICONS.gothic[name];
 	}
 
+	/** @type {HTMLCanvasElement | null} */
 	let canvasEl = $state(null);
 	let audioCtx = null;
 	let analyser = null;
@@ -164,6 +165,7 @@
 			analyser.getByteFrequencyData(freqData);
 			analyser.getByteTimeDomainData(timeData);
 
+			if (!canvasEl) return;
 			const ctx = canvasEl.getContext('2d');
 			if (!ctx) return;
 

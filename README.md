@@ -1,56 +1,71 @@
-# sv
+# Deviant Blaze 🎸🔥
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+> **Офіційний інтерактивний веб-портал рок-гурту Deviant Blaze.**
 
-## Creating a project
+[![Svelte 5](https://img.shields.io/badge/Svelte-5_Runes-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
+[![Web Audio API](https://img.shields.io/badge/Web_Audio_API-VJ_Visualizer-brightgreen)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+[![Canon v10](https://img.shields.io/badge/sveltekit--canon-v10-success)](../sveltekit-canon/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## 📌 Огляд проєкту
 
-To recreate this project with the same configuration:
+**Deviant Blaze** — це багатофункціональний веб-портал рок-гурту нового покоління, створений на базі **SvelteKit** та **Svelte 5 Runes**. Проєкт поєднує якісне аудіо-відтворення, VJ-візуалізацію реального часу та інтерактивні музичні інструменти.
 
-```sh
-# recreate this project
-npx sv@1.1.0 create --template minimal --no-types --install npm ./
-```
+### Основні функціональні модулі:
+- 🎵 **Web Audio Медіаплеєр**: Відтворення треків студійної якості, керування плейлистом, налаштування еквалайзера та пресетів звуку.
+- 🎛️ **Концертний VJ Аудіовізуалізатор (Canvas 2D)**:
+  - Частотний аналіз сигналу в реальному часі через `AnalyserNode` (FFT);
+  - Пул графічних частинок (Particle Pooling) для стабільних 60 FPS без навантаження на Garbage Collector;
+  - Регулювання чутливості, висоти спектра та вибір візуальних шейдерів/палітр.
+- 🎹 **Студійне Фортепіано (Interactive Synth)**:
+  - Інтерактивна клавіатура з підтримкою введення з фізичної клавіатури або тачскріна;
+  - Поліфонічний процедурний синтез звуку без сторонніх важких семплів.
+- 📸 **Галерея виступів**: Фото та відео з живих концертів, турів та бекстейджу.
+- 🛡️ **Контроль якості та безпеки**:
+  - Сувора політика Content Security Policy (CSP) з хешуванням інлайн-скриптів (sha256);
+  - Ізольоване сховище з обов'язковим префіксом `deviantblaze_`.
 
-## Adding features
+---
 
-Add features to your project with `sv add`:
+## 🛠️ Технологічний стек
 
-```sh
-npx sv add
-```
+- **Фреймворк**: SvelteKit 2 + Svelte 5 (Runes)
+- **Графіка та Аудіо**: HTML5 Canvas 2D, Web Audio API (`AudioContext`, `AnalyserNode`, `BiquadFilterNode`)
+- **Адаптер**: `@sveltejs/adapter-static` (GitHub Pages)
+- **Тестування**: Vitest (Unit) + Playwright (E2E) + axe-core (a11y)
+- **CI/CD**: GitHub Actions (`deploy.yml` з аудитом безпеки та тестами)
 
-For example, to add Tailwind CSS:
+---
 
-```sh
-npx sv add tailwindcss
-```
+## 🚀 Встановлення та запуск
 
-## Developing
+```bash
+# Встановлення залежностей
+npm install
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+# Запуск локального сервера розробки
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+# Перевірка коду та лінтинг
+npm run lint
 
-## Building
+# Запуск тестів Vitest
+npm test
 
-To create a production version of your app:
+# Запуск наскрізних E2E тестів
+npm run test:e2e
 
-```sh
+# Збірка сайту
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## 📂 Архітектура та Канон
+
+Проєкт відповідає вимогам **`sveltekit-canon` v10**.
+- [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) — Повний архітектурний контекст та налаштування адресації.
+- [AGENTS.md](AGENTS.md) — Інструкції та обмеження для AI-асистентів.
+- [docs/adr/](docs/adr/) — Архітектурні рішення (ADR 0001: VJ Visualizer, ADR 0002: Web Audio Lifecycle).

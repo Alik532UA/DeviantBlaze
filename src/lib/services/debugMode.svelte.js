@@ -8,6 +8,7 @@ const PRESSES_TO_DISABLE = 5;
 
 class DebugMode {
 	// Три стани (DEBUGGING-v10 § 4): true = увімкнено явно, false = вимкнено явно, null = за замовчуванням
+	/** @type {boolean | null} */
 	stored = $state(null);
 
 	constructor() {

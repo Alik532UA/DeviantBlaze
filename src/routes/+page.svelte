@@ -32,6 +32,7 @@
 	let scrollState = $state(3);
 
 	// Right-side scroll indicator proximity and scroll-flash logic
+	/** @type {HTMLElement | null} */
 	let indicatorEl = $state(null);
 	let cursorDistOpacity = $state(0);
 	let isScrollFlashActive = $state(false);
@@ -41,6 +42,7 @@
 	let isVisualizerActive = $state(false);
 	let visualizerMode = $state('bars'); // 'bars' | 'wave' | 'radar'
 	let micStatus = $state('idle'); // 'idle' | 'listening' | 'test'
+	/** @type {any} */
 	let backgroundVisRef = $state(null);
 	let visualizerSensitivity = $state(1.0);
 	let visualizerSpectrumHeight = $state(1.0); // 100% by default

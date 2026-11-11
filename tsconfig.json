@@ -11,7 +11,7 @@
 		"alwaysStrict": true,
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"noImplicitAny": false,
 		"noImplicitReturns": false,
 		"types": ["$app/types", "@types/node"],

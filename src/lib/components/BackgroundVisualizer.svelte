@@ -1,4 +1,4 @@
-﻿<script>
+<script>
 	import { onDestroy } from 'svelte';
 	import { themeStore } from '#lib/theme.svelte.js';
 
@@ -118,6 +118,7 @@
 		return PALETTES[palette] || PALETTES.blaze;
 	});
 
+	/** @type {HTMLCanvasElement | null} */
 	let canvasEl = $state(null);
 	let audioCtx = null;
 	let analyser = null;
@@ -352,6 +353,7 @@
 				smoothedTimeData[i] += (timeData[i] - smoothedTimeData[i]) * 0.22;
 			}
 
+			if (!canvasEl) return;
 			const ctx = canvasEl.getContext('2d');
 			if (!ctx) return;
 

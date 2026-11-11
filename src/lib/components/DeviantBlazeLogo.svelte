@@ -2,7 +2,9 @@
 	import { onMount } from 'svelte';
 	import logoData from '#lib/logo-data.json';
 
+	/** @type {SVGSVGElement | null} */
 	let svgElement = $state(null);
+	/** @type {HTMLDivElement | null} */
 	let containerElement = $state(null);
 
 	// Mouse state in window coordinates (-1 to 1 normalized)

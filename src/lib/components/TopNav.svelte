@@ -1,4 +1,4 @@
-﻿<script>
+<script>
 	import { onMount } from 'svelte';
 	import { themeStore } from '#lib/theme.svelte.js';
 	import { iconStyleStore } from '#lib/iconStyle.svelte.js';
@@ -15,6 +15,7 @@
 		return set[name] || ICONS.gothic[name];
 	}
 
+	/** @type {HTMLElement | null} */
 	let navEl = $state(null);
 	let navOpacity = $state(0.1);
 	let effectiveOpacity = $derived(isExpanded ? 1 : navOpacity);

@@ -40,6 +40,7 @@
 	]);
 
 	// Proximity (10-100%) and Idle/Exit (0%) logic for collapsed eye button
+	/** @type {HTMLButtonElement | null} */
 	let eyeBtnEl = $state(null);
 	let eyeOpacity = $state(0);
 	let isEyeHovered = $state(false);
