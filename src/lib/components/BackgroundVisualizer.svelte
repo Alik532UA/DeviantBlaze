@@ -696,7 +696,7 @@
 		position: fixed;
 		inset: 0;
 		width: 100vw;
-		height: 100vh;
+		height: 100dvh;
 		height: 100dvh;
 		z-index: 2;
 		pointer-events: none;

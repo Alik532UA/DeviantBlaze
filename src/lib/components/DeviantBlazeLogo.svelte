@@ -386,7 +386,7 @@
 	.logo-stage {
 		position: relative;
 		width: min(88vw, 680px);
-		max-height: 80vh;
+		max-height: 80dvh;
 		aspect-ratio: 1 / 1;
 		display: flex;
 		align-items: center;

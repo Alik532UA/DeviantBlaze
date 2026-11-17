@@ -1,10 +1,10 @@
-# Deviant Blaze 🎸🔥
+﻿# Deviant Blaze 🎸🔥
 
 > **Офіційний інтерактивний веб-портал рок-гурту Deviant Blaze.**
 
 [![Svelte 5](https://img.shields.io/badge/Svelte-5_Runes-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
 [![Web Audio API](https://img.shields.io/badge/Web_Audio_API-VJ_Visualizer-brightgreen)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-[![Canon v10](https://img.shields.io/badge/sveltekit--canon-v10-success)](../sveltekit-canon/)
+[![Canon v10](https://img.shields.io/badge/sveltekit--canon-v10-success)](../../sveltekit-canon/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---

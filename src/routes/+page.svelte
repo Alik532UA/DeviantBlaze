@@ -468,7 +468,6 @@
 	.page-container {
 		position: relative;
 		width: 100vw;
-		height: 100vh;
 		height: 100dvh;
 		overflow: hidden;
 		display: flex;
@@ -602,7 +601,7 @@
 
 	/* State 1: Top expanded -> logo shifts slightly down */
 	.hero-center.state-1 {
-		transform: translateY(10vh);
+		transform: translateY(10dvh);
 	}
 
 	/* State 2: Default standard position */
@@ -612,12 +611,12 @@
 
 	/* State 3: Bottom expanded -> logo shifts slightly up */
 	.hero-center.state-3 {
-		transform: translateY(-9vh);
+		transform: translateY(-9dvh);
 	}
 
 	/* State 4: Shifted up for hidden panel */
 	.hero-center.state-4 {
-		transform: translateY(-13vh);
+		transform: translateY(-13dvh);
 	}
 
 	/* Gallery button hover overrides if in standard */
@@ -700,15 +699,15 @@
 		}
 
 		.hero-center.state-1 {
-			transform: translateY(7vh);
+			transform: translateY(7dvh);
 		}
 
 		.hero-center.state-3 {
-			transform: translateY(-7vh);
+			transform: translateY(-7dvh);
 		}
 
 		.hero-center.state-4 {
-			transform: translateY(-11vh);
+			transform: translateY(-11dvh);
 		}
 
 		.scroll-indicator {

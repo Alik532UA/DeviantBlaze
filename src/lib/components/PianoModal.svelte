@@ -743,7 +743,7 @@
 	/* Chords Grid (Matching teatralo4ka) */
 	.chords-grid {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 20px;
 		width: 100%;
 		max-width: 960px;
@@ -840,7 +840,7 @@
 			height: 220px;
 		}
 		.chords-grid {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: 12px;
 		}
 		.chord-btn {

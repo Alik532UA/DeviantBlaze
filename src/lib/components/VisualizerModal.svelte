@@ -521,7 +521,7 @@
 		position: relative;
 		width: 100%;
 		max-width: 860px;
-		max-height: 90vh;
+		max-height: 90dvh;
 		background: rgba(18, 18, 22, 0.92);
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		border-radius: 28px;

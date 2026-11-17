@@ -576,7 +576,7 @@
 	}
 
 	.beta-page {
-		min-height: 100vh;
+		min-height: 100dvh;
 		width: 100%;
 		background: #09090c;
 		color: #f3f4f6;
@@ -1026,13 +1026,13 @@
 	/* Vote buttons row */
 	.vote-buttons-row {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.5rem;
 	}
 
 	@media (max-width: 580px) {
 		.vote-buttons-row {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 
